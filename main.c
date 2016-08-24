@@ -18,10 +18,12 @@
  * */
 #include <DAVE.h>   		// Declarations from DAVE Code Generation (includes SFR declaration)
 #include "BGT24MTR11.h"     // BGT24 Configuration settings
+#include <math.h>
 
-#define FFT_SIZE 1024       // Must be 16, 32, 64, 128, 256, 512, 1024, 2048, 4096
+#define FFT_SIZE 512       // Must be 16, 32, 64, 128, 256, 512, 1024, 2048, 4096
 #define NUM_SAMPLES FFT_SIZE  // MUST change DMA block size to match FFT_SIZE !!!!!!
 #define INVERT_FFT		(0)
+#define CORR_SIZE (FFT_SIZE)
 
 #define SAMPLE_FREQ_5KHZ    (200*100)   // Timer setting for Fs =   5,000Hz
 #define SAMPLE_FREQ_10KHZ   (100*100)   // Timer setting for Fs =  10,000Hz
@@ -65,16 +67,18 @@ uint16_t ifi_raw_buf0[NUM_SAMPLES*2];
 
 uint16_t ifq_raw_buf0[NUM_SAMPLES*2];
 
-float32_t ifi_adc_measurements[NUM_SAMPLES];  	// ADC data from BGT - IFI_HG
-float32_t ifq_adc_measurements[NUM_SAMPLES];  	// ADC data from BGT - IFQ_HG
-float32_t i_adc_measurements[NUM_SAMPLES];
+float32_t ifi_adc_measurements[NUM_SAMPLES*2];  	// ADC data from BGT - IFI_HG
+//float32_t ifq_adc_measurements[NUM_SAMPLES];  	// ADC data from BGT - IFQ_HG
+float32_t* ifq_adc_measurements = &ifi_adc_measurements[NUM_SAMPLES];  	// ADC data from BGT - IFQ_HG
+float32_t i_adc_measurements[NUM_SAMPLES], q_adc_measurements[NUM_SAMPLES];
 
 float32_t hanning_window[FFT_SIZE];
 
 float32_t i_fftResult[FFT_SIZE];      // FFT Result
 float32_t q_fftResult[FFT_SIZE];      // FFT Result
 float32_t finalResult[FFT_SIZE/2];
-float32_t iq_corrResult[FFT_SIZE*2];	// Cross-correlation result
+//float32_t iq_corrResult[CORR_SIZE];	// Cross-correlation result
+float32_t* iq_corrResult = ifi_adc_measurements;	// Cross-correlation result
 
 float32_t maxValPosSpectrum = 0, maxValNegSpectrum = 0; // Store the maximum values of the spectrums from cross-correlation
 float32_t maxVal = 0;
@@ -216,22 +220,27 @@ void checkTargetDetection(void)
 		gTargetVelocity = gDopFreqIFI*(float32_t)0.013894f;  // convert freq to velocity in MPH
 
 		DIGITAL_IO_SetOutputHigh(&PIN1_5);
+
+		/* Calculates direction and turns on appropriate LED depending on direction */
+		cross_correlate(i_adc_measurements, q_adc_measurements, iq_corrResult, NUM_SAMPLES, NUM_SAMPLES*2);
+		max(iq_corrResult, NUM_SAMPLES-1, &maxValPosSpectrum);
+		max(iq_corrResult+NUM_SAMPLES, NUM_SAMPLES, &maxValNegSpectrum);
+
+		if(maxValPosSpectrum > maxValNegSpectrum){
+			DIGITAL_IO_SetOutputHigh(&LED_YELLOW);
+			DIGITAL_IO_SetOutputLow(&LED_GREEN);
+		} else {
+			DIGITAL_IO_SetOutputHigh(&LED_GREEN);
+			DIGITAL_IO_SetOutputLow(&LED_YELLOW);
+		}
 	}
 	else
 	{
 		gDopFreqIFI = 0;
 		gTargetVelocity = 0;
 		DIGITAL_IO_SetOutputLow(&PIN1_5);
-	}
-
-	/* Calculates direction and turns on appropriate LED depending on direction */
-	cross_correlate(i_fftResult, q_fftResult, iq_corrResult, NUM_SAMPLES, NUM_SAMPLES*2);
-	max(iq_corrResult, NUM_SAMPLES, &maxValPosSpectrum);
-	max(iq_corrResult+NUM_SAMPLES, NUM_SAMPLES, &maxValNegSpectrum);
-	if(maxValPosSpectrum > maxValNegSpectrum){
-		DIGITAL_IO_SetOutputLow(&LED_YELLOW);
-	} else {
-		DIGITAL_IO_SetOutputLow(&LED_GREEN);
+		DIGITAL_IO_SetOutputHigh(&LED_YELLOW);
+		DIGITAL_IO_SetOutputHigh(&LED_GREEN);
 	}
 }  // end of checkTargetDetection()
 
@@ -336,11 +345,11 @@ void do_rfft_q(uint16_t * pDataBuf)
 		ifq_adc_measurements[idx] = (float32_t)pDataBuf[idx]*3.3f/4095.0f;
 
 	arm_mean_f32(ifq_adc_measurements, NUM_SAMPLES, &i_mean); //Finds the mean
-	arm_offset_f32(ifq_adc_measurements, -i_mean, i_adc_measurements, NUM_SAMPLES);  //kills the offset
+	arm_offset_f32(ifq_adc_measurements, -i_mean, q_adc_measurements, NUM_SAMPLES);  //kills the offset
 
-	arm_mult_f32(i_adc_measurements, hanning_window, i_adc_measurements, NUM_SAMPLES); //apply a hanning window
+	arm_mult_f32(q_adc_measurements, hanning_window, q_adc_measurements, NUM_SAMPLES); //apply a hanning window
 
-	arm_rfft_fast_f32(&i_fftStructure, i_adc_measurements, q_fftResult, INVERT_FFT); //performs fft
+	arm_rfft_fast_f32(&i_fftStructure, q_adc_measurements, q_fftResult, INVERT_FFT); //performs fft
 
 	arm_cmplx_mag_f32(q_fftResult, q_fftResult, NUM_SAMPLES);  // convert to real magnitude data
 
