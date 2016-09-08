@@ -23,7 +23,6 @@
 #define FFT_SIZE 512       // Must be 16, 32, 64, 128, 256, 512, 1024, 2048, 4096
 #define NUM_SAMPLES FFT_SIZE  // MUST change DMA block size to match FFT_SIZE !!!!!!
 #define INVERT_FFT		(0)
-#define CORR_SIZE (FFT_SIZE*2)
 
 #define SAMPLE_FREQ_5KHZ    (200*100)   // Timer setting for Fs =   5,000Hz
 #define SAMPLE_FREQ_10KHZ   (100*100)   // Timer setting for Fs =  10,000Hz
@@ -35,16 +34,30 @@
 
 #define DOPPLER_EVENT_LVL 50  		// Doppler Event Detection Threshold value was 20
 
+#define LEFT_SPECTRUM   0
+#define RIGHT_SPECTRUM  1
+#define BOTH_SPECTRUMS  2
+#define XCORR_EPSILON   0.1 // Epsilon used for floating comparison. If difference is less
+                            //  than this value, the values are considered equal.
+
 void do_rfft_i(uint16_t *pDataBuf) __attribute__((section(".ram_code")));
 void do_rfft_q(uint16_t *pDataBuf) __attribute__((section(".ram_code")));
 void genHanningData(void);
 void checkTargetDetection(void);
-void cross_correlate(
-    float32_t* pSrcA,
+uint8_t spectrum_peak(  // Determine which side of the spectrum from a cross-correlation
+    float32_t* pSrcA,   //  contains the peak. Assumes lag is in range [-blockSize, blockSize]
+    float32_t* pSrcB,   // Can return LEFT_SPECTRUM, RIGHT_SPECTRUM, or BOTH_SPECTRUMS
+    uint32_t blockSize
+    );
+float32_t xcorr_left_max(   // Perform cross correlation but return just
+    float32_t* pSrcA,       //  the peak value discovered for the left side.
     float32_t* pSrcB,
-    float32_t* pDst,
-    uint32_t blockSize,
-    uint32_t maxLag
+    uint32_t blockSize
+    );
+float32_t xcorr_right_max(  // Perform cross correlation but return just
+    float32_t* pSrcA,       //  the peak value discovered for the right side.
+    float32_t* pSrcB,
+    uint32_t blockSize
     );
 void max(float32_t* pSrc, uint32_t blockSize, float32_t* pMaxHolder);
 
@@ -70,6 +83,7 @@ uint16_t ifq_raw_buf0[NUM_SAMPLES*2];
 float32_t ifi_adc_measurements[NUM_SAMPLES*2];  	// ADC data from BGT - IFI_HG
 //float32_t ifq_adc_measurements[NUM_SAMPLES];  	// ADC data from BGT - IFQ_HG
 float32_t* ifq_adc_measurements = &ifi_adc_measurements[NUM_SAMPLES];  	// ADC data from BGT - IFQ_HG
+
 float32_t i_adc_measurements[NUM_SAMPLES], q_adc_measurements[NUM_SAMPLES];
 
 float32_t hanning_window[FFT_SIZE];
@@ -77,8 +91,6 @@ float32_t hanning_window[FFT_SIZE];
 float32_t i_fftResult[FFT_SIZE];      // FFT Result
 float32_t q_fftResult[FFT_SIZE];      // FFT Result
 float32_t finalResult[FFT_SIZE/2];
-float32_t iq_corrResult[CORR_SIZE];	// Cross-correlation result
-//float32_t* iq_corrResult = ifi_adc_measurements;	// Cross-correlation result
 
 float32_t maxValPosSpectrum = 0, maxValNegSpectrum = 0; // Store the maximum values of the spectrums from cross-correlation
 float32_t maxVal = 0;
@@ -103,7 +115,6 @@ XMC_GPIO_CONFIG_t PIN1_5_config  =
   .mode = XMC_GPIO_MODE_OUTPUT_PUSH_PULL,
   .output_level = XMC_GPIO_OUTPUT_LEVEL_HIGH,
   .output_strength = XMC_GPIO_OUTPUT_STRENGTH_STRONG_SHARP_EDGE,
-
 };
 
 DIGITAL_IO_t PIN1_5 =
@@ -227,9 +238,27 @@ void checkTargetDetection(void)
 			i_fftResult[idx] = i_fftResult[NUM_SAMPLES - idx - 1];
 			i_fftResult[NUM_SAMPLES - idx - 1] = temp;
 		}
+
 		/* Calculates direction and turns on appropriate LED depending on direction */
-		cross_correlate(i_fftResult, q_fftResult, iq_corrResult, NUM_SAMPLES, NUM_SAMPLES*2);
-//		cross_correlate(i_adc_measurements, q_adc_measurements, iq_corrResult, NUM_SAMPLES, NUM_SAMPLES*2);
+        switch(spectrum_peak(i_adc_measurements, q_adc_measurements, NUM_SAMPLES)){
+            case LEFT_SPECTRUM: // Target is moving toward radar
+                DIGITAL_IO_SetOutputHigh(&LED_YELLOW);
+                DIGITAL_IO_SetOutputLow(&LED_GREEN);
+                break;
+            case RIGHT_SPECTRUM: // Target is moving away from radar
+                DIGITAL_IO_SetOutputHigh(&LED_YELLOW);
+                DIGITAL_IO_SetOutputLow(&LED_GREEN);
+                break;
+            case BOTH_SPECTRUMS: // Target is still relative to radar
+                DIGITAL_IO_SetOutputHigh(&LED_YELLOW);
+                DIGITAL_IO_SetOutputHigh(&LED_GREEN);
+                break;
+        }
+/*
+        float32_t iq_corrResult[FFT_SIZE*2];	// Cross-correlation result
+//        float32_t* iq_corrResult = ifi_adc_measurements;	// Cross-correlation result
+//		cross_correlate(i_fftResult, q_fftResult, iq_corrResult, NUM_SAMPLES, NUM_SAMPLES*2);
+		cross_correlate(i_adc_measurements, q_adc_measurements, iq_corrResult, NUM_SAMPLES, NUM_SAMPLES*2);
 		max(iq_corrResult, NUM_SAMPLES-2, &maxValPosSpectrum);
 		max(iq_corrResult+NUM_SAMPLES+2, NUM_SAMPLES-2, &maxValNegSpectrum);
 
@@ -240,6 +269,7 @@ void checkTargetDetection(void)
 			DIGITAL_IO_SetOutputHigh(&LED_GREEN);
 			DIGITAL_IO_SetOutputLow(&LED_YELLOW);
 		}
+*/
 	}
 	else
 	{
@@ -318,6 +348,8 @@ void do_rfft_i(uint16_t * pDataBuf)
 	uint32_t idx =0;
 	float32_t i_mean = 0;
 
+//	float32_t ifi_adc_measurements[NUM_SAMPLES];  	// ADC data from BGT - IFI_HG
+
 	for (idx=0; idx<NUM_SAMPLES; idx++)
 		ifi_adc_measurements[idx] = (float32_t)pDataBuf[idx]*3.3f/4095.0f;
 
@@ -347,6 +379,8 @@ void do_rfft_q(uint16_t * pDataBuf)
 {
 	uint32_t idx =0;
 	float32_t i_mean = 0;   // mean
+
+//	float32_t ifq_adc_measurements[NUM_SAMPLES];	// ADC data from BGT - IFQ_HG
 
 	for (idx=0; idx<NUM_SAMPLES; idx++)
 		ifq_adc_measurements[idx] = (float32_t)pDataBuf[idx]*3.3f/4095.0f;
@@ -383,33 +417,73 @@ void genHanningData(void)
 
 //***************************************************************
 //  Perform the cross correlation of the target signal and the
-//	sampled signal. Store the calculated cross correlation at
-//	pDst. blockSize is the size of the array at pSrcA and pSrcB.
-//	Note that they must have the same size.
-//	The array at pDst will contain 2*maxLag values.
+//	sampled signal. Return which side of the spectrum the peak
+//  value was found. This is to save memory by avoiding having
+//  to store all the calculations.
 //
-//
-void cross_correlate(
+uint8_t spectrum_peak(
     float32_t* pSrcA,
     float32_t* pSrcB,
-    float32_t* pDst,
-    uint32_t blockSize,
-    uint32_t maxLag
+    uint32_t blockSize
+    )
+{
+    float32_t
+            left_peak = xcorr_left_max(pSrcA, pSrcB, blockSize),
+            right_peak = xcorr_right_max(pSrcA, pSrcB, blockSize)
+            ;
+    if(fabs(left_peak - right_peak) < XCORR_EPSILON)
+    {
+        return BOTH_SPECTRUMS;
+    }
+    return left_peak > right_peak;
+}
+
+float32_t xcorr_left_max(
+    float32_t* pSrcA,
+    float32_t* pSrcB,
+    uint32_t blockSize
     )
 {
     uint32_t i = 0, j = 0;
-    for(i=0; i < maxLag/2; ++i){
-        pDst[maxLag/2-i-1] = 0;
+    float32_t toreturn = 0.0;
+    float32_t calc_hold = 0.0;
+
+        // Slide srcA left-to-right starting from no overlap
+    for(i=0; i < blockSize; ++i){
+        calc_hold = 0;
         for(j=0; j+i < blockSize; ++j){
-            pDst[maxLag/2-i-1] += pSrcA[j+i] * pSrcB[j];
+            calc_hold += pSrcA[j+i] * pSrcB[j];
+        }
+        if(i == 0 || toreturn < calc_hold)
+        {
+            toreturn = calc_hold;
         }
     }
-    for(i=0; i < maxLag/2; ++i){
-        pDst[i+maxLag/2] = 0;
+    return toreturn;
+}
+
+float32_t xcorr_right_max(
+    float32_t* pSrcA,
+    float32_t* pSrcB,
+    uint32_t blockSize
+    )
+{
+    uint32_t i = 0, j = 0;
+    float32_t toreturn = 0.0;
+    float32_t calc_hold = 0.0;
+
+        // Slide srcA left-to-right starting from complete overlap
+    for(i=0; i < blockSize; ++i){
+        calc_hold = 0;
         for(j=0; j+i < blockSize; ++j){
-            pDst[i+maxLag/2] += pSrcA[j] * pSrcB[j + i];
+            calc_hold += pSrcA[j] * pSrcB[j + i];
+        }
+        if(i == 0 || toreturn < calc_hold)
+        {
+            toreturn = calc_hold;
         }
     }
+    return toreturn;
 }
 
 void max(float32_t* pSrc, uint32_t blockSize, float32_t* pMaxHolder){
