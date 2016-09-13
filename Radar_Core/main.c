@@ -32,7 +32,7 @@
 
 #define SAMPLE_FREQ_HZ 10000
 
-#define DOPPLER_EVENT_LVL 50  		// Doppler Event Detection Threshold value was 20
+#define DOPPLER_EVENT_LVL 20  		// Doppler Event Detection Threshold value was 20
 
 #define LEFT_SPECTRUM   0
 #define RIGHT_SPECTRUM  1
@@ -240,18 +240,19 @@ void checkTargetDetection(void)
 		}
 
 		/* Calculates direction and turns on appropriate LED depending on direction */
-        switch(spectrum_peak(i_adc_measurements, q_adc_measurements, NUM_SAMPLES)){
+		uint8_t spec_result =spectrum_peak(i_adc_measurements, q_adc_measurements, NUM_SAMPLES);
+        switch(spec_result){
             case LEFT_SPECTRUM: // Target is moving toward radar
                 DIGITAL_IO_SetOutputHigh(&LED_YELLOW);
                 DIGITAL_IO_SetOutputLow(&LED_GREEN);
                 break;
             case RIGHT_SPECTRUM: // Target is moving away from radar
-                DIGITAL_IO_SetOutputHigh(&LED_YELLOW);
-                DIGITAL_IO_SetOutputLow(&LED_GREEN);
+                DIGITAL_IO_SetOutputLow(&LED_YELLOW);
+                DIGITAL_IO_SetOutputHigh(&LED_GREEN);
                 break;
             case BOTH_SPECTRUMS: // Target is still relative to radar
-                DIGITAL_IO_SetOutputHigh(&LED_YELLOW);
-                DIGITAL_IO_SetOutputHigh(&LED_GREEN);
+                DIGITAL_IO_SetOutputLow(&LED_YELLOW);
+                DIGITAL_IO_SetOutputLow(&LED_GREEN);
                 break;
         }
 /*
@@ -276,8 +277,8 @@ void checkTargetDetection(void)
 		gDopFreqIFI = 0;
 		gTargetVelocity = 0;
 		DIGITAL_IO_SetOutputLow(&PIN1_5);
-		DIGITAL_IO_SetOutputHigh(&LED_YELLOW);
-		DIGITAL_IO_SetOutputHigh(&LED_GREEN);
+		DIGITAL_IO_SetOutputLow(&LED_YELLOW);
+		DIGITAL_IO_SetOutputLow(&LED_GREEN);
 	}
 }  // end of checkTargetDetection()
 
@@ -435,7 +436,7 @@ uint8_t spectrum_peak(
     {
         return BOTH_SPECTRUMS;
     }
-    return left_peak > right_peak;
+    return right_peak > left_peak;
 }
 
 float32_t xcorr_left_max(
