@@ -1,0 +1,178 @@
+package Model.APPS.ADC_MEASUREMENT.v4_1_6.Templates;
+
+import Model.APPS.ADC_MEASUREMENT.v4_1_6.ADC_MEASUREMENT
+
+out.print("""
+/* @cond
+ ***********************************************************************************************************************
+ *
+ * Copyright (c) 2015, Infineon Technologies AG
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the
+ * following conditions are met:
+ *
+ *   Redistributions of source code must retain the above copyright notice, this list of conditions and the  following
+ *   disclaimer.
+ *
+ *   Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the
+ *   following disclaimer in the documentation and/or other materials provided with the distribution.
+ *
+ *   Neither the name of the copyright holders nor the names of its contributors may be used to endorse or promote
+ *   products derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE  FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY,OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT  OF THE
+ * USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * To improve the quality of the software, users are encouraged to share modifications, enhancements or bug fixes
+ * with Infineon Technologies AG (dave@infineon.com).
+ ***********************************************************************************************************************
+ *
+ * Change History
+ * --------------
+ *
+ * 2015-02-16:
+ *     - Initial version for DAVEv4.<BR>
+ *
+ * 2015-02-19:
+ *     - Added GetResult APIs for XMC1100 devices.
+ *
+ * 2015-05-14:
+ *     - Optimized the Manifest.<BR>
+ *     - Modified the structure ADC_MEASUREMENT_channel_t to ADC_MEASUREMENT_CHANNEL_t.<BR>
+ *
+ * 2015-06-26:
+ *     - Added input class resource consumption.<BR>
+ *
+ * 2015-07-09:
+ *     - Documentation updated.<BR>
+ *
+ * @endcond
+ *
+ */
+
+#ifndef ADC_MEASUREMENTCONF_H
+#define ADC_MEASUREMENTCONF_H
+
+/***********************************************************************************************************************
+ * HEADER FILES
+ **********************************************************************************************************************/
+""");
+for (Object appIns : appInstancesList ) {
+ if(appIns.gcheck_enable_source_interrupt.value || appIns.gcheck_enable_result_evt.value )
+ {
+	if(daveEnv.project.selectedDevice.deviceId.family == 'XMC4')
+	{
+		out.print("""
+#include "CPU_CTRL_XMC4/cpu_ctrl_xmc4.h" """);
+	}
+	else
+	{
+		out.print("""
+#include "CPU_CTRL_XMC1/cpu_ctrl_xmc1.h" """);
+	}
+	
+ }
+}
+out.print("""
+/**********************************************************************************************************************
+ * MACROS
+ **********************************************************************************************************************/
+
+""");
+
+
+
+for (Object appIns : appInstancesList ) {
+int channels = appIns.ginteger_channel_number.value;
+List NvicNode = appIns.hwres_adc_measurement_nvicnode_srcevt.getSolverUri();
+if (  appIns.gcheck_SharedPinA.value ||appIns.gcheck_SharedPinB.value ||appIns.gcheck_SharedPinC.value ||appIns.gcheck_SharedPinD.value \
+	||appIns.gcheck_SharedPinE.value ||appIns.gcheck_SharedPinF.value ||appIns.gcheck_SharedPinG.value ||appIns.gcheck_SharedPinH.value \
+	||appIns.gcheck_SharedPinI.value ||appIns.gcheck_SharedPinJ.value ||appIns.gcheck_SharedPinK.value ||appIns.gcheck_SharedPinL.value \
+	||appIns.gcheck_SharedPinM.value ||appIns.gcheck_SharedPinN.value ||appIns.gcheck_SharedPinO.value ||appIns.gcheck_SharedPinP.value \
+	||appIns.gcheck_SharedPinQ.value ||appIns.gcheck_SharedPinR.value ||appIns.gcheck_SharedPinS.value ||appIns.gcheck_SharedPinT.value \
+	||appIns.gcheck_SharedPinU.value ||appIns.gcheck_SharedPinV.value ||appIns.gcheck_SharedPinW.value ||appIns.gcheck_SharedPinX.value \
+	||appIns.gcheck_SharedPinY.value ||appIns.gcheck_SharedPinZ.value  )
+{
+out.print("""
+#define ADC_MEASUREMENT_SHAREABLE_GPIO
+""")
+}
+List channel_names=[appIns.gstring_CH_Name_1.value, appIns.gstring_CH_Name_2.value,appIns.gstring_CH_Name_3.value,
+	appIns.gstring_CH_Name_4.value,appIns.gstring_CH_Name_5.value,appIns.gstring_CH_Name_6.value,
+	appIns.gstring_CH_Name_7.value,appIns.gstring_CH_Name_8.value,appIns.gstring_CH_Name_9.value,
+	appIns.gstring_CH_Name_10.value,appIns.gstring_CH_Name_11.value,appIns.gstring_CH_Name_12.value,
+	appIns.gstring_CH_Name_13.value,appIns.gstring_CH_Name_14.value,appIns.gstring_CH_Name_15.value,
+	appIns.gstring_CH_Name_16.value,appIns.gstring_CH_Name_17.value,appIns.gstring_CH_Name_18.value,
+	appIns.gstring_CH_Name_19.value,appIns.gstring_CH_Name_20.value,appIns.gstring_CH_Name_21.value,
+	appIns.gstring_CH_Name_22.value,appIns.gstring_CH_Name_23.value,appIns.gstring_CH_Name_24.value,
+	appIns.gstring_CH_Name_25.value,appIns.gstring_CH_Name_26.value,];
+// TODO generate macro for all the channel config stru
+out.print("""
+#define ADC_MEASUREMENT_MAXCHANNELS (${channels}U)
+""");
+if (NvicNode != null)
+{ 
+	if(appIns.gcheck_enable_source_interrupt.value)
+	{
+		out.print("""
+#define ${appIns.gstring_request_source_interrupt_handler.value} IRQ_Hdlr_${NvicNode[7]}
+""");
+	}
+	else if(appIns.gcheck_enable_result_evt.value)
+	{
+		out.print("""
+#define ${appIns.gstring_result_event_interrupt_handler.value} IRQ_Hdlr_${NvicNode[7]}
+""");
+	}
+}
+
+for(i=0;i<channels;i++)
+{
+	out.print("""#define ADC_MEASUREMENT_${channel_names[i]} (ADC_MEASUREMENT_${channel_names[i]}_handle)\n""") 
+}
+
+if(appIns.gcheck_enable_source_interrupt.value || appIns.gcheck_enable_result_evt.value )
+{
+	if(daveEnv.project.selectedDevice.deviceId.family == 'XMC4')
+	{
+		out.print("""
+#define ADC_MEASUREMENT_CPU_4X
+""");
+	}
+	else
+	{
+		out.print("""
+#define ADC_MEASUREMENT_CPU_1X
+""");
+	}
+	
+}
+
+if(daveEnv.project.selectedDevice.deviceId.family +daveEnv.project.selectedDevice.deviceId.series != 'XMC11')
+{
+	out.print("""#define ADC_MEASUREMENT_ICLASS_NUM (${appIns.hwres_adc_measurement_global_iclass.getSolverUri()[6]}U)""")
+}
+else
+{
+	out.print("""#define ADC_MEASUREMENT_ICLASS_NUM (0U)\n""")
+	out.print("""#define ADC_MEASUREMENT_ICLASS_NUM_XMC11 (1U)\n""")
+}
+
+
+out.print("""
+#define ADC_MEASUREMENT_MAJOR_VERSION (${ADC_MEASUREMENT.version.split("\\.")[0]}U) /**< Major version number of ADC_MEASUREMENT APP*/
+#define ADC_MEASUREMENT_MINOR_VERSION (${ADC_MEASUREMENT.version.split("\\.")[1]}U) /**< Minor version number of ADC_MEASUREMENT APP*/
+#define ADC_MEASUREMENT_PATCH_VERSION (${ADC_MEASUREMENT.version.split("\\.")[2]}U) /**< Patch version number of ADC_MEASUREMENT APP*/
+""");
+
+out.print("""
+  
+#endif //ADC_MEASUREMENTCONF_H_
+""")
+}

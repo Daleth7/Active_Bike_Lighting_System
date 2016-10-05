@@ -240,7 +240,7 @@ void checkTargetDetection(void)
 		}
 
 		/* Calculates direction and turns on appropriate LED depending on direction */
-		uint8_t spec_result =spectrum_peak(i_adc_measurements, q_adc_measurements, NUM_SAMPLES);
+		uint8_t spec_result = BOTH_SPECTRUMS;//spectrum_peak(i_adc_measurements, q_adc_measurements, NUM_SAMPLES);
         switch(spec_result){
             case LEFT_SPECTRUM: // Target is moving toward radar
                 DIGITAL_IO_SetOutputHigh(&LED_YELLOW);

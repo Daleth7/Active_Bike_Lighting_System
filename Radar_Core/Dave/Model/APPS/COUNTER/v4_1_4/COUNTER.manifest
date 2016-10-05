@@ -1,0 +1,354 @@
+package Model.APPS.COUNTER.v4_1_4;
+
+/*************** Revision History **********************************************
+ Version        Date          Description 
+ 
+ 4.0.0       16-Feb-2015   Initial version for DAVEv4
+ 4.1.2       06-Apr-2015   1.Modified the config structure of the COUNTER.<BR>
+                           2.Enables usage of external event-2 for gating.<BR>
+                           3.UI modified to support the edge selection for
+                              Count Direction and Gating.<BR>
+                           4.API name change COUNTER_AcknowledgeInterrupt to
+                             COUNTER_ClearEvent.<BR>
+ 4.1.4       09-Jul-2015   Documentation updated.<BR>      
+ *******************************************************************************/
+
+import ifx.davex.app.manifest.*
+
+class  COUNTER extends COUNTER_GUI {
+
+	/**
+	 * APP version
+	 * Format: a string with three digit separated by a dot.
+	 */
+	def version            = '4.1.4'
+
+	/**
+	 * APP categories declaration.
+	 * It is list of strings. Subcategories are separated by slash.
+	 * No limits on number of categories and subcategories depth.
+	 */
+	def categoriesDescription = [
+		"General Purpose/Timed Signals"]
+	
+	/**
+	 * Minimum DAVE version required for this APP.
+	 *
+	 * It is string with three digit separated by a dot.
+	 */
+	def minDaveVersion           = '4.0.0'
+
+	/**
+	 * Keywords used by search feature in APPS selection view
+	 *
+	 * It is a list of string.
+	 */
+	def keywords      = [
+		'Counter',
+		'CCU4',
+		'CCU8',
+		"all"
+	]
+
+
+	/**
+	 * softwareIDs is used to declare which devices are compatible with this APP.
+	 * It is a map with key a string containing a pattern that shall match the SW id of
+	 * the device and as value the minimal version of the APP.
+	 */
+	/*
+	 Supported Devices of the COUNTER APP are:
+	"XMC4.5.00.E144.ALL":"1.0.0","XMC4.5.00.F144.ALL":"1.0.0","XMC4.5.00.F100.ALL":"1.0.0",
+	"XMC4.5.02.F100.ALL":"1.0.0","XMC4.5.04.F100.ALL":"1.0.0","XMC4.5.04.F144.ALL":"1.0.0",
+
+	"XMC4.4.00.F100.ALL":"1.0.0","XMC4.4.00.F64.ALL":"1.0.0",
+	"XMC4.4.02.F100.ALL":"1.0.0","XMC4.4.02.F64.ALL":"1.0.0",
+
+	"XMC4.2.00.F64.ALL":"1.0.0","XMC4.2.00.Q48.ALL":"1.0.0",
+	"XMC4.1.00.F64.ALL":"1.0.0","XMC4.1.00.Q48.ALL":"1.0.0","XMC4.1.04.F64.ALL":"1.0.0",
+	"XMC4.1.04.Q48.ALL":"1.0.0","XMC4.1.08.Q48.ALL":"1.0.0","XMC4.1.08.F64.ALL":"1.0.0",
+
+	"XMC1.2.01.T028.ALL":"1.0.0","XMC1.2.01.T038.ALL":"1.0.0","XMC1.2.01.Q040.ALL":"1.0.0",
+	"XMC1.2.02.T016.ALL":"1.0.0","XMC1.2.02.T028.ALL":"1.0.0","XMC1.2.02.T038.ALL":"1.0.0",
+	"XMC1.2.02.Q024.ALL":"1.0.0","XMC1.2.02.Q040.ALL":"1.0.0","XMC1.2.00.T038.ALL":"1.0.0",
+	"XMC1.2.03.T016.ALL":"1.0.0",
+
+	"XMC1.3.01.Q024.ALL":"1.0.0","XMC1.3.01.Q040.ALL":"1.0.0","XMC1.3.01.T016.ALL":"1.0.0",
+	"XMC1.3.01.T038.ALL":"1.0.0","XMC1.3.02.Q024.ALL":"1.0.0","XMC1.3.02.Q040.ALL":"1.0.0",
+	"XMC1.3.02.T016.ALL":"1.0.0","XMC1.3.02.T038.ALL":"1.0.0",
+
+	"XMC1.1.00.T016.ALL":"1.0.0","XMC1.1.00.T038.ALL":"1.0.0","XMC1.1.00.Q024.ALL":"1.0.0",
+	"XMC1.1.00.Q040.ALL":"1.0.0"
+	*/
+	
+	def softwareIDs       = ["XMC1.*.*.*.*":"1.0.0", "XMC4.*.*.*.*":"1.0.0"]
+
+	/**
+	 * Singleton property:
+	 * When it is true the APP can be instantiated only once.
+	 */
+	def singleton     = false
+	
+	/**
+	 * initProvider property
+	 * It shall be true to add a call to <AppName>_Init()
+	 */
+	def initProvider  = true
+	
+	/**
+	 * Deprecated app
+	 * Set it to true to indicate that the APP shall be not used for new projects.
+	 */
+	def deprecated    = false
+	
+	/**
+	 * Shareable property.
+	 * It shall be true to allows multiple APPS to require the same instance of this APP.
+	 */
+	def sharable      = false
+
+
+	def description = "Counts the occurrences of external events using one timer slice of CCU4 or CCU8 "
+
+	/**************************************************************************************************************************/
+	MRequiredApp appres_ccu4_global
+	MRequiredApp appres_ccu8_global
+
+	MVirtualResourceGroup hwres_ccu4_slice
+	MVirtualResourceGroup hwres_ccu8_slice
+
+	MVirtualSignal vs_counter_ccu4_global_signal
+	MVirtualSignal vs_counter_ccu8_global_signal
+	MVirtualSignal vs_counter_ccu4_timer_status
+	MVirtualSignal vs_counter_ccu8_timer_status
+	MVirtualSignal vs_counter_ccu4_rollover_event
+	MVirtualSignal vs_counter_ccu8_rollover_event
+	MVirtualSignal vs_counter_ccu4_count_match
+	MVirtualSignal vs_counter_ccu8_count_match
+	MVirtualSignal vs_counter_ccu4_edge_event
+	MVirtualSignal vs_counter_ccu8_edge_event
+	MVirtualSignal vs_counter_ccu4_cdir_gate_event
+	MVirtualSignal vs_counter_ccu8_cdir_gate_event
+	MVirtualSignal vs_counter_ccu4_gating_event
+	MVirtualSignal vs_counter_ccu8_gating_event
+	MVirtualSignal vs_counter_ccu4_input_signal
+	MVirtualSignal vs_counter_ccu8_input_signal
+	MVirtualSignal vs_counter_ccu4_event2_input
+	MVirtualSignal vs_counter_ccu8_event2_input
+
+	MVirtualSignal vs_counter_ccu4_event1_input
+	MVirtualSignal vs_counter_ccu8_event1_input
+
+	MVirtualSignalRA vs_counter_ccu4_global
+	MVirtualSignalRA vs_counter_ccu8_global
+
+	SolverVariable ccu8_slice
+	SolverVariable ccu8_kernel
+
+	GInteger gint_counter_ext_evt_gating = GInteger(widgetName: "gint_counter_ext_evt_gating");
+
+	/**************************************************************************************************************************/
+	public COUNTER(DaveEnv daveEnv) {
+
+		String family = daveEnv.project.selectedDevice.deviceId.family
+		String device = family + daveEnv.project.selectedDevice.deviceId.series
+
+		/* Needed to determine which event gating should take up*/
+		gint_counter_ext_evt_gating.value = MF({
+			Integer value;
+			/* if the count dir is enabled then the external event for gating is External event 2 else it is 1*/
+			if(gcheck_enable_gating.value && gcheck_enable_external_count.value)
+				value = 2
+			else if (gcheck_enable_gating.value)
+				value = 1
+			else /* gating is not enabled*/
+			value = 0			
+		value},Integer)
+
+		/* ---------------------------------------------------------------------------------------------------------------- */
+		/* ----------------------------------------- Hardware resource consumption block ---------------------------------- */
+		/* ---------------------------------------------------------------------------------------------------------------- */
+
+		hwres_ccu4_slice          = MVirtualResourceGroup("CCU4 Slice", [
+			"peripheral",
+			"ccu4",
+			"*",
+			"cc4",
+			"*"
+		],
+		MF({gcombo_peripheral_selection.value == "CCU4"},Boolean));
+
+		hwres_ccu8_slice          = MVirtualResourceGroup("CCU8 Slice", [
+			"peripheral",
+			"ccu8",
+			"*",
+			"cc8",
+			"*"
+		],
+		MF({gcombo_peripheral_selection.value == "CCU8"},Boolean));
+
+
+		/* ---------------------------------------------------------------------------------------------------------------- */
+		/* ------------------------------------------------- App consumption Block ---------------------------------------- */
+		/* ---------------------------------------------------------------------------------------------------------------- */
+
+		appres_ccu8_global = MRequiredApp("GLOBAL_CCU8","GLOBAL_CCU8", RSHARABLE, "4.0.2",
+				MF({gcombo_peripheral_selection.value == "CCU8"}, Boolean));
+		appres_ccu4_global = MRequiredApp("GLOBAL_CCU4","GLOBAL_CCU4", RSHARABLE, "4.0.2",
+				MF({gcombo_peripheral_selection.value == "CCU4"}, Boolean));
+
+		/* ---------------------------------------------------------------------------------------------------------------- */
+		/* ------------------------------------------------ APP IO Signals ------------------------------------------------ */
+		/* ---------------------------------------------------------------------------------------------------------------- */
+
+		/**************************************************************************************************************************/
+		vs_counter_ccu4_global_signal = MVirtualSignal(hwres_ccu4_slice,  "global_signal","global_signal",
+				MF({gcombo_peripheral_selection.value == "CCU4" },Boolean), false);
+
+		vs_counter_ccu8_global_signal = MVirtualSignal(hwres_ccu8_slice,  "global_signal","global_signal",
+				MF({gcombo_peripheral_selection.value == "CCU8" },Boolean), false);
+		/**************************************************************************************************************************/
+		vs_counter_ccu4_timer_status = MVirtualSignal(hwres_ccu4_slice,  "counter_output","st",
+				MF({gcombo_peripheral_selection.value == "CCU4" },Boolean), true);
+
+		vs_counter_ccu8_timer_status = MVirtualSignal(hwres_ccu8_slice,  "counter_output","st",
+				MF({gcombo_peripheral_selection.value == "CCU8" },Boolean), true);
+		/**************************************************************************************************************************/
+		vs_counter_ccu4_rollover_event = MVirtualSignal(hwres_ccu4_slice,  "event_rollover","pmus_omds",
+				MF({gcombo_peripheral_selection.value == "CCU4" },Boolean), true);
+
+		vs_counter_ccu8_rollover_event = MVirtualSignal(hwres_ccu8_slice,  "event_rollover","pmus_omds",
+				MF({gcombo_peripheral_selection.value == "CCU8" },Boolean), true);
+		/**************************************************************************************************************************/
+		vs_counter_ccu4_count_match = MVirtualSignal(hwres_ccu4_slice,  "event_count_match","cmds_cmus",
+				MF({gcombo_peripheral_selection.value == "CCU4" },Boolean), true);
+
+		vs_counter_ccu8_count_match = MVirtualSignal(hwres_ccu8_slice,  "event_count_match","cmd1s_cmu1s",
+				MF({gcombo_peripheral_selection.value == "CCU8" },Boolean), true);
+		/**************************************************************************************************************************/
+		vs_counter_ccu4_edge_event = MVirtualSignal(hwres_ccu4_slice,  "event_edge_detection","e0as",
+				MF({(gcombo_peripheral_selection.value == "CCU4")},Boolean), true);
+
+		vs_counter_ccu8_edge_event = MVirtualSignal(hwres_ccu8_slice,  "event_edge_detection","e0as",
+				MF({(gcombo_peripheral_selection.value == "CCU8")},Boolean), true);
+		/**************************************************************************************************************************/
+		vs_counter_ccu4_cdir_gate_event = MVirtualSignal(hwres_ccu4_slice, MF({ if(gcheck_enable_external_count.value){ "event_count_direction" } else { "event_gating_level_detection"} },String),
+		"e1as", MF({
+			if(gcombo_peripheral_selection.value == "CCU4"){ ((gint_counter_ext_evt_gating.value == 1) || gcheck_enable_external_count.value)}else {false}
+		},Boolean), true);
+
+		vs_counter_ccu8_cdir_gate_event = MVirtualSignal(hwres_ccu8_slice,MF({if(gcheck_enable_external_count.value){ "event_count_direction" } else { "event_gating_level_detection"} },String),
+		"e1as",MF({
+			if(gcombo_peripheral_selection.value == "CCU8"){ ((gint_counter_ext_evt_gating.value == 1) || gcheck_enable_external_count.value)} else { false}
+		},Boolean), true);
+
+		/**************************************************************************************************************************/
+
+		vs_counter_ccu4_gating_event =  MVirtualSignal(hwres_ccu4_slice,"event_gating_level_detection",
+		"e2as", MF({
+			if(gcombo_peripheral_selection.value == "CCU4"){ (gint_counter_ext_evt_gating.value == 2)} else { false}
+		},Boolean), true);
+
+		vs_counter_ccu8_gating_event = MVirtualSignal(hwres_ccu8_slice,"event_gating_level_detection",
+		"e2as",MF({
+			if(gcombo_peripheral_selection.value == "CCU8"){ (gint_counter_ext_evt_gating.value == 2)} else {false}
+		},Boolean), true);
+
+		/**************************************************************************************************************************/
+
+		vs_counter_ccu4_input_signal = MVirtualSignal(hwres_ccu4_slice,  "counter_input","gp0_unsync",
+				MF({gcombo_peripheral_selection.value == "CCU4" },Boolean), true);
+
+		vs_counter_ccu8_input_signal = MVirtualSignal(hwres_ccu8_slice,  "counter_input","gp0_unsync",
+				MF({gcombo_peripheral_selection.value == "CCU8"},Boolean), true);
+		/**************************************************************************************************************************/
+		vs_counter_ccu4_event1_input = MVirtualSignal(hwres_ccu4_slice,
+				MF({if(gcheck_enable_external_count.value) {"count_direction_input"  } else {  "gating_input" }},String),"gp1_unsync",
+				MF({
+			if(gcombo_peripheral_selection.value == "CCU4"){ ((gint_counter_ext_evt_gating.value == 1) || gcheck_enable_external_count.value)} else { false}
+		},Boolean), true)
+
+		vs_counter_ccu8_event1_input = MVirtualSignal(hwres_ccu8_slice,
+				MF({if(gcheck_enable_external_count.value){"count_direction_input"  } else {  "gating_input"} },String),"gp1_unsync",
+				MF({
+					if(gcombo_peripheral_selection.value == "CCU8"){ ((gint_counter_ext_evt_gating.value == 1) || gcheck_enable_external_count.value)} else {false}
+				},Boolean), true)
+
+		/**************************************************************************************************************************/
+		
+		vs_counter_ccu4_event2_input =  MVirtualSignal(hwres_ccu4_slice,"gating_input","gp2_unsync",
+		 MF({
+			if(gcombo_peripheral_selection.value == "CCU4"){ (gint_counter_ext_evt_gating.value == 2) } else { false}
+		},Boolean), true);
+
+		vs_counter_ccu8_event2_input = MVirtualSignal(hwres_ccu8_slice,"gating_input", "gp2_unsync",
+			MF({
+			if(gcombo_peripheral_selection.value == "CCU8"){ (gint_counter_ext_evt_gating.value == 2) } else { false}
+		},Boolean), true);
+
+		/**************************************************************************************************************************/
+
+		vs_counter_ccu4_global =  MVirtualSignalRA(appres_ccu4_global,"vs_global_ccu4_globalsignal");
+
+		vs_counter_ccu8_global =  MVirtualSignalRA(appres_ccu8_global,"vs_global_ccu8_globalsignal");
+
+
+
+
+		/* ---------------------------------------------------------- */
+		/* ---------------- APP IO Connections ---------------------- */
+		/* ---------------------------------------------------------- */
+
+		addConnectionConstraint(vs_counter_ccu4_global,vs_counter_ccu4_global_signal,
+				MF({gcombo_peripheral_selection.value == "CCU4" }, Boolean) );
+
+		addConnectionConstraint(vs_counter_ccu8_global,vs_counter_ccu8_global_signal,
+				MF({gcombo_peripheral_selection.value == "CCU8" }, Boolean) );
+
+		/* ---------------------------------------------------------------------------------------------------------------- */
+		/* ---------------------------------------------------- APP Configuration ----------------------------------------- */
+		/* ---------------------------------------------------------------------------------------------------------------- */
+		/* ------------------------------------------------ TAB : General ------------------------------------------------- */
+
+		gcombo_peripheral_selection.enabled = MF({!((device == "XMC11") || (device == "XMC12"))},Boolean)
+
+		if( (device == "XMC12") ||(device == "XMC11")  ) {
+			gcombo_peripheral_selection.value = MF({"CCU4"},String)
+		}
+
+		/* ---------------------------------------------------------------------------------------------------------------- */
+		/* ---------------------------------------------------- APP Configuration ----------------------------------------- */
+		/* ---------------------------------------------------------------------------------------------------------------- */
+		/* ------------------------------------------------ TAB : Signals and Events -------------------------------------- */
+
+		gcombo_lowpass_filter.enabled = MF({gcheck_enable_lowpass_filter.value},Boolean);
+
+		gcombo_ext_cnt_active_lvl.enabled = MF({gcheck_enable_external_count.value},Boolean);
+		glabel_ext_cnt_active_lvl.enabled = MF({gcheck_enable_external_count.value},Boolean);
+		gcombo_cdir_edge.enabled = MF({gcheck_enable_external_count.value},Boolean);
+		glabel_cdir_edge.enabled = MF({gcheck_enable_external_count.value},Boolean);
+		
+		gcombo_gating_level.enabled = MF({gcheck_enable_gating.value},Boolean);
+		glabel_gating_level.enabled = MF({gcheck_enable_gating.value},Boolean);
+		gcombo_gating_edge.enabled = MF({gcheck_enable_gating.value},Boolean);
+		glabel_gating_edge.enabled = MF({gcheck_enable_gating.value},Boolean);
+
+		gcheck_enable_gating_level_event.enabled = MF({gcheck_enable_gating.value},Boolean);
+		gcheck_enable_count_direction_event.enabled = MF({gcheck_enable_external_count.value},Boolean);
+		//gcheck_enable_edge_event.enabled = MF({gcheck_enable_gating.value?false:true},Boolean);
+
+
+
+	}
+
+	// File Generation
+	def generateFiles(){
+		copy("counter.c", "counter.c")
+		copy("counter.h", "counter.h")
+		generate("counter_confc.tmpl", "counter_conf.c")
+		generate("counter_confh.tmpl", "counter_conf.h")
+		generate("counter_externh.tmpl", "counter_extern.h")
+	}
+	
+	
+}
