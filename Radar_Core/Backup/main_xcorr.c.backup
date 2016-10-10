@@ -232,8 +232,15 @@ void checkTargetDetection(void)
 
 		DIGITAL_IO_SetOutputHigh(&PIN1_5);
 
+		float32_t temp;
+		for(idx = 0; idx < NUM_SAMPLES/2; ++idx){
+			temp = i_fftResult[idx];
+			i_fftResult[idx] = i_fftResult[NUM_SAMPLES - idx - 1];
+			i_fftResult[NUM_SAMPLES - idx - 1] = temp;
+		}
+
 		/* Calculates direction and turns on appropriate LED depending on direction */
-		uint8_t spec_result = spectrum_peak(i_fftResult, q_fftResult, NUM_SAMPLES);
+		uint8_t spec_result = spectrum_peak(i_adc_measurements, q_adc_measurements, NUM_SAMPLES);
         switch(spec_result){
             case LEFT_SPECTRUM: // Target is moving toward radar
                 DIGITAL_IO_SetOutputHigh(&LED_YELLOW);
