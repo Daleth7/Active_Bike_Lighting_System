@@ -20,6 +20,7 @@
 #include "BGT24MTR11.h"     // BGT24 Configuration settings
 #include <math.h>
 
+    //////////////////Changed FFT_SIZE from 1024 to allow more space for more variables
 #define FFT_SIZE 512       // Must be 16, 32, 64, 128, 256, 512, 1024, 2048, 4096
 #define NUM_SAMPLES FFT_SIZE  // MUST change DMA block size to match FFT_SIZE !!!!!!
 #define INVERT_FFT		(0)
@@ -34,6 +35,7 @@
 
 #define DOPPLER_EVENT_LVL 20  		// Doppler Event Detection Threshold value was 20
 
+    //////////////////Enumerations for directions
 #define LEFT_SPECTRUM   0
 #define RIGHT_SPECTRUM  1
 #define BOTH_SPECTRUMS  2
@@ -44,6 +46,8 @@ void do_rfft_i(uint16_t *pDataBuf) __attribute__((section(".ram_code")));
 void do_rfft_q(uint16_t *pDataBuf) __attribute__((section(".ram_code")));
 void genHanningData(void);
 void checkTargetDetection(void);
+
+    //////////////////Calculate the direction with x-corr, compare result with which side of spectrum it is in
 uint8_t spectrum_peak(  // Determine which side of the spectrum from a cross-correlation
     float32_t* pSrcA,   //  contains the peak. Assumes lag is in range [-blockSize, blockSize]
     float32_t* pSrcB,   // Can return LEFT_SPECTRUM, RIGHT_SPECTRUM, or BOTH_SPECTRUMS
@@ -60,6 +64,8 @@ float32_t xcorr_right_max(  // Perform cross correlation but return just
     uint32_t blockSize
     );
 void max(float32_t* pSrc, uint32_t blockSize, float32_t* pMaxHolder);
+
+
 
 uint8_t  gIFQDataReadyFlag = 0;
 
@@ -84,6 +90,8 @@ float32_t ifi_adc_measurements[NUM_SAMPLES*2];  	// ADC data from BGT - IFI_HG
 //float32_t ifq_adc_measurements[NUM_SAMPLES];  	// ADC data from BGT - IFQ_HG
 float32_t* ifq_adc_measurements = &ifi_adc_measurements[NUM_SAMPLES];  	// ADC data from BGT - IFQ_HG
 
+    //////////////////Added q_adc_measurements, so both can hold results for later x-corr
+    //////////////////  Had to reduce sample size because of this
 float32_t i_adc_measurements[NUM_SAMPLES], q_adc_measurements[NUM_SAMPLES];
 
 float32_t hanning_window[FFT_SIZE];
