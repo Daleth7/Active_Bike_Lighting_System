@@ -235,15 +235,15 @@ void checkTargetDetection(void)
 		/* Calculates direction and turns on appropriate LED depending on direction */
 		uint8_t spec_result = spectrum_peak(i_fftResult, q_fftResult, NUM_SAMPLES);
         switch(spec_result){
-            case LEFT_SPECTRUM: // Target is moving toward radar
+            case LEFT_SPECTRUM: // Target is moving toward radar - turn on yellow
                 DIGITAL_IO_SetOutputHigh(&LED_YELLOW);
                 DIGITAL_IO_SetOutputLow(&LED_GREEN);
                 break;
-            case RIGHT_SPECTRUM: // Target is moving away from radar
+            case RIGHT_SPECTRUM: // Target is moving away from radar - turn on green
                 DIGITAL_IO_SetOutputLow(&LED_YELLOW);
                 DIGITAL_IO_SetOutputHigh(&LED_GREEN);
                 break;
-            case BOTH_SPECTRUMS: // Target is still relative to radar
+            case BOTH_SPECTRUMS: // Target is still relative to radar - turn off both
                 DIGITAL_IO_SetOutputLow(&LED_YELLOW);
                 DIGITAL_IO_SetOutputLow(&LED_GREEN);
                 break;
