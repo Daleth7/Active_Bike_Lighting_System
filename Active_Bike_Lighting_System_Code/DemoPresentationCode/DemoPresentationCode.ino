@@ -12,7 +12,7 @@ Adafruit_NeoPixel strip = Adafruit_NeoPixel(30, PIN, NEO_RGBW + NEO_KHZ800); // 
 #define RedLEDstrip 3
 
 
-int leftTurnFlag = 0; // initialize turn signal flag variables as 1 = OFF
+int leftTurnFlag = 0; // initialize turn signal flag variables as 1 = ON
 int rightTurnFlag = 0; 
 
 volatile static int turnTimeL = 0; // initalizes counter for arrow display. ie. turns on 3 for 10 cycles, 2 for 10 cycles, 1 for 10 cycles
@@ -42,10 +42,13 @@ void setup() { // setup code to run once for initalization
 	pinMode(9, INPUT); // Right Turn digital read
 	
 	// setup input pins for reading voltage divider for brakes
-	pinMode(A0, INPUT); // Brakes analog read
+	pinMode(A1, INPUT); // Brakes analog read
 
 	// setting interrupt
 	interrupts (); // initalizes interrupts to be ON explicitly
+	
+	
+//////////////////////not sure if Arduino Interrupt functions are working correctly
 	
 	//attachInterrupt(8, checkTurnSignals, FALLING); // creates an interrupt for SETTING LEFT/RIGHT turn signals
 	//attachInterrupt(8, clearTurnSignals, RISING); // creates interrupt for CLEARING turn signal flags
@@ -62,8 +65,9 @@ void loop() // put your main code here, to run repeatedly:
 {
 
 	processSignals(); // processing turn signals & brake signals, and displays appropriately
-	checkTurnSignals();
-	clearTurnSignals();
+	
+	checkTurnSignals(); // have opted to call check/clear signals in main loop instead of interrupts at this time
+	clearTurnSignals(); // operates extremely fast to not be an issue
 	
 	displayLEDs(); // function to call for displaying LED's
   
@@ -232,7 +236,7 @@ void GreenLEDs() { // Pulsing Green, 3 LED's are on at a time
 		if (offCounter == 1){ // turns off LEDs after a cycle of being on
 		
 			strip.setPixelColor(b-1, 0, 0, 0);
-			strip.setPixelColor(b, 0, 0, 0);
+			//strip.setPixelColor(b, 0, 0, 0); testing with 1 clear or 2 cleared
 		
 			offCounter = -1;
 		}	
