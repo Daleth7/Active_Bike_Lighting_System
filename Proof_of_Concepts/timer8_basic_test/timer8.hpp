@@ -49,7 +49,8 @@
 #define WATCH_TIMER_FOR_KEPPING_32888888_CLOCK_SDOUCUNT____HHHHHHHHH
 
 #include <cstdint>      // Contains known bit length types
-#include "samd21g18a.h" // Contains register memory mapping for SAMD21
+#include "sam.h"    // Contains register memory mapping for SAMD21
+                    // Should include samd21g18a.h
 
 class Timer8 {
     public:
@@ -71,8 +72,8 @@ class Timer8 {
         void configure_interrupt(   bool interrupt_on_overflow,
                                     bool interrupt_on_match,
                                     std::uint8_t match_value);
-        bool overflow_interrupt();
-        bool match_interrupt();
+        bool overflow_interrupt()const;
+        bool match_interrupt()const;
         void clear_overflow_interrupt();
         void clear_match_interrupt();
 
@@ -108,10 +109,11 @@ class Timer8 {
                 Timer Constructors and destructors end
 *************************************************************************/
 
-    private:
+    protected:
         Timer8(const Timer8&){} // Force the class to be non-copyable
-        Timer8& operator=(const Timer8&){}
+        Timer8& operator=(const Timer8&){return *this;}
 
+    private:
         TcCount8* p_timer_settings;
         std::uint8_t m_gen_clk_id;
         std::uint8_t m_gen_out_id;

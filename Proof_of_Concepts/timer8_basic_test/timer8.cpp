@@ -68,11 +68,11 @@ void Timer8::configure_interrupt(   bool interrupt_on_overflow,
     NVIC_EnableIRQ(m_timer_irq_id);
 }
 
-bool Timer8::overflow_interrupt(){
+bool Timer8::overflow_interrupt()const{
     return p_timer_settings->INTFLAG.bit.OVF == 1;
 }
 
-bool Timer8::match_interrupt(){
+bool Timer8::match_interrupt()const{
     return p_timer_settings->INTFLAG.bit.MC0 == 1;
 }
 
@@ -100,7 +100,7 @@ void Timer8::disable_match_interrupt(){
     p_timer_settings->INTENSET.bit.MC0 = 0;
 }
 
-void set_match_value(std::uint8_t new_match_value){
+void Timer8::set_match_value(std::uint8_t new_match_value){
     p_timer_settings->CC[0].reg = new_match_value;
 }
 
@@ -133,20 +133,3 @@ Timer8::Timer8( std::uint8_t generic_clk_id,    // Generic Clock to use for time
 /*************************************************************************
                 Timer Constructors and destructors start
 *************************************************************************/
-
-
-
-/***************************************************************************
-                        Interrupt Handlers start
-***************************************************************************/
-void TC3_Handler(){
-    if(overflow_interrupt()){
-        clear_overflow_interrupt();
-    }
-    if(match_interrupt()){
-        clear_match_interrupt();
-    }
-}
-/***************************************************************************
-                        Interrupt Handlers end
-***************************************************************************/

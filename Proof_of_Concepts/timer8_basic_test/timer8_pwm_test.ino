@@ -15,15 +15,15 @@
 
 #define OUT_PIN 13
 
-Timer8 basic_timer( 0x0,    // Select generic clock 0 as the clock for the timer
-                    0x1B,   // Tie the generic clock signal to TC3's input
-                    TC3,    // Macro representing memory address of peripheral settings
-                    0x3,    // Set timer prescaler to 8 --> 1 MHz
-                    13,     // Set timer counter period to 13 --> 76.923 kHz
-                    18,     // Enable timer interrupts (TC3 IRQ# == 18)
-                    true,   // Enable overflow interrupt
-                    true,   // Ensable match interrupt
-                    10      // Match counter value to get 77% duty cycle
+Timer8 basic_timer( 0x0,            // Select generic clock 0 as the clock for the timer
+                    0x1B,           // Tie the generic clock signal to TC3's input
+                    (TcCount8*)TC3, // Macro representing memory address of peripheral settings
+                    0x3,            // Set timer prescaler to 8 --> 1 MHz
+                    13,             // Set timer counter period to 13 --> 76.923 kHz
+                    TC3_IRQn,       // Enable timer interrupts (TC3 IRQ# == 18)
+                    true,           // Enable overflow interrupt
+                    true,           // Enable match interrupt
+                    10              // Match counter value to get 77% duty cycle
                     );
 
 void setup(){

@@ -17,15 +17,15 @@
 bool out_pin_state = true;
 bool err_pin_state = false;
 
-Timer8 basic_timer( 0x0,    // Select generic clock 0 as the clock for the timer
-                    0x1B,   // Tie the generic clock signal to TC3's input
-                    TC3,    // Macro representing memory address of peripheral settings
-                    0x0,    // Set timer prescaler to 1
+Timer8 basic_timer( 0x0,            // Select generic clock 0 as the clock for the timer
+                    0x1B,           // Tie the generic clock signal to TC3's input
+                    (TcCount8*)TC3, // Macro representing memory address of peripheral settings
+                    0x0,            // Set timer prescaler to 1
                     1,      // Start at highest frequency and slow down
-                    18,     // Enable timer interrupts (TC3 IRQ# == 18)
-                    true,   // Enable overflow interrupt
-                    false,  // Disable match interrupt
-                    100     // Match counter value
+                    TC3_IRQn,       // Enable timer interrupts (TC3 IRQ# == 18)
+                    true,           // Enable overflow interrupt
+                    false,          // Disable match interrupt
+                    100             // Match counter value
                     );
 
 void setup(){

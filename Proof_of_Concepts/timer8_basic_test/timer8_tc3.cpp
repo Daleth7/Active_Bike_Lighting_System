@@ -39,11 +39,11 @@ std::uint8_t TimerCount3::counter_match_value()const{
 }
 
 float TimerCount3::reference_frequency()const{
-    return gen0_clk_frequency;
+    return k_gen0_clk_freq;
 }
 
 float TimerCount3::frequency()const{
-    return gen0_clk_frequency / m_pscale / m_per;
+    return k_gen0_clk_freq / m_pscale / m_per;
 }
 
 float TimerCount3::period()const{
@@ -117,11 +117,11 @@ TimerCount3::TimerCount3(   std::uint32_t new_prescaler,
                             std::uint8_t match_value,
                             float gen0_clk_frequency
 )
-    : Timer8(   0x0,    // Generic Clock 0
-                0x1B,   // Tie clock to Timer TC3
-                TC3,    // Memory address of peripheral settings
+    : Timer8(   0x0,                        // Generic Clock 0
+                0x1B,                       // Tie clock to Timer TC3
+                (TcCount8*)TC3,             // Memory address of peripheral settings
                 new_prescaler, new_period,
-                18,     // TC3 IRQ ID# in the NVIC
+                TC3_IRQn,                   // TC3 IRQ ID# in the NVIC
                 interrupt_on_overflow, interrupt_on_match,
                 match_value
                 )

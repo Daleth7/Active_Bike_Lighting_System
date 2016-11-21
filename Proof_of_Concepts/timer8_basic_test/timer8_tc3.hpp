@@ -150,9 +150,6 @@ class TimerCount3 : protected Timer8 {
 *************************************************************************/
 
     private:
-        TimerCount3(const TimerCount3&){} // Force the class to be non-copyable
-        TimerCount3& operator=(const TimerCount3&){}
-
         const float     k_gen0_clk_freq;
         std::uint32_t   m_pscale;
         std::uint8_t    m_per;
