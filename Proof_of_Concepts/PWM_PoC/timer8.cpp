@@ -13,21 +13,21 @@ void Timer8::configure_generic_clock(){
     while ( GCLK->STATUS.bit.SYNCBUSY == 1 );
 }
 
-void Timer8::enable(){
+void Timer8::enable_timer(){
     // Enable timer count peripheral
     p_timer_settings->CTRLA.reg |= TC_CTRLA_ENABLE;
         // Wait until write operation to register has been completed
     while (p_timer_settings->STATUS.bit.SYNCBUSY == 1);
 }
 
-void Timer8::disable(){
+void Timer8::disable_timer(){
     p_timer_settings->CTRLA.reg &= ~TC_CTRLA_ENABLE;
         // Wait until write operation to register has been completed
     while (p_timer_settings->STATUS.bit.SYNCBUSY == 1);
 }
 
 void Timer8::configure_settings(std::uint32_t timer_prescaler, std::uint8_t timer_period){
-    this->disable();
+    this->disable_timer();
 
     p_timer_settings->CTRLA.reg |= TC_CTRLA_MODE_COUNT8;
         // Wait until write operation to register has been completed
@@ -54,9 +54,9 @@ void Timer8::configure_settings(std::uint32_t timer_prescaler, std::uint8_t time
                     Timer interrupt functions start
 *************************************************************************/
 
-void Timer8::configure_interrupt(  bool interrupt_on_overflow,
-                                            bool interrupt_on_match,
-                                            std::uint8_t match_value
+void Timer8::configure_interrupt(   bool interrupt_on_overflow,
+                                    bool interrupt_on_match,
+                                    std::uint8_t match_value
 ){
     // Interrupts
     p_timer_settings->INTENSET.reg = 0;      // disable all interrupts
@@ -68,11 +68,11 @@ void Timer8::configure_interrupt(  bool interrupt_on_overflow,
     NVIC_EnableIRQ(m_timer_irq_id);
 }
 
-bool Timer8::overflowed(){
+bool Timer8::overflow_interrupt(){
     return p_timer_settings->INTFLAG.bit.OVF == 1;
 }
 
-bool Timer8::matched(){
+bool Timer8::match_interrupt(){
     return p_timer_settings->INTFLAG.bit.MC0 == 1;
 }
 
@@ -83,6 +83,27 @@ void Timer8::clear_overflow_interrupt(){
 void Timer8::clear_match_interrupt(){
     p_timer_settings->INTFLAG.bit.MC0 = 1;
 }
+
+void Timer8::enable_overflow_interrupt(){
+    p_timer_settings->INTENSET.bit.OVF = 1;
+}
+
+void Timer8::disable_overflow_interrupt(){
+    p_timer_settings->INTENSET.bit.OVF = 0;
+}
+
+void Timer8::enable_match_interrupt(){
+    p_timer_settings->INTENSET.bit.MC0 = 1;
+}
+
+void Timer8::disable_match_interrupt(){
+    p_timer_settings->INTENSET.bit.MC0 = 0;
+}
+
+void set_match_value(std::uint8_t new_match_value){
+    p_timer_settings->CC[0].reg = new_match_value;
+}
+
 /*************************************************************************
                     Timer interrupt functions end
 *************************************************************************/
@@ -119,10 +140,10 @@ Timer8::Timer8( std::uint8_t generic_clk_id,    // Generic Clock to use for time
                         Interrupt Handlers start
 ***************************************************************************/
 void TC3_Handler(){
-    if(overflowed()){
+    if(overflow_interrupt()){
         clear_overflow_interrupt();
     }
-    if(matched()){
+    if(match_interrupt()){
         clear_match_interrupt();
     }
 }

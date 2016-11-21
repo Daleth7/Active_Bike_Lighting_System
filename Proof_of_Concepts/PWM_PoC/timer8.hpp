@@ -2,6 +2,9 @@
 
                               Timer8 class
 
+        For more detailed information, refer to the SAMD21 E/G/J
+    datasheet complete (pg. 635 [30]).
+
         Basic interface to set up and use an 8-bit timer. Each instance
     is responsible only for storing configuration information about the
     timer used (e.g. TC3 or TC2) and to allow simpler reconfiguration of
@@ -9,23 +12,34 @@
     that each timer interrupt has its own respective ISR. For example,
     interrupts for TC3 will be handled by TC3_Handler(). These handlers
     have to be defined by the user.
+        Note that, by default, Arduino will set the generic clock
+    generators to generate 8 MHz (Need to verify).
 
     Example usage:
 
-        configure_settings(TC_CTRLA_PRESCALER_DIV64, 0xFFFF);
-        enable();   // Note that after configuration,
-                                //  the timer is left disabled.
+        //  Task: Set up PWM at 2 kHz with 80% duty cycle. Use the TC3 peripheral.
+        Timer8 my_pwm(  0x0,    // Select generic clock 0 as the clock for the timer
+                        0x1B,   // Tie the generic clock signal to TC3's input
+                        TC3,    // Macro representing memory address of peripheral settings
+                        0x5,    // Set timer prescaler to 64
+                        0xFF,   // Set timer counter period to 255
+                        18,     // Enable timer interrupts (TC3 IRQ# == 18)
+                        true,   // Enable overflow interrupt
+                        true,   // Enable match interrupt
+                        255*0.8 // Interrupt every time counter reaches this value
+                        );
+        my_pwm.enable_timer();   // After configuration, the timer is still disabled.
 
         ...
 
         void TC3_Handler(){
-            if(overflowed()){
+            if(my_pwm.overflow_interrupt()){
                 ... Do something after each complete clock cycle
-                clear_overflow_interrupt();
+                my_pwm.clear_overflow_interrupt();
             }
-            if(matched()){
+            if(my_pwm.match_interrupt()){
                 ... Do something after reaching the duty cycle period
-                clear_match_interrupt();
+                my_pwm.clear_match_interrupt();
             }
         }
 
@@ -43,9 +57,9 @@ class Timer8 {
                     Timer configuration functions start
 *************************************************************************/
         void configure_generic_clock();
-        void enable();
-        void disable();
-           // Call enable() after a call to configure_settings().
+        void enable_timer();
+        void disable_timer();
+           // Call enable_timer() after a call to configure_settings().
         void configure_settings(std::uint32_t timer_prescaler, std::uint8_t timer_period);
 /*************************************************************************
                     Timer configuration functions end
@@ -54,13 +68,20 @@ class Timer8 {
 /*************************************************************************
                     Timer interrupt functions start
 *************************************************************************/
-        void configure_interrupt(  bool interrupt_on_overflow,
-                                            bool interrupt_on_match,
-                                            std::uint8_t match_value);
-        bool overflowed();
-        bool matched();
+        void configure_interrupt(   bool interrupt_on_overflow,
+                                    bool interrupt_on_match,
+                                    std::uint8_t match_value);
+        bool overflow_interrupt();
+        bool match_interrupt();
         void clear_overflow_interrupt();
         void clear_match_interrupt();
+
+            // Recommend disabling timer before configuring interrupts
+        void enable_overflow_interrupt();
+        void disable_overflow_interrupt();
+        void enable_match_interrupt();
+        void disable_match_interrupt();
+        void set_match_value(std::uint8_t new_match_value);
 /*************************************************************************
                     Timer interrupt functions end
 *************************************************************************/
@@ -68,6 +89,10 @@ class Timer8 {
 /*************************************************************************
                 Timer Constructors and destructors start
 *************************************************************************/
+            // Upon construction, the instance will configure:
+            //  1) generic clock
+            //  2) timer settings
+            //  3) interrupt settings
         Timer8( std::uint8_t generic_clk_id,    // Generic Clock to use for timer (pg. 132 [15.8.3] SAMD21 E/G/J datasheet complete).
                 std::uint8_t gen_out_id,        // Timer to recieve generic clock (pg. 132 [15.8.3] SAMD21 E/G/J datasheet complete).
                 TcCount8* timer_peripheral,     // Address of timer settings registers (pg. 650 [30.7] SAMD21 E/G/J datasheet complete).
