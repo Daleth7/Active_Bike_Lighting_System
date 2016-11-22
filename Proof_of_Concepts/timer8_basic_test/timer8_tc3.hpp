@@ -31,16 +31,16 @@
                         true,   // Enable match interrupt
                         255*0.8 // Interrupt every time counter reaches this value
                         );
-        my_pwm.enable_timer();   // After configuration, the timer is still disabled.
+        my_pwm.enable();   // After configuration, the timer is still disabled.
 
         ...
 
         void TC3_Handler(){
-            if(my_pwm.overflow_interrupt()){
+            if(my_pwm.overflowed()){
                 ... Do something after each complete clock cycle
                 my_pwm.clear_overflow_interrupt();
             }
-            if(my_pwm.match_interrupt()){
+            if(my_pwm.matched()){
                 ... Do something after reaching the duty cycle period
                 my_pwm.clear_match_interrupt();
             }
@@ -53,20 +53,13 @@
 
 #include "timer8.hpp"
 
-class TimerCount3 : protected Timer8 {
+class TimerCount3 {
     public:
 /*************************************************************************
                             Singleton access start
     - Parameters will be ignored after first call.
 *************************************************************************/
-        static TimerCount3& singleton(
-                        std::uint32_t prescaler = 1,        // Desired prescaler of timer frequency (pg. 654 [30.8.1] SAMD21 E/G/J datasheet complete).
-                        std::uint8_t period = 0xFF,         // Desired counter period of timer (pg. 672 [30.8.12.1] SAMD21 E/G/J datasheet complete).
-                        bool interrupt_on_overflow = false, // Interrupt every period
-                        bool interrupt_on_match = false,    // Interrupt upon matching specified value
-                        std::uint8_t match_value = 127,     // Value to interrupt on
-                        float gen0_clk_frequency = 8e6      // Frequency of generic clock 0 (configure separately)
-                        );
+        static TimerCount3& singleton();
 /*************************************************************************
                             Singleton access end
 *************************************************************************/
@@ -82,9 +75,6 @@ class TimerCount3 : protected Timer8 {
         float frequency()const;             // Hz
         float period()const;                // ms
         float duty_cycle()const;            // %
-
-        bool overflowed()const;
-        bool matched()const;
 /*************************************************************************
                             Read-only end
 *************************************************************************/
@@ -92,36 +82,31 @@ class TimerCount3 : protected Timer8 {
 /*************************************************************************
                             Modifiers start
 *************************************************************************/
+        void init(  float generic_clock_frequency,  // Reference frequency to calculate current timer frequency
+                    std::uint32_t timer_prescaler,  // Desired prescaler of timer frequency (pg. 654 [30.8.1] SAMD21 E/G/J datasheet complete).
+                    std::uint8_t timer_period,      // Desired counter period of timer (pg. 672 [30.8.12.1] SAMD21 E/G/J datasheet complete).
+                    bool interrupt_on_overflow,     // Interrupt every period
+                    bool interrupt_on_match,        // Interrupt upon matching specified value
+                    std::uint8_t match_value        // Value to interrupt on
+                    );
         void enable();
         void disable();
-
-            // Below functions will leave timer disabled
-        void prescale(std::uint32_t new_prescale);
-        void counter_period(std::uint8_t new_period);
-        void counter_match_value(std::uint8_t new_counter_match_value);
-
-        void set_overflow_interrupt(bool enable_interrupt);
-        void set_match_interrupt(bool enable_interrupt);
+           // Call enable() after a call to configure_settings().
+        void configure_settings(std::uint32_t timer_prescaler, std::uint8_t timer_period);
+        void set_prescale(std::uint32_t new_prescale);
+        void set_counter_period(std::uint8_t new_period);
 /*************************************************************************
                             Modifiers end
 *************************************************************************/
 
-        ~TimerCount3(){}
-    protected:
-
 /*************************************************************************
-                        Inherited from Timer8 (timer8.hpp)
-
-        void configure_generic_clock();
-        void enable_timer();
-        void disable_timer();
-           // Call enable_timer() after a call to configure_settings().
-        void configure_settings(std::uint32_t timer_prescaler, std::uint8_t timer_period);
+                    Timer interrupt functions start
+*************************************************************************/
         void configure_interrupt(   bool interrupt_on_overflow,
                                     bool interrupt_on_match,
                                     std::uint8_t match_value);
-        bool overflow_interrupt();
-        bool match_interrupt();
+        bool overflowed()const;
+        bool matched()const;
         void clear_overflow_interrupt();
         void clear_match_interrupt();
 
@@ -131,29 +116,25 @@ class TimerCount3 : protected Timer8 {
         void enable_match_interrupt();
         void disable_match_interrupt();
         void set_match_value(std::uint8_t new_match_value);
-
+/*************************************************************************
+                    Timer interrupt functions end
 *************************************************************************/
 
+        ~TimerCount3(){}
+    protected:
 /*************************************************************************
                         Timer Constructors start
     - Protect to enforce singleton pattern
 *************************************************************************/
-        TimerCount3(    std::uint32_t new_prescaler,        // Desired prescaler of timer frequency (pg. 654 [30.8.1] SAMD21 E/G/J datasheet complete).
-                        std::uint8_t new_period,            // Desired counter period of timer (pg. 672 [30.8.12.1] SAMD21 E/G/J datasheet complete).
-                        bool interrupt_on_overflow,     // Interrupt every period
-                        bool interrupt_on_match,        // Interrupt upon matching specified value
-                        std::uint8_t match_value,       // Value to interrupt on
-                        float gen0_clk_frequency = 8e6  // Frequency of generic clock 0 (configure separately)
-                        );
+        TimerCount3();
 /*************************************************************************
                         Timer Constructors end
 *************************************************************************/
 
     private:
-        const float     k_gen0_clk_freq;
-        std::uint32_t   m_pscale;
-        std::uint8_t    m_per;
-        std::uint8_t    m_match;
+        Timer8  m_general_timer;
+
+        float   k_gen0_clk_freq;
 };
 
 #endif

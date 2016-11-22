@@ -4,17 +4,8 @@
                             Singleton access start
 *************************************************************************/
 
-TimerCount3& TimerCount3::singleton(
-    std::uint32_t prescaler, std::uint8_t period,
-    bool interrupt_on_overflow, bool interrupt_on_match,
-    std::uint8_t match_value, float gen0_clk_frequency
-){
-    static TimerCount3 no_so_hidden_singleton(  prescaler, period,
-                                                interrupt_on_overflow,
-                                                interrupt_on_match,
-                                                match_value, gen0_clk_frequency
-                                                );
-                                                
+TimerCount3& TimerCount3::singleton(){
+    static TimerCount3 no_so_hidden_singleton;
     return no_so_hidden_singleton;
 }
 
@@ -27,15 +18,26 @@ TimerCount3& TimerCount3::singleton(
 *************************************************************************/
 
 std::uint32_t TimerCount3::prescaler()const{
-    return m_pscale;
+    switch((m_general_timer.raw_TC_pointer()->CTRLA.reg >> 8) & 0x7){
+        case 0x0:   return 1;
+        case 0x1:   return 2;
+        case 0x2:   return 4;
+        case 0x3:   return 8;
+        case 0x4:   return 16;
+        case 0x5:   return 64;
+        case 0x6:   return 256;
+        case 0x7:   return 1024;
+        default:    return 0x0; // Error
+    }
+    return 0x0; // Error
 }
 
 std::uint8_t TimerCount3::counter_period()const{
-    return m_per;
+    return m_general_timer.raw_TC_pointer()->PER.reg;
 }
 
 std::uint8_t TimerCount3::counter_match_value()const{
-    return m_match;
+    return m_general_timer.raw_TC_pointer()->CC[0].reg;
 }
 
 float TimerCount3::reference_frequency()const{
@@ -43,7 +45,7 @@ float TimerCount3::reference_frequency()const{
 }
 
 float TimerCount3::frequency()const{
-    return k_gen0_clk_freq / m_pscale / m_per;
+    return k_gen0_clk_freq / this->prescaler() / this->counter_period();
 }
 
 float TimerCount3::period()const{
@@ -51,16 +53,7 @@ float TimerCount3::period()const{
 }
 
 float TimerCount3::duty_cycle()const{
-    return static_cast<float>(m_match) / m_per;
-}
-
-
-bool TimerCount3::overflowed()const{
-    return overflow_interrupt();
-}
-
-bool TimerCount3::matched()const{
-    return match_interrupt();
+    return static_cast<float>(this->counter_match_value()) / this->counter_period();
 }
 
 /*************************************************************************
@@ -70,35 +63,42 @@ bool TimerCount3::matched()const{
 /*************************************************************************
                             Modifiers start
 *************************************************************************/
+void TimerCount3::init( float generic_clock_frequency,
+                        std::uint32_t timer_prescaler,
+                        std::uint8_t timer_period,
+                        bool interrupt_on_overflow,
+                        bool interrupt_on_match,
+                        std::uint8_t match_value
+){
+    k_gen0_clk_freq = generic_clock_frequency;
+	m_general_timer.init(   0x0,                        // Generic Clock 0
+                            0x1B,                       // Tie clock to Timer TC3
+                            (TcCount8*)TC3,             // Memory address of peripheral settings
+                            timer_prescaler, timer_period,
+                            TC3_IRQn,                   // TC3 IRQ ID# in the NVIC
+                            interrupt_on_overflow, interrupt_on_match,
+                            match_value
+                            );
+}
 
 void TimerCount3::enable(){
-    Timer8::enable_timer();
+	m_general_timer.enable();
 }
 
 void TimerCount3::disable(){
-    Timer8::disable_timer();
+	m_general_timer.disable();
 }
 
-void TimerCount3::prescale(std::uint32_t new_prescale){
-    Timer8::configure_settings(new_prescale, m_per);
+void TimerCount3::configure_settings(std::uint32_t timer_prescaler, std::uint8_t timer_period){
+	m_general_timer.configure_settings(timer_prescaler, timer_period);
 }
 
-void TimerCount3::counter_period(std::uint8_t new_period){
-    Timer8::configure_settings(m_pscale, new_period);
+void TimerCount3::set_prescale(std::uint32_t new_prescale){
+	m_general_timer.set_prescale(new_prescale);
 }
 
-void TimerCount3::counter_match_value(std::uint8_t new_counter_match_value){
-    /// Not implemented yet
-}
-
-void TimerCount3::set_overflow_interrupt(bool enable_interrupt){
-    if(enable_interrupt)    Timer8::enable_overflow_interrupt();
-    else                    Timer8::disable_overflow_interrupt();
-}
-
-void TimerCount3::set_match_interrupt(bool enable_interrupt){
-    if(enable_interrupt)    Timer8::enable_match_interrupt();
-    else                    Timer8::disable_match_interrupt();
+void TimerCount3::set_counter_period(std::uint8_t new_period){
+	m_general_timer.set_counter_period(new_period);
 }
 
 /*************************************************************************
@@ -106,29 +106,65 @@ void TimerCount3::set_match_interrupt(bool enable_interrupt){
 *************************************************************************/
 
 /*************************************************************************
+                    Timer interrupt functions start
+*************************************************************************/
+void TimerCount3::configure_interrupt(  bool interrupt_on_overflow,
+                                        bool interrupt_on_match,
+                                        std::uint8_t match_value
+){
+	m_general_timer.configure_interrupt(interrupt_on_overflow, interrupt_on_match, match_value);
+}
+
+bool TimerCount3::overflowed() const{
+	return m_general_timer.overflowed();
+}
+
+bool TimerCount3::matched() const{
+	return m_general_timer.matched();
+}
+
+void TimerCount3::clear_overflow_interrupt(){
+	m_general_timer.clear_overflow_interrupt();
+}
+
+void TimerCount3::clear_match_interrupt(){
+	m_general_timer.clear_match_interrupt();
+}
+
+
+    // Recommend disabling timer before configuring interrupts
+void TimerCount3::enable_overflow_interrupt(){
+	m_general_timer.enable_overflow_interrupt();
+}
+
+void TimerCount3::disable_overflow_interrupt(){
+	m_general_timer.disable_overflow_interrupt();
+}
+
+void TimerCount3::enable_match_interrupt(){
+	m_general_timer.enable_match_interrupt();
+}
+
+void TimerCount3::disable_match_interrupt(){
+	m_general_timer.disable_match_interrupt();
+}
+
+void TimerCount3::set_match_value(std::uint8_t new_match_value){
+	m_general_timer.set_match_value(new_match_value);
+}
+
+/*************************************************************************
+                    Timer interrupt functions end
+*************************************************************************/
+
+/*************************************************************************
                         Timer Constructors start
     - Protect to enforce singleton pattern
 *************************************************************************/
 
-TimerCount3::TimerCount3(   std::uint32_t new_prescaler,
-                            std::uint8_t new_period,
-                            bool interrupt_on_overflow,
-                            bool interrupt_on_match,
-                            std::uint8_t match_value,
-                            float gen0_clk_frequency
-)
-    : Timer8(   0x0,                        // Generic Clock 0
-                0x1B,                       // Tie clock to Timer TC3
-                (TcCount8*)TC3,             // Memory address of peripheral settings
-                new_prescaler, new_period,
-                TC3_IRQn,                   // TC3 IRQ ID# in the NVIC
-                interrupt_on_overflow, interrupt_on_match,
-                match_value
-                )
-    , k_gen0_clk_freq(gen0_clk_frequency)
-    , m_pscale(new_prescaler)
-    , m_per(new_period)
-    , m_match(match_value)
+TimerCount3::TimerCount3()
+    : m_general_timer()
+    , k_gen0_clk_freq(-1.0)
 {}
 
 /*************************************************************************

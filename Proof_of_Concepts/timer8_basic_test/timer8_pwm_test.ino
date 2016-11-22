@@ -34,11 +34,11 @@ void loop(){
 }
 
 void TC3_Handler(){
-    if(basic_timer.overflow_interrupt()){
+    if(basic_timer.overflowed()){
         digitalWrite(OUT_PIN, true);
         basic_timer.clear_overflow_interrupt();
     }
-    if(basic_timer.match_interrupt()){
+    if(basic_timer.matched()){
         digitalWrite(OUT_PIN, false);
         basic_timer.clear_match_interrupt();
     }
