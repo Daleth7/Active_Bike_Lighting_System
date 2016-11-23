@@ -9,27 +9,23 @@
     counter three peripheral. The interface follows the singleton pattern
     since there is only one TC3 module possible.
         Note that, by default, Arduino will set the generic clock
-    generators to generate 8 MHz (Need to verify).
+    generators to generate 48 MHz (Need to verify).
 
     Example usage:
 
+        void overflow_cb(std::uint32_t counter);
+        void match_cb(std::uint32_t counter);
+
         // Task: Set up a pwm signal at 2.2 kHz with a duty cycle of 80%
-        TimerCount3& my_pwm = TimerCount3::singleton(   1,      // prescaler
-                                                        100,    // 8-bit counter period
-                                                        false,  // Interrupt on overflow
-                                                        true,   // Interrupt on match
-                                                        80
-                                                        );
-        //  Task: Set up PWM at 2 kHz with 80% duty cycle. Use the TC3 peripheral.
-        Timer8 my_pwm(  0x0,    // Select generic clock 0 as the clock for the timer
-                        0x1B,   // Tie the generic clock signal to TC3's input
-                        TC3,    // Macro representing memory address of peripheral settings
-                        0x5,    // Set timer prescaler to 64
-                        0xFF,   // Set timer counter period to 255
-                        18,     // Enable timer interrupts (TC3 IRQ# == 18)
-                        true,   // Enable overflow interrupt
-                        true,   // Enable match interrupt
-                        255*0.8 // Interrupt every time counter reaches this value
+        TimerCount3& my_pwm = TimerCount3::singleton();
+        my_pwm.init(    48e6,   // Reference frequency
+                        0x5,    // Set prescaler to 64
+                        100,    // 8-bit counter period
+                        true,   // Interrupt on overflow
+                        false,  // Interrupt on match
+                        80,     // Match value
+                        overflow_cb,
+                        match_cb
                         );
         my_pwm.enable();   // After configuration, the timer is still disabled.
 
@@ -55,6 +51,7 @@
 
 class TimerCount3 {
     public:
+        typedef void (*callback_func_type)(std::uint32_t counter);
 /*************************************************************************
                             Singleton access start
     - Parameters will be ignored after first call.
@@ -87,7 +84,9 @@ class TimerCount3 {
                     std::uint8_t timer_period,      // Desired counter period of timer (pg. 672 [30.8.12.1] SAMD21 E/G/J datasheet complete).
                     bool interrupt_on_overflow,     // Interrupt every period
                     bool interrupt_on_match,        // Interrupt upon matching specified value
-                    std::uint8_t match_value        // Value to interrupt on
+                    std::uint8_t match_value,       // Value to interrupt on
+                    callback_func_type isr_over_cb, // Callback function called by timer ISR upon counter overflow
+                    callback_func_type isr_match_cb // Callback function called by timer ISR upon counter match
                     );
         void enable();
         void disable();
@@ -131,10 +130,20 @@ class TimerCount3 {
                         Timer Constructors end
 *************************************************************************/
 
-    private:
-        Timer8  m_general_timer;
+/*************************************************************************
+                    Timer Interrupt Service Routine start
+*************************************************************************/
+        friend void TC3_Handler();
+/*************************************************************************
+                    Timer Interrupt Service Routine end
+*************************************************************************/
 
-        float   k_gen0_clk_freq;
+    private:
+        Timer8              m_general_timer;
+
+        float               k_gen0_clk_freq;
+        callback_func_type  m_ISR_overflow_cb;
+        callback_func_type  m_ISR_match_cb;
 };
 
 #endif

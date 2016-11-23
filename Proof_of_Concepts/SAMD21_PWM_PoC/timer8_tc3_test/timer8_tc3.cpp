@@ -68,9 +68,13 @@ void TimerCount3::init( float generic_clock_frequency,
                         std::uint8_t timer_period,
                         bool interrupt_on_overflow,
                         bool interrupt_on_match,
-                        std::uint8_t match_value
+                        std::uint8_t match_value,
+                        callback_func_type isr_over_cb,
+                        callback_func_type isr_match_cb 
 ){
     k_gen0_clk_freq = generic_clock_frequency;
+    m_ISR_overflow_cb = isr_over_cb;
+    m_ISR_match_cb = isr_match_cb;
 	m_general_timer.init(   0x0,                        // Generic Clock 0
                             0x1B,                       // Tie clock to Timer TC3
                             (TcCount8*)TC3,             // Memory address of peripheral settings
@@ -165,8 +169,32 @@ void TimerCount3::set_match_value(std::uint8_t new_match_value){
 TimerCount3::TimerCount3()
     : m_general_timer()
     , k_gen0_clk_freq(-1.0)
+    , m_ISR_overflow_cb(0)  // NULL
+    , m_ISR_match_cb(0)     // NULL
 {}
 
 /*************************************************************************
                         Timer Constructors end
+*************************************************************************/
+
+/*************************************************************************
+                    Timer Interrupt Service Routine start
+*************************************************************************/
+
+void TC3_Handler(){
+    static std::uint32_t not_so_secret_timer_counter = 0;
+    TimerCount3& tc3_timer = TimerCount3::singleton();
+
+    if(tc3_timer.overflowed()){
+        tc3_timer.m_ISR_overflow_cb(not_so_secret_timer_counter++);
+        tc3_timer.clear_overflow_interrupt();
+    }
+    if(tc3_timer.matched()){
+        tc3_timer.m_ISR_match_cb(not_so_secret_timer_counter);
+        tc3_timer.clear_match_interrupt();
+    }
+}
+
+/*************************************************************************
+                    Timer Interrupt Service Routine end
 *************************************************************************/
