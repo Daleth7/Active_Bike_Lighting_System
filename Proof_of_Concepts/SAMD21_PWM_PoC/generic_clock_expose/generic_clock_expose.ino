@@ -3,6 +3,11 @@
         Output the generic clock signal being used for the timer driver
     (generic clock 0) for characterization.
 
+    - Recorded 48 MHz sinusoidal wave.
+    - Increasing prescaler revealed square wave (with many harmonics)
+        at lower frequencies.
+    - Prescaling appears to be very accurate.
+
 *************************************************************************/
 
 
