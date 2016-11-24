@@ -38,15 +38,15 @@ void loop(){
     static std::uint8_t match_value_counter = 100;
     static bool step_up = true;
 
-    if(match_value_counter >= counter_period)   step_up = false;
-    else if(match_value_counter <= 1)           step_up = true;
+    if(match_value_counter >= counter_period-5)   step_up = false;
+    else if(match_value_counter <= 6)           step_up = true;
 
     if(step_up) ++match_value_counter;
     else        --match_value_counter;
 
     basic_timer.set_match_value(match_value_counter);
 
-    delay(50);
+    delay(25);
 }
 
 void TC3_Handler(){

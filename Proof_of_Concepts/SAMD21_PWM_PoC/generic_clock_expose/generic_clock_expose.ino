@@ -23,7 +23,9 @@ void setup(){
     gclk_pin_mux->bit.PMUXE = 0x7;  // Select peripheral function H (GCLK_GEN[2] output)
 
         // Configure generic clock generator 2 to output to IO
-    GCLK->GENDIV.reg =    (0x0 << 8)    // Set signal division to 1
+    GCLK->GENCTRL.reg &= ~(1 << 16);    // Make sure generator is disabled
+                                        //  while configurations are changed.
+    GCLK->GENDIV.reg =    (0x1 << 8)    // Set signal division to 1
                         | (0x2 << 0)    // Apply division to generator 2
                         ;   // pg. 137
     while(GCLK->STATUS.bit.SYNCBUSY == 1); // Wait for synchronization
@@ -35,12 +37,6 @@ void setup(){
                         | (0x7 << 8)    // Select the 48 MHz DFLL as the clock source for the generator
                         | (0x2 << 0)    // Apply these configurations to generator 2
                         ;   // pg. 133
-    while(GCLK->STATUS.bit.SYNCBUSY == 1); // Wait for synchronization
-    GCLK->CLKCTRL.reg =   (1 << 14) // Enable generic clock
-                        | (2 << 8)  // Use generic clock generator 2
-                        | (0x1B)    // Tie clock to TC3 peripheral
-                        ;
-    while(GCLK->STATUS.bit.SYNCBUSY == 1); // Wait for synchronization
 }
 
 void loop(){}
