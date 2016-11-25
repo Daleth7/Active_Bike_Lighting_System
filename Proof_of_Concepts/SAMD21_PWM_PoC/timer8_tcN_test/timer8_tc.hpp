@@ -1,44 +1,36 @@
 /*************************************************************************
 
-                              TimerCount class
+                          TimerCount istantiations
 
-        For more detailed information, refer to the SAMD21 E/G/J
-    datasheet complete (pg. 635 [30]).
+        This header contains the instantiations for different timers
+    based on a general template. To instantiate a new timer, the
+    following parameters are needed:
+        1) The address of the timer peripheral                  (pg. 40 [9] SAMD21 E/G/J datasheet complete)
+        2) The ID of the timer to tie with the generic clock    (pg. 132 [15.8.3] SAMD21 E/G/J datasheet complete)
+        3) The IRQ id of the timer in the NVIC                  (pg. 48 [11.2.2] SAMD21 E/G/J datasheet complete)
 
-        Basic interface to set up and use an 8-bit timer using the timer
-    counter three peripheral. The interface follows the singleton pattern
-    since there is only one TC3 module possible.
-        Note that, by default, Arduino will set the generic clock
-    generators to generate 48 MHz (Need to verify).
+    Remember that each TC peripheral has its own, unique ISR function.
+    This needs to be defined to use interrupts with the TC peripheral.
 
-    Example usage:
+    Example:
+        // Task: Instantiate the TC3 peripheral
+        //  Memory address:     0x42002C00
+        //  Gen. Clk. Sel. ID:  0x1B
+        //  NVIC ISR ID:        18
+        typedef TimerCounter<0x42002C00, 0x1B, (IRQn)(18)> TimerCount3;
 
-        void overflow_cb(std::uint32_t counter);
-        void match_cb(std::uint32_t counter);
-
-        // Task: Set up a pwm signal at 2.2 kHz with a duty cycle of 80%
-        TimerCount& my_pwm = TimerCount::singleton();
-        my_pwm.init(    48e6,   // Reference frequency
-                        0x5,    // Set prescaler to 64
-                        100,    // 8-bit counter period
-                        true,   // Interrupt on overflow
-                        false,  // Interrupt on match
-                        80,     // Match value
-                        overflow_cb,
-                        match_cb
-                        );
-        my_pwm.enable();   // After configuration, the timer is still disabled.
+        TimerCount3 my_timer;
 
         ...
 
         void TC3_Handler(){
-            if(my_pwm.overflowed()){
+            if(my_timer.overflowed()){
                 ... Do something after each complete clock cycle
-                my_pwm.clear_overflow_interrupt();
+                my_timer.clear_overflow_interrupt();
             }
-            if(my_pwm.matched()){
+            if(my_timer.matched()){
                 ... Do something after reaching the duty cycle period
-                my_pwm.clear_match_interrupt();
+                my_timer.clear_match_interrupt();
             }
         }
 
@@ -49,6 +41,7 @@
 
 #include "timer8_tc_template.hpp"
 
-typedef TimerCount<(TcCount*)(TC3), 0x1B, TC3_IRQn> TimerCount3;
+typedef TimerCount<(std::uint32_t)(TC3), 0x1B, TC3_IRQn> TimerCount3;   // TC3 timer
+typedef TimerCount<(std::uint32_t)(TC4), 0x1C, TC4_IRQn> TimerCount4;   // TC4 timer
 
 #endif

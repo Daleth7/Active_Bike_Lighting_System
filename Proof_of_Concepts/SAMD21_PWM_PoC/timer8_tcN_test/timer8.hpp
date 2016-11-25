@@ -13,7 +13,7 @@
     interrupts for TC3 will be handled by TC3_Handler(). These handlers
     have to be defined by the user.
         Note that, by default, Arduino will set the generic clock
-    generators to generate 47.8 MHz (Need to verify).
+    generators to generate 48 MHz.
 
     Example usage:
 

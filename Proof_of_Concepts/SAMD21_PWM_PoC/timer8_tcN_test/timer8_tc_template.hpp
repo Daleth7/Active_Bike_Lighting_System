@@ -5,25 +5,46 @@
         For more detailed information, refer to the SAMD21 E/G/J
     datasheet complete (pg. 635 [30]).
 
-        Basic interface to set up and use an 8-bit timer using the timer
-    counter three peripheral. The interface follows the singleton pattern
-    since there is only one TC3 module possible.
+        Template interface to set up and use an 8-bit timer using the timer
+    counter peripheral. The interface follows the singleton pattern
+    since there is only one of each TC module.
+    
+    To instantiate a new timer, the following parameters are needed:
+        1) The address of the timer peripheral                  (pg. 40 [9] SAMD21 E/G/J datasheet complete)
+        2) The ID of the timer to tie with the generic clock    (pg. 132 [15.8.3] SAMD21 E/G/J datasheet complete)
+        3) The IRQ id of the timer in the NVIC                  (pg. 48 [11.2.2] SAMD21 E/G/J datasheet complete)
+
+    Example:
+        // Task: Instantiate the TC3 peripheral
+        //  Memory address:     0x42002C00
+        //  Gen. Clk. Sel. ID:  0x1B
+        //  NVIC ISR ID:        18
+        typedef TimerCounter<0x42002C00, 0x1B, (IRQn)(18)> TimerCount3;
+
+        TimerCount3 my_timer;
+
+
         Note that, by default, Arduino will set the generic clock
-    generators to generate 48 MHz (Need to verify).
+    generators to generate 48 MHz.
 
     Example usage:
+
+        // Task: Set up a pwm signal at 2.2 kHz with a duty cycle of 80%
 
         void overflow_cb(std::uint32_t counter);
         void match_cb(std::uint32_t counter);
 
-        // Task: Set up a pwm signal at 2.2 kHz with a duty cycle of 80%
-        TimerCount& my_pwm = TimerCount::singleton();
+        typedef TimerCounter<0x42002C00, 0x1B, (IRQn)(18)> TimerCount3;
+
+        ...
+
+        TimerCount3& my_pwm = TimerCount::singleton();
         my_pwm.init(    48e6,   // Reference frequency
-                        0x5,    // Set prescaler to 64
-                        100,    // 8-bit counter period
+                        0x6,    // Set prescaler to 256 --> 187.5 kHz
+                        85,     // 8-bit counter period --> 2.206 kHz
                         true,   // Interrupt on overflow
-                        false,  // Interrupt on match
-                        80,     // Match value
+                        true,   // Interrupt on match
+                        68,     // Match value --> 80% duty cycle
                         overflow_cb,
                         match_cb
                         );
@@ -49,7 +70,7 @@
 
 #include "timer8.hpp"
 
-template <TcCount8* timer_address, std::uint8_t gclk_out_id, IRQn NVIC_id>
+template <std::uint32_t timer_address, std::uint8_t gclk_out_id, IRQn NVIC_id>
 class TimerCount {
     public:
 /*************************************************************************
@@ -87,14 +108,15 @@ class TimerCount {
 /*************************************************************************
                             Modifiers start
 *************************************************************************/
-        void init(  float generic_clock_frequency,  // Reference frequency to calculate current timer frequency
-                    std::uint32_t timer_prescaler,  // Desired prescaler of timer frequency (pg. 654 [30.8.1] SAMD21 E/G/J datasheet complete).
+        void init(  std::uint32_t timer_prescaler,  // Desired prescaler of timer frequency (pg. 654 [30.8.1] SAMD21 E/G/J datasheet complete).
                     std::uint8_t timer_period,      // Desired counter period of timer (pg. 672 [30.8.12.1] SAMD21 E/G/J datasheet complete).
                     bool interrupt_on_overflow,     // Interrupt every period
                     bool interrupt_on_match,        // Interrupt upon matching specified value
                     std::uint8_t match_value,       // Value to interrupt on
                     callback_func_type isr_over_cb, // Callback function called by timer ISR upon counter overflow
-                    callback_func_type isr_match_cb // Callback function called by timer ISR upon counter match
+                    callback_func_type isr_match_cb,// Callback function called by timer ISR upon counter match
+                    std::uint8_t generator = 0x0,   // Select which generic clock generator to use. By default, generator 0 is already set up to generate 48 MHz.
+                    float gen_clk_freq = 48e6       // Reference frequency to calculate current timer frequency
                     );
         void enable();
         void disable();
@@ -146,5 +168,7 @@ class TimerCount {
 
         float               k_gen0_clk_freq;
 };
+
+#include "timer8_tc_template_inline.h"
 
 #endif
