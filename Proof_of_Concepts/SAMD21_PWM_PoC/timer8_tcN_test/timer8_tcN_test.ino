@@ -51,31 +51,31 @@ void setup(){
     digitalWrite(OUT_PIN, LOW);
 
         // Configure generator 2 to output a 4 MHz clock
-    config_gclk_gen(    0x2,       // Appy changes to generator 2
-                        250,        // Divide clock by 250 --> f = 8e6 / 250 = 32 kHz
-                        false,      // Select simple division, i.e. divide by 250
-                        osc8m_clk  // Use OSC8M as the generator source (8 MHz)
+    config_gclk_gen(    0x2,            // Appy changes to generator 2
+                        1,              // Divide clock by 1 --> f = 32.768 kHz = 32.768 kHz
+                        false,          // Select simple division, i.e. divide by 1
+                        osculp32k_clk   // Use Ultra low power OSC as the generator source (32.768 kHz)
                         );
 
         // Sets a timer at 1 Hz
-    timer.init( 0x6,    // prescale by 4
-                125,    // 8-bit counter period
+    timer.init( 0x7,    // prescale by 1024 --> 32 Hz
+                32,     // 8-bit counter period --> 1 Hz
                 true,   // Interrupt on overflow
                 true,   // Interrupt on match
-                10,     // Match value
+                16,     // Match value
                 timer_overflow_cb, timer_match_cb,
                 0x2,    // Use generic clock generator 2
                 32e3    // Reference frequency
                 );
-        // Sets a PWM at 160 Hz
-    pwm.init(   0x0,    // prescale by 1
-                200,    // 8-bit counter period
+        // Sets a PWM at 6 kHz
+    pwm.init(   0x5,    // prescale by 32
+                250,    // 8-bit counter period
                 true,   // Interrupt on overflow
                 true,   // Interrupt on match
                 10,     // Match value
                 pwm_overflow_cb, pwm_match_cb,
-                0x2,    // Use generic clock generator 2
-                32e3    // Reference frequency
+                0x0,    // Use generic clock generator 0
+                48e6    // Reference frequency
                 );
 
     timer.enable();
@@ -83,15 +83,15 @@ void setup(){
 }
 
 void loop(){
-    if(duty_tracker >= 0.9925)        step_up = false;
-    else if(duty_tracker <= 0.0075)   step_up = true;
+    if(duty_tracker >= 0.98)        step_up = false;
+    else if(duty_tracker <= 0.02)   step_up = true;
 
     if(step_up) duty_tracker += duty_step;
     else        duty_tracker -= duty_step;
 
     pwm.set_duty_cycle(duty_tracker);
 
-    delay(5);
+    delay(7);
 }
 
 void pwm_overflow_cb(std::uint32_t counter){
@@ -112,9 +112,8 @@ void timer_overflow_cb(std::uint32_t){
         led_pin = RED2_PIN;
         digitalWrite(RED2_PIN, HIGH);
     }
-
-    digitalWrite(OUT_PIN, out_state = !out_state);
 }
 
 void timer_match_cb(std::uint32_t){
+    digitalWrite(OUT_PIN, out_state = !out_state);
 }

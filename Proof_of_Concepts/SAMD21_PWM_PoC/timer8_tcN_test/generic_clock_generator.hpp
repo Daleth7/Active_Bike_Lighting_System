@@ -39,12 +39,9 @@ void config_gclk_gen(   std::uint8_t gen_id,                    // ID of generat
                                                                 //  Arduino libraries.
                                                                 //  E.g. DFLL48M [0x07]
                         bool output_to_pin = false,             // Enable outputing the generator output directly to pin.
-                                                                //  See datasheet to find pins associated to which
-                                                                //  generators.
+                                                                //  See datasheet to find pins associated to generators.
                                                                 //  (pg. 31 [7] SAMD21 E/G/J datasheet complete)
-                        bool run_in_standby = false             // Allow generator to run in idle, i.e. while no
-                                                                //  peripheral needs it. Running in idle
-                                                                //  increases power consumption.
+                        bool run_in_standby = false             // Allow generator to run even if chip is in standby mode.
                         );
 
 #endif

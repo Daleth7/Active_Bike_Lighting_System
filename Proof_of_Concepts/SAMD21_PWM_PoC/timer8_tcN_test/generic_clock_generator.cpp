@@ -9,8 +9,10 @@ void config_gclk_gen(   std::uint8_t gen_id,
 ){
     gen_id &= 0xF; // Limit to four bits
 
-    GCLK->GENCTRL.reg &= ~(1 << 16);    // Make sure generator is disabled
-                                        //  while configurations are changed.
+    GCLK->GENCTRL.reg =   (gen_id << 0) // Make sure generator is disabled
+                        & ~(1 << 16)    //  while configurations are changed.
+                        ;
+    while(GCLK->STATUS.bit.SYNCBUSY == 1); // Wait for synchronization
     GCLK->GENDIV.reg =    (gen_div << 8)
                         | (gen_id << 0)
                         ;   // pg. 137
