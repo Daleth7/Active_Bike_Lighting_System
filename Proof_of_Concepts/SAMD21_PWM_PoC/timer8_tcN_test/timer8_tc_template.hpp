@@ -8,11 +8,23 @@
         Template interface to set up and use an 8-bit timer using the timer
     counter peripheral. The interface follows the singleton pattern
     since there is only one of each TC module.
-    
+
+    The final frequency of the timer count signal can be calculated to be:
+        timer_freq = generator_freq / prescaler / counter_period
+    For example:
+        - Use generator 0               [generator_freq = 48 MHz]
+        - Set prescaler value to 0x7    [prescaler = 1024]
+        - Set counter period to 120     [counter_period = 120]
+        => timer_freq = 48,000,000 / 1,024 / 120 Hz = 390.625 Hz
+
+
+
     To instantiate a new timer, the following parameters are needed:
         1) The address of the timer peripheral                  (pg. 40 [9] SAMD21 E/G/J datasheet complete)
         2) The ID of the timer to tie with the generic clock    (pg. 132 [15.8.3] SAMD21 E/G/J datasheet complete)
         3) The IRQ id of the timer in the NVIC                  (pg. 48 [11.2.2] SAMD21 E/G/J datasheet complete)
+
+
 
     Example:
         // Task: Instantiate the TC3 peripheral
@@ -21,11 +33,11 @@
         //  NVIC ISR ID:        18
         typedef TimerCounter<0x42002C00, 0x1B, (IRQn)(18)> TimerCount3;
 
-        TimerCount3 my_timer;
+        TimerCount3& my_timer = TimerCount3::singleton();
 
 
         Note that, by default, Arduino will set the generic clock
-    generators to generate 48 MHz.
+    generator 0 to generate 48 MHz.
 
     Example usage:
 
@@ -39,14 +51,15 @@
         ...
 
         TimerCount3& my_pwm = TimerCount::singleton();
-        my_pwm.init(    48e6,   // Reference frequency
-                        0x6,    // Set prescaler to 256 --> 187.5 kHz
+        my_pwm.init(    0x6,    // Set prescaler to 256 --> 187.5 kHz
                         85,     // 8-bit counter period --> 2.206 kHz
                         true,   // Interrupt on overflow
                         true,   // Interrupt on match
                         68,     // Match value --> 80% duty cycle
                         overflow_cb,
-                        match_cb
+                        match_cb,
+                        0x0,    // Use generic clock generator 0 (48 MHz)
+                        48e6,   // Reference frequency
                         );
         my_pwm.enable();   // After configuration, the timer is still disabled.
 

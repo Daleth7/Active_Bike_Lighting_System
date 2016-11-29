@@ -19,7 +19,7 @@
         //  NVIC ISR ID:        18
         typedef TimerCounter<0x42002C00, 0x1B, (IRQn)(18)> TimerCount3;
 
-        TimerCount3 my_timer;
+        TimerCount3& my_timer = TimerCount3::singleton();
 
         ...
 
