@@ -17,7 +17,7 @@ int rightTurnFlag = 0;
 
 int brakeFlag = 0; // initializes brake signal flag variables, 1 = ON 
 
-
+int dutyCycleTest = 0;
 
 float leftBrakeVoltage = 0; // initialize ADC brake converted voltage value
 float rightBrakeVoltage = 0;
@@ -29,7 +29,7 @@ int testCounter = 0;
 void setup() { // setup code to run once for initalization
 
 	// setup output pins for turn signals
-	pinMode(4, OUTPUT); // RIGHT 1 OUTERMOSt
+	pinMode(3, OUTPUT); // RIGHT 1 OUTERMOSt
 	pinMode(5, OUTPUT); // RIGHT 2
 	pinMode(7, OUTPUT); // RIGHT 3 (CLOSEST TO MIDDLE)
 	pinMode(10, OUTPUT); // LEFT 3 (CLOSEST TO MIDDLE)
@@ -73,6 +73,8 @@ void setup() { // setup code to run once for initalization
 
 void checkLeftTurn(){
 	
+	dutyCycleTest++;
+	/*
 	if ((digitalRead(8)) == 0){ // read digital value of LEFT TURN pin
 		leftTurnFlag = 1; // sets LEFT TURN flag to high
 	}
@@ -80,7 +82,7 @@ void checkLeftTurn(){
 	if ((digitalRead(8)) == 1){ // read digital value of LEFT TURN pin
 		leftTurnFlag = 0; // sets LEFT TURN flag to high
 	}
-
+	*/
 }
 
 void checkRightTurn() {
@@ -99,11 +101,16 @@ void checkRightTurn() {
 void loop() // put your main code here, to run repeatedly:
 {
 	SerialUSB.println(leftTurnFlag);
+	analogWrite(13, dutyCycleTest);
 	
-	processSignals(); // processing turn signals & brake signals, and displays appropriately
+	if (dutyCycleTest > 250){
+		dutyCycleTest = 0;
+	}
+	
+	//processSignals(); // processing turn signals & brake signals, and displays appropriately
 	
 	//checkTurnSignals(); // have opted to call check/clear signals in main loop instead of interrupts at this time
-	clearTurnSignals(); // operates extremely fast to not be an issue
+	//clearTurnSignals(); // operates extremely fast to not be an issue
 	
 	//checkBrakeSignals(); // check whether brakes are engaged
 	//clearBrakeSignals(); // clear brake signal flags if not being pressed
@@ -112,6 +119,7 @@ void loop() // put your main code here, to run repeatedly:
   
 }
 
+/*
 void processSignals() { // process turn and brake signals
 	
 	static int turnTimeL = 0; // initalizes counter for arrow display. ie. turns on 3 for 10 cycles, 2 for 10 cycles, 1 for 10 cycles
@@ -185,14 +193,15 @@ void processSignals() { // process turn and brake signals
 		turnTimeR++; 
 	}
 	
-	
+	/*
 	if (brakeFlag == 1) { // Brake Flag is ON, either LEFT or RIGHT is engaged
 	
 		digitalWrite(13, HIGH); // SEND 100% duty cycle value to brakes, FULL BRIGHTNESS
 		
 	}
-	
+	*/
 }
+
 
 void displayLEDs() { // LED strip display function
 	
@@ -235,6 +244,7 @@ void checkTurnSignals() {
 }
 */
 
+/*
 void clearLeftTurn(static int *a){
 	
 	*a = 0;
@@ -244,6 +254,7 @@ void clearLeftTurn(static int *a){
 	digitalWrite(12, LOW);
 	
 }
+*/
 
 void clearTurnSignals() {
 	
