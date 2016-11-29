@@ -19,9 +19,7 @@ TimerCount4& pwm = TimerCount4::singleton();
 volatile std::uint32_t ref_time = 0;
 volatile bool out_state = false;
 
-float duty_tracker = 0.01;
-const float duty_step = 0.0025;
-bool step_up = true;
+bool brake_harder = false;
 
 void pwm_overflow_cb(std::uint32_t counter);
 void pwm_match_cb(std::uint32_t counter);
@@ -57,25 +55,25 @@ void setup(){
                         osculp32k_clk   // Use Ultra low power OSC as the generator source (32.768 kHz)
                         );
 
-        // Sets a timer at 1 Hz
+        // Sets a timer at 4 Hz
     timer.init( 0x7,    // prescale by 1024 --> 32 Hz
-                32,     // 8-bit counter period --> 1 Hz
+                8,    // 8-bit counter period --> 4 Hz
                 true,   // Interrupt on overflow
                 true,   // Interrupt on match
-                16,     // Match value
+                4,     // Match value
                 timer_overflow_cb, timer_match_cb,
                 0x2,    // Use generic clock generator 2
-                32e3    // Reference frequency
+                32.768e3// Reference frequency
                 );
-        // Sets a PWM at 6 kHz
-    pwm.init(   0x5,    // prescale by 32
-                250,    // 8-bit counter period
+        // Sets a PWM at 131.072 Hz
+    pwm.init(   0x0,    // prescale by 1 --> 32.768 kHz
+                250,    // 8-bit counter period --> 131.072 Hz
                 true,   // Interrupt on overflow
                 true,   // Interrupt on match
                 10,     // Match value
                 pwm_overflow_cb, pwm_match_cb,
-                0x0,    // Use generic clock generator 0
-                48e6    // Reference frequency
+                0x2,    // Use generic clock generator 2
+                32.768e3// Reference frequency
                 );
 
     timer.enable();
@@ -83,15 +81,11 @@ void setup(){
 }
 
 void loop(){
-    if(duty_tracker >= 0.98)        step_up = false;
-    else if(duty_tracker <= 0.02)   step_up = true;
+    if(brake_harder)    pwm.set_duty_cycle(0.2);
+    else                pwm.set_duty_cycle(0.075);
+    brake_harder = !brake_harder;
 
-    if(step_up) duty_tracker += duty_step;
-    else        duty_tracker -= duty_step;
-
-    pwm.set_duty_cycle(duty_tracker);
-
-    delay(7);
+    delay(500);
 }
 
 void pwm_overflow_cb(std::uint32_t counter){
@@ -112,6 +106,7 @@ void timer_overflow_cb(std::uint32_t){
         led_pin = RED2_PIN;
         digitalWrite(RED2_PIN, HIGH);
     }
+    digitalWrite(OUT_PIN, out_state = !out_state);
 }
 
 void timer_match_cb(std::uint32_t){
