@@ -1,0 +1,875 @@
+   1              	 .syntax unified
+   2              	 .cpu cortex-m4
+   3              	 .fpu softvfp
+   4              	 .eabi_attribute 20,1
+   5              	 .eabi_attribute 21,1
+   6              	 .eabi_attribute 23,3
+   7              	 .eabi_attribute 24,1
+   8              	 .eabi_attribute 25,1
+   9              	 .eabi_attribute 26,1
+  10              	 .eabi_attribute 30,6
+  11              	 .eabi_attribute 34,1
+  12              	 .eabi_attribute 18,4
+  13              	 .thumb
+  14              	 .file "arm_iir_lattice_f32.c"
+  15              	 .text
+  16              	.Ltext0:
+  17              	 .cfi_sections .debug_frame
+  18              	 .global __aeabi_fmul
+  19              	 .global __aeabi_fsub
+  20              	 .global __aeabi_fadd
+  21              	 .section .text.arm_iir_lattice_f32,"ax",%progbits
+  22              	 .align 2
+  23              	 .global arm_iir_lattice_f32
+  24              	 .thumb
+  25              	 .thumb_func
+  27              	arm_iir_lattice_f32:
+  28              	.LFB139:
+  29              	 .file 1 "../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c"
+   1:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** /* ----------------------------------------------------------------------    
+   2:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** * Copyright (C) 2010-2014 ARM Limited. All rights reserved.    
+   3:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** *    
+   4:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** * $Date:        12. March 2014
+   5:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** * $Revision: 	V1.4.4
+   6:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** *    
+   7:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** * Project: 	    CMSIS DSP Library    
+   8:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** * Title:	    arm_iir_lattice_f32.c    
+   9:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** *    
+  10:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** * Description:	Floating-point IIR Lattice filter processing function.    
+  11:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** *    
+  12:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** * Target Processor: Cortex-M4/Cortex-M3/Cortex-M0
+  13:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** *  
+  14:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** * Redistribution and use in source and binary forms, with or without 
+  15:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** * modification, are permitted provided that the following conditions
+  16:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** * are met:
+  17:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** *   - Redistributions of source code must retain the above copyright
+  18:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** *     notice, this list of conditions and the following disclaimer.
+  19:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** *   - Redistributions in binary form must reproduce the above copyright
+  20:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** *     notice, this list of conditions and the following disclaimer in
+  21:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** *     the documentation and/or other materials provided with the 
+  22:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** *     distribution.
+  23:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** *   - Neither the name of ARM LIMITED nor the names of its contributors
+  24:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** *     may be used to endorse or promote products derived from this
+  25:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** *     software without specific prior written permission.
+  26:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** *
+  27:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  28:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  29:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+  30:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** * FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE 
+  31:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** * COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+  32:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+  33:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  34:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+  35:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+  36:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+  37:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+  38:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** * POSSIBILITY OF SUCH DAMAGE.    
+  39:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** * -------------------------------------------------------------------- */
+  40:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** 
+  41:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** #include "CMSIS_DSP/cmsis_dsp.h"
+  42:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** 
+  43:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** /**    
+  44:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****  * @ingroup groupFilters    
+  45:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****  */
+  46:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** 
+  47:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** /**    
+  48:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****  * @defgroup IIR_Lattice Infinite Impulse Response (IIR) Lattice Filters    
+  49:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****  *    
+  50:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****  * This set of functions implements lattice filters    
+  51:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****  * for Q15, Q31 and floating-point data types.  Lattice filters are used in a     
+  52:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****  * variety of adaptive filter applications.  The filter structure has feedforward and    
+  53:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****  * feedback components and the net impulse response is infinite length.    
+  54:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****  * The functions operate on blocks    
+  55:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****  * of input and output data and each call to the function processes    
+  56:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****  * <code>blockSize</code> samples through the filter.  <code>pSrc</code> and    
+  57:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****  * <code>pDst</code> point to input and output arrays containing <code>blockSize</code> values.    
+  58:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****     
+  59:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****  * \par Algorithm:    
+  60:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****  * \image html IIRLattice.gif "Infinite Impulse Response Lattice filter"    
+  61:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****  * <pre>    
+  62:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****  *    fN(n)   =  x(n)    
+  63:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****  *    fm-1(n) = fm(n) - km * gm-1(n-1)   for m = N, N-1, ...1    
+  64:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****  *    gm(n)   = km * fm-1(n) + gm-1(n-1) for m = N, N-1, ...1    
+  65:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****  *    y(n)    = vN * gN(n) + vN-1 * gN-1(n) + ...+ v0 * g0(n)    
+  66:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****  * </pre>    
+  67:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****  * \par    
+  68:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****  * <code>pkCoeffs</code> points to array of reflection coefficients of size <code>numStages</code>.
+  69:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****  * Reflection coefficients are stored in time-reversed order.    
+  70:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****  * \par    
+  71:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****  * <pre>    
+  72:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****  *    {kN, kN-1, ....k1}    
+  73:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****  * </pre>    
+  74:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****  * <code>pvCoeffs</code> points to the array of ladder coefficients of size <code>(numStages+1)</co
+  75:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****  * Ladder coefficients are stored in time-reversed order.    
+  76:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****  * \par    
+  77:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****  * <pre>    
+  78:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****  *    {vN, vN-1, ...v0}    
+  79:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****  * </pre>    
+  80:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****  * <code>pState</code> points to a state array of size <code>numStages + blockSize</code>.    
+  81:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****  * The state variables shown in the figure above (the g values) are stored in the <code>pState</cod
+  82:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****  * The state variables are updated after each block of data is processed; the coefficients are unto
+  83:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****  * \par Instance Structure    
+  84:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****  * The coefficients and state variables for a filter are stored together in an instance data struct
+  85:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****  * A separate instance structure must be defined for each filter.    
+  86:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****  * Coefficient arrays may be shared among several instances while state variable arrays cannot be s
+  87:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****  * There are separate instance structure declarations for each of the 3 supported data types.    
+  88:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****   *    
+  89:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****  * \par Initialization Functions    
+  90:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****  * There is also an associated initialization function for each data type.    
+  91:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****  * The initialization function performs the following operations:    
+  92:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****  * - Sets the values of the internal structure fields.    
+  93:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****  * - Zeros out the values in the state buffer.   
+  94:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****  * To do this manually without calling the init function, assign the follow subfields of the instan
+  95:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****  * numStages, pkCoeffs, pvCoeffs, pState. Also set all of the values in pState to zero. 
+  96:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****  *    
+  97:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****  * \par    
+  98:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****  * Use of the initialization function is optional.    
+  99:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****  * However, if the initialization function is used, then the instance structure cannot be placed in
+ 100:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****  * To place an instance structure into a const data section, the instance structure must be manuall
+ 101:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****  * Set the values in the state buffer to zeros and then manually initialize the instance structure 
+ 102:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****  * <pre>    
+ 103:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****  *arm_iir_lattice_instance_f32 S = {numStages, pState, pkCoeffs, pvCoeffs};    
+ 104:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****  *arm_iir_lattice_instance_q31 S = {numStages, pState, pkCoeffs, pvCoeffs};    
+ 105:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****  *arm_iir_lattice_instance_q15 S = {numStages, pState, pkCoeffs, pvCoeffs};    
+ 106:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****  * </pre>    
+ 107:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****  * \par    
+ 108:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****  * where <code>numStages</code> is the number of stages in the filter; <code>pState</code> points t
+ 109:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****  * <code>pkCoeffs</code> points to array of the reflection coefficients; <code>pvCoeffs</code> poin
+ 110:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****  * \par Fixed-Point Behavior    
+ 111:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****  * Care must be taken when using the fixed-point versions of the IIR lattice filter functions.    
+ 112:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****  * In particular, the overflow and saturation behavior of the accumulator used in each function mus
+ 113:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****  * Refer to the function specific documentation below for usage guidelines.    
+ 114:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****  */
+ 115:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 116:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** /**    
+ 117:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****  * @addtogroup IIR_Lattice    
+ 118:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****  * @{    
+ 119:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****  */
+ 120:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 121:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** /**    
+ 122:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****  * @brief Processing function for the floating-point IIR lattice filter.    
+ 123:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****  * @param[in] *S points to an instance of the floating-point IIR lattice structure.    
+ 124:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****  * @param[in] *pSrc points to the block of input data.    
+ 125:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****  * @param[out] *pDst points to the block of output data.    
+ 126:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****  * @param[in] blockSize number of samples to process.    
+ 127:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****  * @return none.    
+ 128:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****  */
+ 129:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 130:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** #ifndef ARM_MATH_CM0_FAMILY
+ 131:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 132:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****   /* Run the below code for Cortex-M4 and Cortex-M3 */
+ 133:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 134:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** void arm_iir_lattice_f32(
+ 135:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****   const arm_iir_lattice_instance_f32 * S,
+ 136:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****   float32_t * pSrc,
+ 137:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****   float32_t * pDst,
+ 138:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****   uint32_t blockSize)
+ 139:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** {
+  30              	 .loc 1 139 0
+  31              	 .cfi_startproc
+  32              	 
+  33              	 
+  34 0000 80B5     	 push {r7,lr}
+  35              	.LCFI0:
+  36              	 .cfi_def_cfa_offset 8
+  37              	 .cfi_offset 7,-8
+  38              	 .cfi_offset 14,-4
+  39 0002 9AB0     	 sub sp,sp,#104
+  40              	.LCFI1:
+  41              	 .cfi_def_cfa_offset 112
+  42 0004 00AF     	 add r7,sp,#0
+  43              	.LCFI2:
+  44              	 .cfi_def_cfa_register 7
+  45 0006 F860     	 str r0,[r7,#12]
+  46 0008 B960     	 str r1,[r7,#8]
+  47 000a 7A60     	 str r2,[r7,#4]
+  48 000c 3B60     	 str r3,[r7]
+ 140:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****   float32_t fnext1, gcurr1, gnext;               /* Temporary variables for lattice stages */
+ 141:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****   float32_t acc;                                 /* Accumlator */
+ 142:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****   uint32_t blkCnt, tapCnt;                       /* temporary variables for counts */
+ 143:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****   float32_t *px1, *px2, *pk, *pv;                /* temporary pointers for state and coef */
+ 144:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****   uint32_t numStages = S->numStages;             /* number of stages */
+  49              	 .loc 1 144 0
+  50 000e FB68     	 ldr r3,[r7,#12]
+  51 0010 1B88     	 ldrh r3,[r3]
+  52 0012 FB63     	 str r3,[r7,#60]
+ 145:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****   float32_t *pState;                             /* State pointer */
+ 146:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****   float32_t *pStateCurnt;                        /* State current pointer */
+ 147:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****   float32_t k1, k2;
+ 148:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****   float32_t v1, v2, v3, v4;
+ 149:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****   float32_t gcurr2;
+ 150:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****   float32_t fnext2;
+ 151:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 152:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****   /* initialise loop count */
+ 153:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****   blkCnt = blockSize;
+  53              	 .loc 1 153 0
+  54 0014 3B68     	 ldr r3,[r7]
+  55 0016 3B66     	 str r3,[r7,#96]
+ 154:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 155:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****   /* initialise state pointer */
+ 156:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****   pState = &S->pState[0];
+  56              	 .loc 1 156 0
+  57 0018 FB68     	 ldr r3,[r7,#12]
+  58 001a 5B68     	 ldr r3,[r3,#4]
+  59 001c BB64     	 str r3,[r7,#72]
+ 157:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 158:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****   /* Sample processing */
+ 159:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****   while(blkCnt > 0u)
+  60              	 .loc 1 159 0
+  61 001e 40E1     	 b .L2
+  62              	.L7:
+ 160:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****   {
+ 161:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****     /* Read Sample from input buffer */
+ 162:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****     /* fN(n) = x(n) */
+ 163:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****     fnext2 = *pSrc++;
+  63              	 .loc 1 163 0
+  64 0020 BB68     	 ldr r3,[r7,#8]
+  65 0022 1A1D     	 adds r2,r3,#4
+  66 0024 BA60     	 str r2,[r7,#8]
+  67 0026 1B68     	 ldr r3,[r3]
+  68 0028 3B64     	 str r3,[r7,#64]
+ 164:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 165:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****     /* Initialize Ladder coeff pointer */
+ 166:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****     pv = &S->pvCoeffs[0];
+  69              	 .loc 1 166 0
+  70 002a FB68     	 ldr r3,[r7,#12]
+  71 002c DB68     	 ldr r3,[r3,#12]
+  72 002e FB64     	 str r3,[r7,#76]
+ 167:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****     /* Initialize Reflection coeff pointer */
+ 168:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****     pk = &S->pkCoeffs[0];
+  73              	 .loc 1 168 0
+  74 0030 FB68     	 ldr r3,[r7,#12]
+  75 0032 9B68     	 ldr r3,[r3,#8]
+  76 0034 3B65     	 str r3,[r7,#80]
+ 169:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 170:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****     /* Initialize state read pointer */
+ 171:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****     px1 = pState;
+  77              	 .loc 1 171 0
+  78 0036 BB6C     	 ldr r3,[r7,#72]
+  79 0038 BB65     	 str r3,[r7,#88]
+ 172:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****     /* Initialize state write pointer */
+ 173:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****     px2 = pState;
+  80              	 .loc 1 173 0
+  81 003a BB6C     	 ldr r3,[r7,#72]
+  82 003c 7B65     	 str r3,[r7,#84]
+ 174:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 175:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****     /* Set accumulator to zero */
+ 176:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****     acc = 0.0;
+  83              	 .loc 1 176 0
+  84 003e 4FF00003 	 mov r3,#0
+  85 0042 7B66     	 str r3,[r7,#100]
+ 177:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 178:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****     /* Loop unrolling.  Process 4 taps at a time. */
+ 179:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****     tapCnt = (numStages) >> 2;
+  86              	 .loc 1 179 0
+  87 0044 FB6B     	 ldr r3,[r7,#60]
+  88 0046 9B08     	 lsrs r3,r3,#2
+  89 0048 FB65     	 str r3,[r7,#92]
+ 180:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 181:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****     while(tapCnt > 0u)
+  90              	 .loc 1 181 0
+  91 004a C7E0     	 b .L3
+  92              	.L4:
+ 182:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****     {
+ 183:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****       /* Read gN-1(n-1) from state buffer */
+ 184:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****       gcurr1 = *px1;
+  93              	 .loc 1 184 0
+  94 004c BB6D     	 ldr r3,[r7,#88]
+  95 004e 1B68     	 ldr r3,[r3]
+  96 0050 BB63     	 str r3,[r7,#56]
+ 185:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 186:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****       /* read reflection coefficient kN */
+ 187:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****       k1 = *pk;
+  97              	 .loc 1 187 0
+  98 0052 3B6D     	 ldr r3,[r7,#80]
+  99 0054 1B68     	 ldr r3,[r3]
+ 100 0056 7B63     	 str r3,[r7,#52]
+ 188:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 189:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****       /* fN-1(n) = fN(n) - kN * gN-1(n-1) */
+ 190:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****       fnext1 = fnext2 - (k1 * gcurr1);
+ 101              	 .loc 1 190 0
+ 102 0058 786B     	 ldr r0,[r7,#52]
+ 103 005a B96B     	 ldr r1,[r7,#56]
+ 104 005c FFF7FEFF 	 bl __aeabi_fmul
+ 105 0060 0346     	 mov r3,r0
+ 106 0062 386C     	 ldr r0,[r7,#64]
+ 107 0064 1946     	 mov r1,r3
+ 108 0066 FFF7FEFF 	 bl __aeabi_fsub
+ 109 006a 0346     	 mov r3,r0
+ 110 006c 3B63     	 str r3,[r7,#48]
+ 191:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 192:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****       /* read ladder coefficient vN */
+ 193:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****       v1 = *pv;
+ 111              	 .loc 1 193 0
+ 112 006e FB6C     	 ldr r3,[r7,#76]
+ 113 0070 1B68     	 ldr r3,[r3]
+ 114 0072 FB62     	 str r3,[r7,#44]
+ 194:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 195:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****       /* read next reflection coefficient kN-1 */
+ 196:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****       k2 = *(pk + 1u);
+ 115              	 .loc 1 196 0
+ 116 0074 3B6D     	 ldr r3,[r7,#80]
+ 117 0076 5B68     	 ldr r3,[r3,#4]
+ 118 0078 BB62     	 str r3,[r7,#40]
+ 197:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 198:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****       /* Read gN-2(n-1) from state buffer */
+ 199:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****       gcurr2 = *(px1 + 1u);
+ 119              	 .loc 1 199 0
+ 120 007a BB6D     	 ldr r3,[r7,#88]
+ 121 007c 5B68     	 ldr r3,[r3,#4]
+ 122 007e 7B62     	 str r3,[r7,#36]
+ 200:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 201:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****       /* read next ladder coefficient vN-1 */
+ 202:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****       v2 = *(pv + 1u);
+ 123              	 .loc 1 202 0
+ 124 0080 FB6C     	 ldr r3,[r7,#76]
+ 125 0082 5B68     	 ldr r3,[r3,#4]
+ 126 0084 3B62     	 str r3,[r7,#32]
+ 203:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 204:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****       /* fN-2(n) = fN-1(n) - kN-1 * gN-2(n-1) */
+ 205:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****       fnext2 = fnext1 - (k2 * gcurr2);
+ 127              	 .loc 1 205 0
+ 128 0086 B86A     	 ldr r0,[r7,#40]
+ 129 0088 796A     	 ldr r1,[r7,#36]
+ 130 008a FFF7FEFF 	 bl __aeabi_fmul
+ 131 008e 0346     	 mov r3,r0
+ 132 0090 386B     	 ldr r0,[r7,#48]
+ 133 0092 1946     	 mov r1,r3
+ 134 0094 FFF7FEFF 	 bl __aeabi_fsub
+ 135 0098 0346     	 mov r3,r0
+ 136 009a 3B64     	 str r3,[r7,#64]
+ 206:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 207:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****       /* gN(n)   = kN * fN-1(n) + gN-1(n-1) */
+ 208:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****       gnext = gcurr1 + (k1 * fnext1);
+ 137              	 .loc 1 208 0
+ 138 009c 786B     	 ldr r0,[r7,#52]
+ 139 009e 396B     	 ldr r1,[r7,#48]
+ 140 00a0 FFF7FEFF 	 bl __aeabi_fmul
+ 141 00a4 0346     	 mov r3,r0
+ 142 00a6 1846     	 mov r0,r3
+ 143 00a8 B96B     	 ldr r1,[r7,#56]
+ 144 00aa FFF7FEFF 	 bl __aeabi_fadd
+ 145 00ae 0346     	 mov r3,r0
+ 146 00b0 FB61     	 str r3,[r7,#28]
+ 209:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 210:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****       /* read reflection coefficient kN-2 */
+ 211:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****       k1 = *(pk + 2u);
+ 147              	 .loc 1 211 0
+ 148 00b2 3B6D     	 ldr r3,[r7,#80]
+ 149 00b4 9B68     	 ldr r3,[r3,#8]
+ 150 00b6 7B63     	 str r3,[r7,#52]
+ 212:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 213:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****       /* write gN(n) into state for next sample processing */
+ 214:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****       *px2++ = gnext;
+ 151              	 .loc 1 214 0
+ 152 00b8 7B6D     	 ldr r3,[r7,#84]
+ 153 00ba 1A1D     	 adds r2,r3,#4
+ 154 00bc 7A65     	 str r2,[r7,#84]
+ 155 00be FA69     	 ldr r2,[r7,#28]
+ 156 00c0 1A60     	 str r2,[r3]
+ 215:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 216:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****       /* Read gN-3(n-1) from state buffer */
+ 217:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****       gcurr1 = *(px1 + 2u);
+ 157              	 .loc 1 217 0
+ 158 00c2 BB6D     	 ldr r3,[r7,#88]
+ 159 00c4 9B68     	 ldr r3,[r3,#8]
+ 160 00c6 BB63     	 str r3,[r7,#56]
+ 218:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 219:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****       /* y(n) += gN(n) * vN  */
+ 220:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****       acc += (gnext * v1);
+ 161              	 .loc 1 220 0
+ 162 00c8 F869     	 ldr r0,[r7,#28]
+ 163 00ca F96A     	 ldr r1,[r7,#44]
+ 164 00cc FFF7FEFF 	 bl __aeabi_fmul
+ 165 00d0 0346     	 mov r3,r0
+ 166 00d2 786E     	 ldr r0,[r7,#100]
+ 167 00d4 1946     	 mov r1,r3
+ 168 00d6 FFF7FEFF 	 bl __aeabi_fadd
+ 169 00da 0346     	 mov r3,r0
+ 170 00dc 7B66     	 str r3,[r7,#100]
+ 221:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 222:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****       /* fN-3(n) = fN-2(n) - kN-2 * gN-3(n-1) */
+ 223:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****       fnext1 = fnext2 - (k1 * gcurr1);
+ 171              	 .loc 1 223 0
+ 172 00de 786B     	 ldr r0,[r7,#52]
+ 173 00e0 B96B     	 ldr r1,[r7,#56]
+ 174 00e2 FFF7FEFF 	 bl __aeabi_fmul
+ 175 00e6 0346     	 mov r3,r0
+ 176 00e8 386C     	 ldr r0,[r7,#64]
+ 177 00ea 1946     	 mov r1,r3
+ 178 00ec FFF7FEFF 	 bl __aeabi_fsub
+ 179 00f0 0346     	 mov r3,r0
+ 180 00f2 3B63     	 str r3,[r7,#48]
+ 224:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 225:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****       /* gN-1(n)   = kN-1 * fN-2(n) + gN-2(n-1) */
+ 226:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****       gnext = gcurr2 + (k2 * fnext2);
+ 181              	 .loc 1 226 0
+ 182 00f4 B86A     	 ldr r0,[r7,#40]
+ 183 00f6 396C     	 ldr r1,[r7,#64]
+ 184 00f8 FFF7FEFF 	 bl __aeabi_fmul
+ 185 00fc 0346     	 mov r3,r0
+ 186 00fe 1846     	 mov r0,r3
+ 187 0100 796A     	 ldr r1,[r7,#36]
+ 188 0102 FFF7FEFF 	 bl __aeabi_fadd
+ 189 0106 0346     	 mov r3,r0
+ 190 0108 FB61     	 str r3,[r7,#28]
+ 227:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 228:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****       /* Read gN-4(n-1) from state buffer */
+ 229:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****       gcurr2 = *(px1 + 3u);
+ 191              	 .loc 1 229 0
+ 192 010a BB6D     	 ldr r3,[r7,#88]
+ 193 010c DB68     	 ldr r3,[r3,#12]
+ 194 010e 7B62     	 str r3,[r7,#36]
+ 230:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 231:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****       /* y(n) += gN-1(n) * vN-1  */
+ 232:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****       acc += (gnext * v2);
+ 195              	 .loc 1 232 0
+ 196 0110 F869     	 ldr r0,[r7,#28]
+ 197 0112 396A     	 ldr r1,[r7,#32]
+ 198 0114 FFF7FEFF 	 bl __aeabi_fmul
+ 199 0118 0346     	 mov r3,r0
+ 200 011a 786E     	 ldr r0,[r7,#100]
+ 201 011c 1946     	 mov r1,r3
+ 202 011e FFF7FEFF 	 bl __aeabi_fadd
+ 203 0122 0346     	 mov r3,r0
+ 204 0124 7B66     	 str r3,[r7,#100]
+ 233:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 234:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****       /* read reflection coefficient kN-3 */
+ 235:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****       k2 = *(pk + 3u);
+ 205              	 .loc 1 235 0
+ 206 0126 3B6D     	 ldr r3,[r7,#80]
+ 207 0128 DB68     	 ldr r3,[r3,#12]
+ 208 012a BB62     	 str r3,[r7,#40]
+ 236:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 237:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****       /* write gN-1(n) into state for next sample processing */
+ 238:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****       *px2++ = gnext;
+ 209              	 .loc 1 238 0
+ 210 012c 7B6D     	 ldr r3,[r7,#84]
+ 211 012e 1A1D     	 adds r2,r3,#4
+ 212 0130 7A65     	 str r2,[r7,#84]
+ 213 0132 FA69     	 ldr r2,[r7,#28]
+ 214 0134 1A60     	 str r2,[r3]
+ 239:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 240:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****       /* fN-4(n) = fN-3(n) - kN-3 * gN-4(n-1) */
+ 241:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****       fnext2 = fnext1 - (k2 * gcurr2);
+ 215              	 .loc 1 241 0
+ 216 0136 B86A     	 ldr r0,[r7,#40]
+ 217 0138 796A     	 ldr r1,[r7,#36]
+ 218 013a FFF7FEFF 	 bl __aeabi_fmul
+ 219 013e 0346     	 mov r3,r0
+ 220 0140 386B     	 ldr r0,[r7,#48]
+ 221 0142 1946     	 mov r1,r3
+ 222 0144 FFF7FEFF 	 bl __aeabi_fsub
+ 223 0148 0346     	 mov r3,r0
+ 224 014a 3B64     	 str r3,[r7,#64]
+ 242:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 243:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****       /* gN-2(n) = kN-2 * fN-3(n) + gN-3(n-1) */
+ 244:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****       gnext = gcurr1 + (k1 * fnext1);
+ 225              	 .loc 1 244 0
+ 226 014c 786B     	 ldr r0,[r7,#52]
+ 227 014e 396B     	 ldr r1,[r7,#48]
+ 228 0150 FFF7FEFF 	 bl __aeabi_fmul
+ 229 0154 0346     	 mov r3,r0
+ 230 0156 1846     	 mov r0,r3
+ 231 0158 B96B     	 ldr r1,[r7,#56]
+ 232 015a FFF7FEFF 	 bl __aeabi_fadd
+ 233 015e 0346     	 mov r3,r0
+ 234 0160 FB61     	 str r3,[r7,#28]
+ 245:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 246:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****       /* read ladder coefficient vN-2 */
+ 247:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****       v3 = *(pv + 2u);
+ 235              	 .loc 1 247 0
+ 236 0162 FB6C     	 ldr r3,[r7,#76]
+ 237 0164 9B68     	 ldr r3,[r3,#8]
+ 238 0166 BB61     	 str r3,[r7,#24]
+ 248:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 249:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****       /* y(n) += gN-2(n) * vN-2  */
+ 250:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****       acc += (gnext * v3);
+ 239              	 .loc 1 250 0
+ 240 0168 F869     	 ldr r0,[r7,#28]
+ 241 016a B969     	 ldr r1,[r7,#24]
+ 242 016c FFF7FEFF 	 bl __aeabi_fmul
+ 243 0170 0346     	 mov r3,r0
+ 244 0172 786E     	 ldr r0,[r7,#100]
+ 245 0174 1946     	 mov r1,r3
+ 246 0176 FFF7FEFF 	 bl __aeabi_fadd
+ 247 017a 0346     	 mov r3,r0
+ 248 017c 7B66     	 str r3,[r7,#100]
+ 251:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 252:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****       /* write gN-2(n) into state for next sample processing */
+ 253:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****       *px2++ = gnext;
+ 249              	 .loc 1 253 0
+ 250 017e 7B6D     	 ldr r3,[r7,#84]
+ 251 0180 1A1D     	 adds r2,r3,#4
+ 252 0182 7A65     	 str r2,[r7,#84]
+ 253 0184 FA69     	 ldr r2,[r7,#28]
+ 254 0186 1A60     	 str r2,[r3]
+ 254:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 255:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****       /* update pointer */
+ 256:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****       pk += 4u;
+ 255              	 .loc 1 256 0
+ 256 0188 3B6D     	 ldr r3,[r7,#80]
+ 257 018a 1033     	 adds r3,r3,#16
+ 258 018c 3B65     	 str r3,[r7,#80]
+ 257:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 258:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****       /* gN-3(n) = kN-3 * fN-4(n) + gN-4(n-1) */
+ 259:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****       gnext = (fnext2 * k2) + gcurr2;
+ 259              	 .loc 1 259 0
+ 260 018e 386C     	 ldr r0,[r7,#64]
+ 261 0190 B96A     	 ldr r1,[r7,#40]
+ 262 0192 FFF7FEFF 	 bl __aeabi_fmul
+ 263 0196 0346     	 mov r3,r0
+ 264 0198 1846     	 mov r0,r3
+ 265 019a 796A     	 ldr r1,[r7,#36]
+ 266 019c FFF7FEFF 	 bl __aeabi_fadd
+ 267 01a0 0346     	 mov r3,r0
+ 268 01a2 FB61     	 str r3,[r7,#28]
+ 260:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 261:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****       /* read next ladder coefficient vN-3 */
+ 262:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****       v4 = *(pv + 3u);
+ 269              	 .loc 1 262 0
+ 270 01a4 FB6C     	 ldr r3,[r7,#76]
+ 271 01a6 DB68     	 ldr r3,[r3,#12]
+ 272 01a8 7B61     	 str r3,[r7,#20]
+ 263:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 264:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****       /* y(n) += gN-4(n) * vN-4  */
+ 265:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****       acc += (gnext * v4);
+ 273              	 .loc 1 265 0
+ 274 01aa F869     	 ldr r0,[r7,#28]
+ 275 01ac 7969     	 ldr r1,[r7,#20]
+ 276 01ae FFF7FEFF 	 bl __aeabi_fmul
+ 277 01b2 0346     	 mov r3,r0
+ 278 01b4 786E     	 ldr r0,[r7,#100]
+ 279 01b6 1946     	 mov r1,r3
+ 280 01b8 FFF7FEFF 	 bl __aeabi_fadd
+ 281 01bc 0346     	 mov r3,r0
+ 282 01be 7B66     	 str r3,[r7,#100]
+ 266:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 267:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****       /* write gN-3(n) into state for next sample processing */
+ 268:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****       *px2++ = gnext;
+ 283              	 .loc 1 268 0
+ 284 01c0 7B6D     	 ldr r3,[r7,#84]
+ 285 01c2 1A1D     	 adds r2,r3,#4
+ 286 01c4 7A65     	 str r2,[r7,#84]
+ 287 01c6 FA69     	 ldr r2,[r7,#28]
+ 288 01c8 1A60     	 str r2,[r3]
+ 269:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 270:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****       /* update pointers */
+ 271:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****       px1 += 4u;
+ 289              	 .loc 1 271 0
+ 290 01ca BB6D     	 ldr r3,[r7,#88]
+ 291 01cc 1033     	 adds r3,r3,#16
+ 292 01ce BB65     	 str r3,[r7,#88]
+ 272:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****       pv += 4u;
+ 293              	 .loc 1 272 0
+ 294 01d0 FB6C     	 ldr r3,[r7,#76]
+ 295 01d2 1033     	 adds r3,r3,#16
+ 296 01d4 FB64     	 str r3,[r7,#76]
+ 273:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 274:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****       tapCnt--;
+ 297              	 .loc 1 274 0
+ 298 01d6 FB6D     	 ldr r3,[r7,#92]
+ 299 01d8 013B     	 subs r3,r3,#1
+ 300 01da FB65     	 str r3,[r7,#92]
+ 301              	.L3:
+ 181:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****     {
+ 302              	 .loc 1 181 0
+ 303 01dc FB6D     	 ldr r3,[r7,#92]
+ 304 01de 002B     	 cmp r3,#0
+ 305 01e0 7FF434AF 	 bne .L4
+ 275:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 276:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****     }
+ 277:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 278:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****     /* If the filter length is not a multiple of 4, compute the remaining filter taps */
+ 279:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****     tapCnt = (numStages) % 0x4u;
+ 306              	 .loc 1 279 0
+ 307 01e4 FB6B     	 ldr r3,[r7,#60]
+ 308 01e6 03F00303 	 and r3,r3,#3
+ 309 01ea FB65     	 str r3,[r7,#92]
+ 280:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 281:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****     while(tapCnt > 0u)
+ 310              	 .loc 1 281 0
+ 311 01ec 39E0     	 b .L5
+ 312              	.L6:
+ 282:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****     {
+ 283:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****       gcurr1 = *px1++;
+ 313              	 .loc 1 283 0
+ 314 01ee BB6D     	 ldr r3,[r7,#88]
+ 315 01f0 1A1D     	 adds r2,r3,#4
+ 316 01f2 BA65     	 str r2,[r7,#88]
+ 317 01f4 1B68     	 ldr r3,[r3]
+ 318 01f6 BB63     	 str r3,[r7,#56]
+ 284:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****       /* Process sample for last taps */
+ 285:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****       fnext1 = fnext2 - ((*pk) * gcurr1);
+ 319              	 .loc 1 285 0
+ 320 01f8 3B6D     	 ldr r3,[r7,#80]
+ 321 01fa 1B68     	 ldr r3,[r3]
+ 322 01fc 1846     	 mov r0,r3
+ 323 01fe B96B     	 ldr r1,[r7,#56]
+ 324 0200 FFF7FEFF 	 bl __aeabi_fmul
+ 325 0204 0346     	 mov r3,r0
+ 326 0206 386C     	 ldr r0,[r7,#64]
+ 327 0208 1946     	 mov r1,r3
+ 328 020a FFF7FEFF 	 bl __aeabi_fsub
+ 329 020e 0346     	 mov r3,r0
+ 330 0210 3B63     	 str r3,[r7,#48]
+ 286:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****       gnext = (fnext1 * (*pk++)) + gcurr1;
+ 331              	 .loc 1 286 0
+ 332 0212 3B6D     	 ldr r3,[r7,#80]
+ 333 0214 1A1D     	 adds r2,r3,#4
+ 334 0216 3A65     	 str r2,[r7,#80]
+ 335 0218 1B68     	 ldr r3,[r3]
+ 336 021a 1846     	 mov r0,r3
+ 337 021c 396B     	 ldr r1,[r7,#48]
+ 338 021e FFF7FEFF 	 bl __aeabi_fmul
+ 339 0222 0346     	 mov r3,r0
+ 340 0224 1846     	 mov r0,r3
+ 341 0226 B96B     	 ldr r1,[r7,#56]
+ 342 0228 FFF7FEFF 	 bl __aeabi_fadd
+ 343 022c 0346     	 mov r3,r0
+ 344 022e FB61     	 str r3,[r7,#28]
+ 287:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****       /* Output samples for last taps */
+ 288:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****       acc += (gnext * (*pv++));
+ 345              	 .loc 1 288 0
+ 346 0230 FB6C     	 ldr r3,[r7,#76]
+ 347 0232 1A1D     	 adds r2,r3,#4
+ 348 0234 FA64     	 str r2,[r7,#76]
+ 349 0236 1B68     	 ldr r3,[r3]
+ 350 0238 1846     	 mov r0,r3
+ 351 023a F969     	 ldr r1,[r7,#28]
+ 352 023c FFF7FEFF 	 bl __aeabi_fmul
+ 353 0240 0346     	 mov r3,r0
+ 354 0242 786E     	 ldr r0,[r7,#100]
+ 355 0244 1946     	 mov r1,r3
+ 356 0246 FFF7FEFF 	 bl __aeabi_fadd
+ 357 024a 0346     	 mov r3,r0
+ 358 024c 7B66     	 str r3,[r7,#100]
+ 289:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****       *px2++ = gnext;
+ 359              	 .loc 1 289 0
+ 360 024e 7B6D     	 ldr r3,[r7,#84]
+ 361 0250 1A1D     	 adds r2,r3,#4
+ 362 0252 7A65     	 str r2,[r7,#84]
+ 363 0254 FA69     	 ldr r2,[r7,#28]
+ 364 0256 1A60     	 str r2,[r3]
+ 290:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****       fnext2 = fnext1;
+ 365              	 .loc 1 290 0
+ 366 0258 3B6B     	 ldr r3,[r7,#48]
+ 367 025a 3B64     	 str r3,[r7,#64]
+ 291:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 292:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****       tapCnt--;
+ 368              	 .loc 1 292 0
+ 369 025c FB6D     	 ldr r3,[r7,#92]
+ 370 025e 013B     	 subs r3,r3,#1
+ 371 0260 FB65     	 str r3,[r7,#92]
+ 372              	.L5:
+ 281:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****     {
+ 373              	 .loc 1 281 0
+ 374 0262 FB6D     	 ldr r3,[r7,#92]
+ 375 0264 002B     	 cmp r3,#0
+ 376 0266 C2D1     	 bne .L6
+ 293:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 294:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****     }
+ 295:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 296:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****     /* y(n) += g0(n) * v0 */
+ 297:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****     acc += (fnext2 * (*pv));
+ 377              	 .loc 1 297 0
+ 378 0268 FB6C     	 ldr r3,[r7,#76]
+ 379 026a 1B68     	 ldr r3,[r3]
+ 380 026c 1846     	 mov r0,r3
+ 381 026e 396C     	 ldr r1,[r7,#64]
+ 382 0270 FFF7FEFF 	 bl __aeabi_fmul
+ 383 0274 0346     	 mov r3,r0
+ 384 0276 786E     	 ldr r0,[r7,#100]
+ 385 0278 1946     	 mov r1,r3
+ 386 027a FFF7FEFF 	 bl __aeabi_fadd
+ 387 027e 0346     	 mov r3,r0
+ 388 0280 7B66     	 str r3,[r7,#100]
+ 298:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 299:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****     *px2++ = fnext2;
+ 389              	 .loc 1 299 0
+ 390 0282 7B6D     	 ldr r3,[r7,#84]
+ 391 0284 1A1D     	 adds r2,r3,#4
+ 392 0286 7A65     	 str r2,[r7,#84]
+ 393 0288 3A6C     	 ldr r2,[r7,#64]
+ 394 028a 1A60     	 str r2,[r3]
+ 300:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 301:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****     /* write out into pDst */
+ 302:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****     *pDst++ = acc;
+ 395              	 .loc 1 302 0
+ 396 028c 7B68     	 ldr r3,[r7,#4]
+ 397 028e 1A1D     	 adds r2,r3,#4
+ 398 0290 7A60     	 str r2,[r7,#4]
+ 399 0292 7A6E     	 ldr r2,[r7,#100]
+ 400 0294 1A60     	 str r2,[r3]
+ 303:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 304:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****     /* Advance the state pointer by 4 to process the next group of 4 samples */
+ 305:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****     pState = pState + 1u;
+ 401              	 .loc 1 305 0
+ 402 0296 BB6C     	 ldr r3,[r7,#72]
+ 403 0298 0433     	 adds r3,r3,#4
+ 404 029a BB64     	 str r3,[r7,#72]
+ 306:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 307:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****     blkCnt--;
+ 405              	 .loc 1 307 0
+ 406 029c 3B6E     	 ldr r3,[r7,#96]
+ 407 029e 013B     	 subs r3,r3,#1
+ 408 02a0 3B66     	 str r3,[r7,#96]
+ 409              	.L2:
+ 159:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****   {
+ 410              	 .loc 1 159 0
+ 411 02a2 3B6E     	 ldr r3,[r7,#96]
+ 412 02a4 002B     	 cmp r3,#0
+ 413 02a6 7FF4BBAE 	 bne .L7
+ 308:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 309:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****   }
+ 310:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 311:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****   /* Processing is complete. Now copy last S->numStages samples to start of the buffer        
+ 312:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****      for the preperation of next frame process */
+ 313:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 314:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****   /* Points to the start of the state buffer */
+ 315:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****   pStateCurnt = &S->pState[0];
+ 414              	 .loc 1 315 0
+ 415 02aa FB68     	 ldr r3,[r7,#12]
+ 416 02ac 5B68     	 ldr r3,[r3,#4]
+ 417 02ae 7B64     	 str r3,[r7,#68]
+ 316:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****   pState = &S->pState[blockSize];
+ 418              	 .loc 1 316 0
+ 419 02b0 FB68     	 ldr r3,[r7,#12]
+ 420 02b2 5A68     	 ldr r2,[r3,#4]
+ 421 02b4 3B68     	 ldr r3,[r7]
+ 422 02b6 9B00     	 lsls r3,r3,#2
+ 423 02b8 1344     	 add r3,r3,r2
+ 424 02ba BB64     	 str r3,[r7,#72]
+ 317:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 318:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****   tapCnt = numStages >> 2u;
+ 425              	 .loc 1 318 0
+ 426 02bc FB6B     	 ldr r3,[r7,#60]
+ 427 02be 9B08     	 lsrs r3,r3,#2
+ 428 02c0 FB65     	 str r3,[r7,#92]
+ 319:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 320:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****   /* copy data */
+ 321:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****   while(tapCnt > 0u)
+ 429              	 .loc 1 321 0
+ 430 02c2 22E0     	 b .L8
+ 431              	.L9:
+ 322:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****   {
+ 323:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****     *pStateCurnt++ = *pState++;
+ 432              	 .loc 1 323 0
+ 433 02c4 7B6C     	 ldr r3,[r7,#68]
+ 434 02c6 1A1D     	 adds r2,r3,#4
+ 435 02c8 7A64     	 str r2,[r7,#68]
+ 436 02ca BA6C     	 ldr r2,[r7,#72]
+ 437 02cc 111D     	 adds r1,r2,#4
+ 438 02ce B964     	 str r1,[r7,#72]
+ 439 02d0 1268     	 ldr r2,[r2]
+ 440 02d2 1A60     	 str r2,[r3]
+ 324:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****     *pStateCurnt++ = *pState++;
+ 441              	 .loc 1 324 0
+ 442 02d4 7B6C     	 ldr r3,[r7,#68]
+ 443 02d6 1A1D     	 adds r2,r3,#4
+ 444 02d8 7A64     	 str r2,[r7,#68]
+ 445 02da BA6C     	 ldr r2,[r7,#72]
+ 446 02dc 111D     	 adds r1,r2,#4
+ 447 02de B964     	 str r1,[r7,#72]
+ 448 02e0 1268     	 ldr r2,[r2]
+ 449 02e2 1A60     	 str r2,[r3]
+ 325:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****     *pStateCurnt++ = *pState++;
+ 450              	 .loc 1 325 0
+ 451 02e4 7B6C     	 ldr r3,[r7,#68]
+ 452 02e6 1A1D     	 adds r2,r3,#4
+ 453 02e8 7A64     	 str r2,[r7,#68]
+ 454 02ea BA6C     	 ldr r2,[r7,#72]
+ 455 02ec 111D     	 adds r1,r2,#4
+ 456 02ee B964     	 str r1,[r7,#72]
+ 457 02f0 1268     	 ldr r2,[r2]
+ 458 02f2 1A60     	 str r2,[r3]
+ 326:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****     *pStateCurnt++ = *pState++;
+ 459              	 .loc 1 326 0
+ 460 02f4 7B6C     	 ldr r3,[r7,#68]
+ 461 02f6 1A1D     	 adds r2,r3,#4
+ 462 02f8 7A64     	 str r2,[r7,#68]
+ 463 02fa BA6C     	 ldr r2,[r7,#72]
+ 464 02fc 111D     	 adds r1,r2,#4
+ 465 02fe B964     	 str r1,[r7,#72]
+ 466 0300 1268     	 ldr r2,[r2]
+ 467 0302 1A60     	 str r2,[r3]
+ 327:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 328:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****     /* Decrement the loop counter */
+ 329:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****     tapCnt--;
+ 468              	 .loc 1 329 0
+ 469 0304 FB6D     	 ldr r3,[r7,#92]
+ 470 0306 013B     	 subs r3,r3,#1
+ 471 0308 FB65     	 str r3,[r7,#92]
+ 472              	.L8:
+ 321:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****   {
+ 473              	 .loc 1 321 0
+ 474 030a FB6D     	 ldr r3,[r7,#92]
+ 475 030c 002B     	 cmp r3,#0
+ 476 030e D9D1     	 bne .L9
+ 330:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 331:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****   }
+ 332:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 333:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****   /* Calculate remaining number of copies */
+ 334:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****   tapCnt = (numStages) % 0x4u;
+ 477              	 .loc 1 334 0
+ 478 0310 FB6B     	 ldr r3,[r7,#60]
+ 479 0312 03F00303 	 and r3,r3,#3
+ 480 0316 FB65     	 str r3,[r7,#92]
+ 335:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 336:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****   /* Copy the remaining q31_t data */
+ 337:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****   while(tapCnt > 0u)
+ 481              	 .loc 1 337 0
+ 482 0318 0AE0     	 b .L10
+ 483              	.L11:
+ 338:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****   {
+ 339:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****     *pStateCurnt++ = *pState++;
+ 484              	 .loc 1 339 0
+ 485 031a 7B6C     	 ldr r3,[r7,#68]
+ 486 031c 1A1D     	 adds r2,r3,#4
+ 487 031e 7A64     	 str r2,[r7,#68]
+ 488 0320 BA6C     	 ldr r2,[r7,#72]
+ 489 0322 111D     	 adds r1,r2,#4
+ 490 0324 B964     	 str r1,[r7,#72]
+ 491 0326 1268     	 ldr r2,[r2]
+ 492 0328 1A60     	 str r2,[r3]
+ 340:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** 
+ 341:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****     /* Decrement the loop counter */
+ 342:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****     tapCnt--;
+ 493              	 .loc 1 342 0
+ 494 032a FB6D     	 ldr r3,[r7,#92]
+ 495 032c 013B     	 subs r3,r3,#1
+ 496 032e FB65     	 str r3,[r7,#92]
+ 497              	.L10:
+ 337:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****   {
+ 498              	 .loc 1 337 0
+ 499 0330 FB6D     	 ldr r3,[r7,#92]
+ 500 0332 002B     	 cmp r3,#0
+ 501 0334 F1D1     	 bne .L11
+ 343:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c ****   }
+ 344:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_iir_lattice_f32.c **** }
+ 502              	 .loc 1 344 0
+ 503 0336 6837     	 adds r7,r7,#104
+ 504              	.LCFI3:
+ 505              	 .cfi_def_cfa_offset 8
+ 506 0338 BD46     	 mov sp,r7
+ 507              	.LCFI4:
+ 508              	 .cfi_def_cfa_register 13
+ 509              	 
+ 510 033a 80BD     	 pop {r7,pc}
+ 511              	 .cfi_endproc
+ 512              	.LFE139:
+ 514              	 .text
+ 515              	.Letext0:
+ 516              	 .file 2 "c:\\davev4-64bit\\dave-4.2.6\\eclipse\\arm-gcc-49\\arm-none-eabi\\include\\machine\\_default_types.h"
+ 517              	 .file 3 "c:\\davev4-64bit\\dave-4.2.6\\eclipse\\arm-gcc-49\\arm-none-eabi\\include\\stdint.h"
+ 518              	 .file 4 "C:\\Users\\Depes Crystalline\\Desktop\\school\\Active_Bike_Lighting_System\\Radar_Core\\Dave\\Generated/CMSIS_DSP/arm_math.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 arm_iir_lattice_f32.c
+    {standard input}:22     .text.arm_iir_lattice_f32:00000000 $t
+    {standard input}:27     .text.arm_iir_lattice_f32:00000000 arm_iir_lattice_f32
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+__aeabi_fmul
+__aeabi_fsub
+__aeabi_fadd

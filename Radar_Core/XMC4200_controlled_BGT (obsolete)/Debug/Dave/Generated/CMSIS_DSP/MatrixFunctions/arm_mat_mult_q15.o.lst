@@ -1,0 +1,1481 @@
+   1              	 .syntax unified
+   2              	 .cpu cortex-m4
+   3              	 .fpu softvfp
+   4              	 .eabi_attribute 20,1
+   5              	 .eabi_attribute 21,1
+   6              	 .eabi_attribute 23,3
+   7              	 .eabi_attribute 24,1
+   8              	 .eabi_attribute 25,1
+   9              	 .eabi_attribute 26,1
+  10              	 .eabi_attribute 30,6
+  11              	 .eabi_attribute 34,1
+  12              	 .eabi_attribute 18,4
+  13              	 .thumb
+  14              	 .file "arm_mat_mult_q15.c"
+  15              	 .text
+  16              	.Ltext0:
+  17              	 .cfi_sections .debug_frame
+  18              	 .section .text.arm_mat_mult_q15,"ax",%progbits
+  19              	 .align 2
+  20              	 .global arm_mat_mult_q15
+  21              	 .thumb
+  22              	 .thumb_func
+  24              	arm_mat_mult_q15:
+  25              	.LFB139:
+  26              	 .file 1 "../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c"
+   1:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** /* ----------------------------------------------------------------------    
+   2:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** * Copyright (C) 2010-2014 ARM Limited. All rights reserved.    
+   3:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** *    
+   4:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** * $Date:        31. July 2014
+   5:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** * $Revision: 	V1.4.4
+   6:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** *    
+   7:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** * Project: 	    CMSIS DSP Library    
+   8:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** * Title:	    arm_mat_mult_q15.c    
+   9:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** *    
+  10:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** * Description:	 Q15 matrix multiplication.    
+  11:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** *    
+  12:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** * Target Processor: Cortex-M4/Cortex-M3/Cortex-M0
+  13:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** *  
+  14:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** * Redistribution and use in source and binary forms, with or without 
+  15:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** * modification, are permitted provided that the following conditions
+  16:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** * are met:
+  17:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** *   - Redistributions of source code must retain the above copyright
+  18:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** *     notice, this list of conditions and the following disclaimer.
+  19:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** *   - Redistributions in binary form must reproduce the above copyright
+  20:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** *     notice, this list of conditions and the following disclaimer in
+  21:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** *     the documentation and/or other materials provided with the 
+  22:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** *     distribution.
+  23:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** *   - Neither the name of ARM LIMITED nor the names of its contributors
+  24:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** *     may be used to endorse or promote products derived from this
+  25:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** *     software without specific prior written permission.
+  26:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** *
+  27:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  28:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  29:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+  30:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** * FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE 
+  31:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** * COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+  32:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+  33:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  34:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+  35:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+  36:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+  37:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+  38:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** * POSSIBILITY OF SUCH DAMAGE.     
+  39:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** * -------------------------------------------------------------------- */
+  40:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+  41:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** #include "CMSIS_DSP/cmsis_dsp.h"
+  42:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+  43:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** /**    
+  44:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****  * @ingroup groupMatrix    
+  45:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****  */
+  46:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+  47:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** /**    
+  48:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****  * @addtogroup MatrixMult    
+  49:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****  * @{    
+  50:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****  */
+  51:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+  52:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+  53:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** /**    
+  54:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****  * @brief Q15 matrix multiplication    
+  55:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****  * @param[in]       *pSrcA points to the first input matrix structure    
+  56:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****  * @param[in]       *pSrcB points to the second input matrix structure    
+  57:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****  * @param[out]      *pDst points to output matrix structure    
+  58:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****  * @param[in]		*pState points to the array for storing intermediate results (Unused)  
+  59:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****  * @return     		The function returns either    
+  60:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****  * <code>ARM_MATH_SIZE_MISMATCH</code> or <code>ARM_MATH_SUCCESS</code> based on the outcome of siz
+  61:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****  *    
+  62:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****  * @details    
+  63:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****  * <b>Scaling and Overflow Behavior:</b>    
+  64:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****  *    
+  65:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****  * \par    
+  66:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****  * The function is implemented using a 64-bit internal accumulator. The inputs to the    
+  67:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****  * multiplications are in 1.15 format and multiplications yield a 2.30 result.    
+  68:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****  * The 2.30 intermediate    
+  69:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****  * results are accumulated in a 64-bit accumulator in 34.30 format. This approach    
+  70:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****  * provides 33 guard bits and there is no risk of overflow. The 34.30 result is then    
+  71:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****  * truncated to 34.15 format by discarding the low 15 bits and then saturated to    
+  72:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****  * 1.15 format.    
+  73:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****  *    
+  74:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****  * \par    
+  75:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****  * Refer to <code>arm_mat_mult_fast_q15()</code> for a faster but less precise version of this func
+  76:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****  *    
+  77:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****  */
+  78:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+  79:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** arm_status arm_mat_mult_q15(
+  80:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****   const arm_matrix_instance_q15 * pSrcA,
+  81:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****   const arm_matrix_instance_q15 * pSrcB,
+  82:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****   arm_matrix_instance_q15 * pDst,
+  83:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****   q15_t * pState CMSIS_UNUSED)
+  84:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** {
+  27              	 .loc 1 84 0
+  28              	 .cfi_startproc
+  29              	 
+  30              	 
+  31              	 
+  32 0000 B0B4     	 push {r4,r5,r7}
+  33              	.LCFI0:
+  34              	 .cfi_def_cfa_offset 12
+  35              	 .cfi_offset 4,-12
+  36              	 .cfi_offset 5,-8
+  37              	 .cfi_offset 7,-4
+  38 0002 A3B0     	 sub sp,sp,#140
+  39              	.LCFI1:
+  40              	 .cfi_def_cfa_offset 152
+  41 0004 00AF     	 add r7,sp,#0
+  42              	.LCFI2:
+  43              	 .cfi_def_cfa_register 7
+  44 0006 F860     	 str r0,[r7,#12]
+  45 0008 B960     	 str r1,[r7,#8]
+  46 000a 7A60     	 str r2,[r7,#4]
+  47 000c 3B60     	 str r3,[r7]
+  85:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****   q63_t sum;                                     /* accumulator */
+  86:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+  87:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** #ifndef ARM_MATH_CM0_FAMILY
+  88:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+  89:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****   /* Run the below code for Cortex-M4 and Cortex-M3 */
+  90:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+  91:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****   q15_t *pSrcBT = pState;                        /* input data matrix pointer for transpose */
+  48              	 .loc 1 91 0
+  49 000e 3B68     	 ldr r3,[r7]
+  50 0010 FB66     	 str r3,[r7,#108]
+  92:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****   q15_t *pInA = pSrcA->pData;                    /* input data matrix pointer A of Q15 type */
+  51              	 .loc 1 92 0
+  52 0012 FB68     	 ldr r3,[r7,#12]
+  53 0014 5B68     	 ldr r3,[r3,#4]
+  54 0016 7B62     	 str r3,[r7,#36]
+  93:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****   q15_t *pInB = pSrcB->pData;                    /* input data matrix pointer B of Q15 type */
+  55              	 .loc 1 93 0
+  56 0018 BB68     	 ldr r3,[r7,#8]
+  57 001a 5B68     	 ldr r3,[r3,#4]
+  58 001c 3B62     	 str r3,[r7,#32]
+  94:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****   q15_t *px;                                     /* Temporary output data matrix pointer */
+  95:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****   uint16_t numRowsA = pSrcA->numRows;            /* number of rows of input matrix A    */
+  59              	 .loc 1 95 0
+  60 001e FB68     	 ldr r3,[r7,#12]
+  61 0020 1B88     	 ldrh r3,[r3]
+  62 0022 A7F86A30 	 strh r3,[r7,#106]
+  96:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****   uint16_t numColsB = pSrcB->numCols;            /* number of columns of input matrix B */
+  63              	 .loc 1 96 0
+  64 0026 BB68     	 ldr r3,[r7,#8]
+  65 0028 5B88     	 ldrh r3,[r3,#2]
+  66 002a A7F86830 	 strh r3,[r7,#104]
+  97:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****   uint16_t numColsA = pSrcA->numCols;            /* number of columns of input matrix A */
+  67              	 .loc 1 97 0
+  68 002e FB68     	 ldr r3,[r7,#12]
+  69 0030 5B88     	 ldrh r3,[r3,#2]
+  70 0032 A7F86630 	 strh r3,[r7,#102]
+  98:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****   uint16_t numRowsB = pSrcB->numRows;            /* number of rows of input matrix A    */
+  71              	 .loc 1 98 0
+  72 0036 BB68     	 ldr r3,[r7,#8]
+  73 0038 1B88     	 ldrh r3,[r3]
+  74 003a A7F86430 	 strh r3,[r7,#100]
+  99:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****   uint16_t col, i = 0u, row = numRowsB, colCnt;  /* loop counters */
+  75              	 .loc 1 99 0
+  76 003e 0023     	 movs r3,#0
+  77 0040 A7F87830 	 strh r3,[r7,#120]
+  78 0044 B7F86430 	 ldrh r3,[r7,#100]
+  79 0048 A7F87630 	 strh r3,[r7,#118]
+ 100:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****   arm_status status;                             /* status of matrix multiplication */
+ 101:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 102:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** #ifndef UNALIGNED_SUPPORT_DISABLE
+ 103:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 104:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****   q31_t in;                                      /* Temporary variable to hold the input value */
+ 105:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****   q31_t pSourceA1, pSourceB1, pSourceA2, pSourceB2;
+ 106:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 107:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** #else
+ 108:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 109:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****   q15_t in;                                      /* Temporary variable to hold the input value */
+ 110:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****   q15_t inA1, inB1, inA2, inB2;
+ 111:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 112:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** #endif	/*	#ifndef UNALIGNED_SUPPORT_DISABLE	*/
+ 113:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 114:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** #ifdef ARM_MATH_MATRIX_CHECK
+ 115:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****   /* Check for matrix mismatch condition */
+ 116:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****   if((pSrcA->numCols != pSrcB->numRows) ||
+  80              	 .loc 1 116 0
+  81 004c FB68     	 ldr r3,[r7,#12]
+  82 004e 5A88     	 ldrh r2,[r3,#2]
+  83 0050 BB68     	 ldr r3,[r7,#8]
+  84 0052 1B88     	 ldrh r3,[r3]
+  85 0054 9A42     	 cmp r2,r3
+  86 0056 0BD1     	 bne .L2
+ 117:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****      (pSrcA->numRows != pDst->numRows) || (pSrcB->numCols != pDst->numCols))
+  87              	 .loc 1 117 0 discriminator 1
+  88 0058 FB68     	 ldr r3,[r7,#12]
+  89 005a 1A88     	 ldrh r2,[r3]
+  90 005c 7B68     	 ldr r3,[r7,#4]
+  91 005e 1B88     	 ldrh r3,[r3]
+ 116:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****      (pSrcA->numRows != pDst->numRows) || (pSrcB->numCols != pDst->numCols))
+  92              	 .loc 1 116 0 discriminator 1
+  93 0060 9A42     	 cmp r2,r3
+  94 0062 05D1     	 bne .L2
+  95              	 .loc 1 117 0
+  96 0064 BB68     	 ldr r3,[r7,#8]
+  97 0066 5A88     	 ldrh r2,[r3,#2]
+  98 0068 7B68     	 ldr r3,[r7,#4]
+  99 006a 5B88     	 ldrh r3,[r3,#2]
+ 100 006c 9A42     	 cmp r2,r3
+ 101 006e 03D0     	 beq .L3
+ 102              	.L2:
+ 118:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****   {
+ 119:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****     /* Set status as ARM_MATH_SIZE_MISMATCH */
+ 120:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****     status = ARM_MATH_SIZE_MISMATCH;
+ 103              	 .loc 1 120 0
+ 104 0070 FD23     	 movs r3,#253
+ 105 0072 87F87330 	 strb r3,[r7,#115]
+ 106 0076 45E1     	 b .L4
+ 107              	.L3:
+ 121:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****   }
+ 122:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****   else
+ 123:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** #endif /*    #ifdef ARM_MATH_MATRIX_CHECK    */
+ 124:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****   {
+ 125:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****     /* Matrix transpose */
+ 126:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****     do
+ 127:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****     {
+ 128:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****       /* Apply loop unrolling and exchange the columns with row elements */
+ 129:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****       col = numColsB >> 2;
+ 108              	 .loc 1 129 0
+ 109 0078 B7F86830 	 ldrh r3,[r7,#104]
+ 110 007c 9B08     	 lsrs r3,r3,#2
+ 111 007e A7F87A30 	 strh r3,[r7,#122]
+ 130:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 131:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****       /* The pointer px is set to starting address of the column being processed */
+ 132:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****       px = pSrcBT + i;
+ 112              	 .loc 1 132 0
+ 113 0082 B7F87830 	 ldrh r3,[r7,#120]
+ 114 0086 5B00     	 lsls r3,r3,#1
+ 115 0088 FA6E     	 ldr r2,[r7,#108]
+ 116 008a 1344     	 add r3,r3,r2
+ 117 008c FB67     	 str r3,[r7,#124]
+ 133:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 134:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****       /* First part of the processing with loop unrolling.  Compute 4 outputs at a time.        
+ 135:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****        ** a second loop below computes the remaining 1 to 3 samples. */
+ 136:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****       while(col > 0u)
+ 118              	 .loc 1 136 0
+ 119 008e 3CE0     	 b .L5
+ 120              	.L6:
+ 137:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****       {
+ 138:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** #ifndef UNALIGNED_SUPPORT_DISABLE
+ 139:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 140:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         /* Read two elements from the row */
+ 141:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         in = *__SIMD32(pInB)++;
+ 121              	 .loc 1 141 0
+ 122 0090 07F12002 	 add r2,r7,#32
+ 123 0094 1368     	 ldr r3,[r2]
+ 124 0096 191D     	 adds r1,r3,#4
+ 125 0098 1160     	 str r1,[r2]
+ 126 009a 1B68     	 ldr r3,[r3]
+ 127 009c 3B66     	 str r3,[r7,#96]
+ 142:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 143:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         /* Unpack and store one element in the destination */
+ 144:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** #ifndef ARM_MATH_BIG_ENDIAN
+ 145:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 146:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         *px = (q15_t) in;
+ 128              	 .loc 1 146 0
+ 129 009e 3B6E     	 ldr r3,[r7,#96]
+ 130 00a0 9AB2     	 uxth r2,r3
+ 131 00a2 FB6F     	 ldr r3,[r7,#124]
+ 132 00a4 1A80     	 strh r2,[r3]
+ 147:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 148:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** #else
+ 149:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 150:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         *px = (q15_t) ((in & (q31_t) 0xffff0000) >> 16);
+ 151:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 152:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** #endif /*    #ifndef ARM_MATH_BIG_ENDIAN    */
+ 153:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 154:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         /* Update the pointer px to point to the next row of the transposed matrix */
+ 155:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         px += numRowsB;
+ 133              	 .loc 1 155 0
+ 134 00a6 B7F86430 	 ldrh r3,[r7,#100]
+ 135 00aa 5B00     	 lsls r3,r3,#1
+ 136 00ac FA6F     	 ldr r2,[r7,#124]
+ 137 00ae 1344     	 add r3,r3,r2
+ 138 00b0 FB67     	 str r3,[r7,#124]
+ 156:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 157:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         /* Unpack and store the second element in the destination */
+ 158:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** #ifndef ARM_MATH_BIG_ENDIAN
+ 159:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 160:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         *px = (q15_t) ((in & (q31_t) 0xffff0000) >> 16);
+ 139              	 .loc 1 160 0
+ 140 00b2 3B6E     	 ldr r3,[r7,#96]
+ 141 00b4 1B14     	 asrs r3,r3,#16
+ 142 00b6 9AB2     	 uxth r2,r3
+ 143 00b8 FB6F     	 ldr r3,[r7,#124]
+ 144 00ba 1A80     	 strh r2,[r3]
+ 161:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 162:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** #else
+ 163:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 164:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         *px = (q15_t) in;
+ 165:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 166:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** #endif /*    #ifndef ARM_MATH_BIG_ENDIAN    */
+ 167:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 168:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         /* Update the pointer px to point to the next row of the transposed matrix */
+ 169:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         px += numRowsB;
+ 145              	 .loc 1 169 0
+ 146 00bc B7F86430 	 ldrh r3,[r7,#100]
+ 147 00c0 5B00     	 lsls r3,r3,#1
+ 148 00c2 FA6F     	 ldr r2,[r7,#124]
+ 149 00c4 1344     	 add r3,r3,r2
+ 150 00c6 FB67     	 str r3,[r7,#124]
+ 170:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 171:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         /* Read two elements from the row */
+ 172:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         in = *__SIMD32(pInB)++;
+ 151              	 .loc 1 172 0
+ 152 00c8 07F12002 	 add r2,r7,#32
+ 153 00cc 1368     	 ldr r3,[r2]
+ 154 00ce 191D     	 adds r1,r3,#4
+ 155 00d0 1160     	 str r1,[r2]
+ 156 00d2 1B68     	 ldr r3,[r3]
+ 157 00d4 3B66     	 str r3,[r7,#96]
+ 173:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 174:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         /* Unpack and store one element in the destination */
+ 175:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** #ifndef ARM_MATH_BIG_ENDIAN
+ 176:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 177:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         *px = (q15_t) in;
+ 158              	 .loc 1 177 0
+ 159 00d6 3B6E     	 ldr r3,[r7,#96]
+ 160 00d8 9AB2     	 uxth r2,r3
+ 161 00da FB6F     	 ldr r3,[r7,#124]
+ 162 00dc 1A80     	 strh r2,[r3]
+ 178:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 179:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** #else
+ 180:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 181:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         *px = (q15_t) ((in & (q31_t) 0xffff0000) >> 16);
+ 182:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 183:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** #endif /*    #ifndef ARM_MATH_BIG_ENDIAN    */
+ 184:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 185:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         /* Update the pointer px to point to the next row of the transposed matrix */
+ 186:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         px += numRowsB;
+ 163              	 .loc 1 186 0
+ 164 00de B7F86430 	 ldrh r3,[r7,#100]
+ 165 00e2 5B00     	 lsls r3,r3,#1
+ 166 00e4 FA6F     	 ldr r2,[r7,#124]
+ 167 00e6 1344     	 add r3,r3,r2
+ 168 00e8 FB67     	 str r3,[r7,#124]
+ 187:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 188:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         /* Unpack and store the second element in the destination */
+ 189:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 190:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** #ifndef ARM_MATH_BIG_ENDIAN
+ 191:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 192:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         *px = (q15_t) ((in & (q31_t) 0xffff0000) >> 16);
+ 169              	 .loc 1 192 0
+ 170 00ea 3B6E     	 ldr r3,[r7,#96]
+ 171 00ec 1B14     	 asrs r3,r3,#16
+ 172 00ee 9AB2     	 uxth r2,r3
+ 173 00f0 FB6F     	 ldr r3,[r7,#124]
+ 174 00f2 1A80     	 strh r2,[r3]
+ 193:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 194:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** #else
+ 195:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 196:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         *px = (q15_t) in;
+ 197:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 198:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** #endif /*    #ifndef ARM_MATH_BIG_ENDIAN    */
+ 199:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 200:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         /* Update the pointer px to point to the next row of the transposed matrix */
+ 201:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         px += numRowsB;
+ 175              	 .loc 1 201 0
+ 176 00f4 B7F86430 	 ldrh r3,[r7,#100]
+ 177 00f8 5B00     	 lsls r3,r3,#1
+ 178 00fa FA6F     	 ldr r2,[r7,#124]
+ 179 00fc 1344     	 add r3,r3,r2
+ 180 00fe FB67     	 str r3,[r7,#124]
+ 202:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 203:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** #else
+ 204:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 205:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         /* Read one element from the row */
+ 206:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         in = *pInB++;
+ 207:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 208:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         /* Store one element in the destination */
+ 209:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         *px = in;
+ 210:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****  
+ 211:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         /* Update the pointer px to point to the next row of the transposed matrix */
+ 212:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         px += numRowsB;
+ 213:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 214:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         /* Read one element from the row */
+ 215:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         in = *pInB++;
+ 216:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 217:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         /* Store one element in the destination */
+ 218:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         *px = in;
+ 219:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****  
+ 220:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         /* Update the pointer px to point to the next row of the transposed matrix */
+ 221:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         px += numRowsB;
+ 222:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 223:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         /* Read one element from the row */
+ 224:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         in = *pInB++;
+ 225:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 226:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         /* Store one element in the destination */
+ 227:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         *px = in;
+ 228:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****  
+ 229:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         /* Update the pointer px to point to the next row of the transposed matrix */
+ 230:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         px += numRowsB;
+ 231:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 232:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         /* Read one element from the row */
+ 233:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         in = *pInB++;
+ 234:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 235:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         /* Store one element in the destination */
+ 236:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         *px = in;
+ 237:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****  
+ 238:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         /* Update the pointer px to point to the next row of the transposed matrix */
+ 239:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         px += numRowsB;
+ 240:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 241:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** #endif	/*	#ifndef UNALIGNED_SUPPORT_DISABLE	*/
+ 242:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 243:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****        /* Decrement the column loop counter */
+ 244:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         col--;
+ 181              	 .loc 1 244 0
+ 182 0100 B7F87A30 	 ldrh r3,[r7,#122]
+ 183 0104 013B     	 subs r3,r3,#1
+ 184 0106 A7F87A30 	 strh r3,[r7,#122]
+ 185              	.L5:
+ 136:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****       {
+ 186              	 .loc 1 136 0
+ 187 010a B7F87A30 	 ldrh r3,[r7,#122]
+ 188 010e 002B     	 cmp r3,#0
+ 189 0110 BED1     	 bne .L6
+ 245:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****       }
+ 246:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 247:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****       /* If the columns of pSrcB is not a multiple of 4, compute any remaining output samples here.
+ 248:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****        ** No loop unrolling is used. */
+ 249:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****       col = numColsB % 0x4u;
+ 190              	 .loc 1 249 0
+ 191 0112 B7F86830 	 ldrh r3,[r7,#104]
+ 192 0116 03F00303 	 and r3,r3,#3
+ 193 011a A7F87A30 	 strh r3,[r7,#122]
+ 250:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 251:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****       while(col > 0u)
+ 194              	 .loc 1 251 0
+ 195 011e 10E0     	 b .L7
+ 196              	.L8:
+ 252:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****       {
+ 253:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         /* Read and store the input element in the destination */
+ 254:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         *px = *pInB++;
+ 197              	 .loc 1 254 0
+ 198 0120 3B6A     	 ldr r3,[r7,#32]
+ 199 0122 9A1C     	 adds r2,r3,#2
+ 200 0124 3A62     	 str r2,[r7,#32]
+ 201 0126 1A88     	 ldrh r2,[r3]
+ 202 0128 FB6F     	 ldr r3,[r7,#124]
+ 203 012a 1A80     	 strh r2,[r3]
+ 255:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 256:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         /* Update the pointer px to point to the next row of the transposed matrix */
+ 257:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         px += numRowsB;
+ 204              	 .loc 1 257 0
+ 205 012c B7F86430 	 ldrh r3,[r7,#100]
+ 206 0130 5B00     	 lsls r3,r3,#1
+ 207 0132 FA6F     	 ldr r2,[r7,#124]
+ 208 0134 1344     	 add r3,r3,r2
+ 209 0136 FB67     	 str r3,[r7,#124]
+ 258:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 259:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         /* Decrement the column loop counter */
+ 260:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         col--;
+ 210              	 .loc 1 260 0
+ 211 0138 B7F87A30 	 ldrh r3,[r7,#122]
+ 212 013c 013B     	 subs r3,r3,#1
+ 213 013e A7F87A30 	 strh r3,[r7,#122]
+ 214              	.L7:
+ 251:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****       {
+ 215              	 .loc 1 251 0
+ 216 0142 B7F87A30 	 ldrh r3,[r7,#122]
+ 217 0146 002B     	 cmp r3,#0
+ 218 0148 EAD1     	 bne .L8
+ 261:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****       }
+ 262:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 263:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****       i++;
+ 219              	 .loc 1 263 0
+ 220 014a B7F87830 	 ldrh r3,[r7,#120]
+ 221 014e 0133     	 adds r3,r3,#1
+ 222 0150 A7F87830 	 strh r3,[r7,#120]
+ 264:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 265:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****       /* Decrement the row loop counter */
+ 266:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****       row--;
+ 223              	 .loc 1 266 0
+ 224 0154 B7F87630 	 ldrh r3,[r7,#118]
+ 225 0158 013B     	 subs r3,r3,#1
+ 226 015a A7F87630 	 strh r3,[r7,#118]
+ 267:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 268:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****     } while(row > 0u);
+ 227              	 .loc 1 268 0
+ 228 015e B7F87630 	 ldrh r3,[r7,#118]
+ 229 0162 002B     	 cmp r3,#0
+ 230 0164 88D1     	 bne .L3
+ 269:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 270:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****     /* Reset the variables for the usage in the following multiplication process */
+ 271:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****     row = numRowsA;
+ 231              	 .loc 1 271 0
+ 232 0166 B7F86A30 	 ldrh r3,[r7,#106]
+ 233 016a A7F87630 	 strh r3,[r7,#118]
+ 272:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****     i = 0u;
+ 234              	 .loc 1 272 0
+ 235 016e 0023     	 movs r3,#0
+ 236 0170 A7F87830 	 strh r3,[r7,#120]
+ 273:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****     px = pDst->pData;
+ 237              	 .loc 1 273 0
+ 238 0174 7B68     	 ldr r3,[r7,#4]
+ 239 0176 5B68     	 ldr r3,[r3,#4]
+ 240 0178 FB67     	 str r3,[r7,#124]
+ 241              	.L16:
+ 274:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 275:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****     /* The following loop performs the dot-product of each row in pSrcA with each column in pSrcB *
+ 276:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****     /* row loop */
+ 277:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****     do
+ 278:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****     {
+ 279:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****       /* For every row wise process, the column loop counter is to be initiated */
+ 280:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****       col = numColsB;
+ 242              	 .loc 1 280 0
+ 243 017a B7F86830 	 ldrh r3,[r7,#104]
+ 244 017e A7F87A30 	 strh r3,[r7,#122]
+ 281:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 282:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****       /* For every row wise process, the pIn2 pointer is set        
+ 283:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****        ** to the starting address of the transposed pSrcB data */
+ 284:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****       pInB = pSrcBT;
+ 245              	 .loc 1 284 0
+ 246 0182 FB6E     	 ldr r3,[r7,#108]
+ 247 0184 3B62     	 str r3,[r7,#32]
+ 248              	.L15:
+ 285:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 286:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****       /* column loop */
+ 287:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****       do
+ 288:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****       {
+ 289:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         /* Set the variable sum, that acts as accumulator, to zero */
+ 290:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         sum = 0;
+ 249              	 .loc 1 290 0
+ 250 0186 4FF00002 	 mov r2,#0
+ 251 018a 4FF00003 	 mov r3,#0
+ 252 018e C7E92023 	 strd r2,[r7,#128]
+ 291:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 292:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         /* Apply loop unrolling and compute 2 MACs simultaneously. */
+ 293:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         colCnt = numColsA >> 2;
+ 253              	 .loc 1 293 0
+ 254 0192 B7F86630 	 ldrh r3,[r7,#102]
+ 255 0196 9B08     	 lsrs r3,r3,#2
+ 256 0198 A7F87430 	 strh r3,[r7,#116]
+ 294:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 295:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         /* Initiate the pointer pIn1 to point to the starting address of the column being processed
+ 296:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         pInA = pSrcA->pData + i;
+ 257              	 .loc 1 296 0
+ 258 019c FB68     	 ldr r3,[r7,#12]
+ 259 019e 5A68     	 ldr r2,[r3,#4]
+ 260 01a0 B7F87830 	 ldrh r3,[r7,#120]
+ 261 01a4 5B00     	 lsls r3,r3,#1
+ 262 01a6 1344     	 add r3,r3,r2
+ 263 01a8 7B62     	 str r3,[r7,#36]
+ 297:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 298:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 299:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         /* matrix multiplication */
+ 300:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         while(colCnt > 0u)
+ 264              	 .loc 1 300 0
+ 265 01aa 50E0     	 b .L9
+ 266              	.L12:
+ 301:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         {
+ 302:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****           /* c(m,n) = a(1,1)*b(1,1) + a(1,2) * b(2,1) + .... + a(m,p)*b(p,n) */
+ 303:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** #ifndef UNALIGNED_SUPPORT_DISABLE
+ 304:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 305:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****           /* read real and imag values from pSrcA and pSrcB buffer */
+ 306:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****           pSourceA1 = *__SIMD32(pInA)++;
+ 267              	 .loc 1 306 0
+ 268 01ac 07F12402 	 add r2,r7,#36
+ 269 01b0 1368     	 ldr r3,[r2]
+ 270 01b2 191D     	 adds r1,r3,#4
+ 271 01b4 1160     	 str r1,[r2]
+ 272 01b6 1B68     	 ldr r3,[r3]
+ 273 01b8 FB65     	 str r3,[r7,#92]
+ 307:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****           pSourceB1 = *__SIMD32(pInB)++;
+ 274              	 .loc 1 307 0
+ 275 01ba 07F12002 	 add r2,r7,#32
+ 276 01be 1368     	 ldr r3,[r2]
+ 277 01c0 191D     	 adds r1,r3,#4
+ 278 01c2 1160     	 str r1,[r2]
+ 279 01c4 1B68     	 ldr r3,[r3]
+ 280 01c6 BB65     	 str r3,[r7,#88]
+ 308:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 309:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****           pSourceA2 = *__SIMD32(pInA)++;
+ 281              	 .loc 1 309 0
+ 282 01c8 07F12402 	 add r2,r7,#36
+ 283 01cc 1368     	 ldr r3,[r2]
+ 284 01ce 191D     	 adds r1,r3,#4
+ 285 01d0 1160     	 str r1,[r2]
+ 286 01d2 1B68     	 ldr r3,[r3]
+ 287 01d4 7B65     	 str r3,[r7,#84]
+ 310:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****           pSourceB2 = *__SIMD32(pInB)++;
+ 288              	 .loc 1 310 0
+ 289 01d6 07F12002 	 add r2,r7,#32
+ 290 01da 1368     	 ldr r3,[r2]
+ 291 01dc 191D     	 adds r1,r3,#4
+ 292 01de 1160     	 str r1,[r2]
+ 293 01e0 1B68     	 ldr r3,[r3]
+ 294 01e2 3B65     	 str r3,[r7,#80]
+ 311:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 312:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****           /* Multiply and Accumlates */
+ 313:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****           sum = __SMLALD(pSourceA1, pSourceB1, sum);
+ 295              	 .loc 1 313 0
+ 296 01e4 F86D     	 ldr r0,[r7,#92]
+ 297 01e6 B96D     	 ldr r1,[r7,#88]
+ 298 01e8 D7E92023 	 ldrd r2,[r7,#128]
+ 299 01ec 7864     	 str r0,[r7,#68]
+ 300 01ee 3964     	 str r1,[r7,#64]
+ 301 01f0 C7E90E23 	 strd r2,[r7,#56]
+ 302              	.LBB7:
+ 303              	.LBB8:
+ 304              	 .file 2 "C:\\Users\\Depes Crystalline\\Desktop\\school\\Active_Bike_Lighting_System\\Radar_Core/Libraries/CMSIS/Include/core_cmSimd.h"
+   1:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** /**************************************************************************//**
+   2:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****  * @file     core_cmSimd.h
+   3:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****  * @brief    CMSIS Cortex-M SIMD Header File
+   4:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****  * @version  V4.00
+   5:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****  * @date     22. August 2014
+   6:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****  *
+   7:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****  * @note
+   8:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****  *
+   9:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****  ******************************************************************************/
+  10:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** /* Copyright (c) 2009 - 2014 ARM LIMITED
+  11:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+  12:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****    All rights reserved.
+  13:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****    Redistribution and use in source and binary forms, with or without
+  14:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****    modification, are permitted provided that the following conditions are met:
+  15:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****    - Redistributions of source code must retain the above copyright
+  16:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****      notice, this list of conditions and the following disclaimer.
+  17:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****    - Redistributions in binary form must reproduce the above copyright
+  18:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****      notice, this list of conditions and the following disclaimer in the
+  19:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****      documentation and/or other materials provided with the distribution.
+  20:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****    - Neither the name of ARM nor the names of its contributors may be used
+  21:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****      to endorse or promote products derived from this software without
+  22:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****      specific prior written permission.
+  23:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****    *
+  24:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+  25:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****    AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+  26:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****    IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+  27:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****    ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDERS AND CONTRIBUTORS BE
+  28:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****    LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+  29:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****    CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+  30:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+  31:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+  32:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+  33:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+  34:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****    POSSIBILITY OF SUCH DAMAGE.
+  35:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****    ---------------------------------------------------------------------------*/
+  36:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+  37:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+  38:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** #if defined ( __ICCARM__ )
+  39:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****  #pragma system_include  /* treat file as system include file for MISRA check */
+  40:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** #endif
+  41:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+  42:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** #ifndef __CORE_CMSIMD_H
+  43:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** #define __CORE_CMSIMD_H
+  44:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+  45:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** #ifdef __cplusplus
+  46:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****  extern "C" {
+  47:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** #endif
+  48:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+  49:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+  50:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** /*******************************************************************************
+  51:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****  *                Hardware Abstraction Layer
+  52:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****  ******************************************************************************/
+  53:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+  54:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+  55:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** /* ###################  Compiler specific Intrinsics  ########################### */
+  56:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** /** \defgroup CMSIS_SIMD_intrinsics CMSIS SIMD Intrinsics
+  57:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   Access to dedicated SIMD instructions
+  58:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   @{
+  59:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** */
+  60:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+  61:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** #if   defined ( __CC_ARM ) /*------------------RealView Compiler -----------------*/
+  62:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** /* ARM armcc specific functions */
+  63:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** #define __SADD8                           __sadd8
+  64:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** #define __QADD8                           __qadd8
+  65:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** #define __SHADD8                          __shadd8
+  66:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** #define __UADD8                           __uadd8
+  67:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** #define __UQADD8                          __uqadd8
+  68:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** #define __UHADD8                          __uhadd8
+  69:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** #define __SSUB8                           __ssub8
+  70:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** #define __QSUB8                           __qsub8
+  71:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** #define __SHSUB8                          __shsub8
+  72:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** #define __USUB8                           __usub8
+  73:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** #define __UQSUB8                          __uqsub8
+  74:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** #define __UHSUB8                          __uhsub8
+  75:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** #define __SADD16                          __sadd16
+  76:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** #define __QADD16                          __qadd16
+  77:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** #define __SHADD16                         __shadd16
+  78:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** #define __UADD16                          __uadd16
+  79:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** #define __UQADD16                         __uqadd16
+  80:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** #define __UHADD16                         __uhadd16
+  81:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** #define __SSUB16                          __ssub16
+  82:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** #define __QSUB16                          __qsub16
+  83:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** #define __SHSUB16                         __shsub16
+  84:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** #define __USUB16                          __usub16
+  85:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** #define __UQSUB16                         __uqsub16
+  86:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** #define __UHSUB16                         __uhsub16
+  87:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** #define __SASX                            __sasx
+  88:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** #define __QASX                            __qasx
+  89:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** #define __SHASX                           __shasx
+  90:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** #define __UASX                            __uasx
+  91:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** #define __UQASX                           __uqasx
+  92:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** #define __UHASX                           __uhasx
+  93:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** #define __SSAX                            __ssax
+  94:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** #define __QSAX                            __qsax
+  95:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** #define __SHSAX                           __shsax
+  96:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** #define __USAX                            __usax
+  97:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** #define __UQSAX                           __uqsax
+  98:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** #define __UHSAX                           __uhsax
+  99:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** #define __USAD8                           __usad8
+ 100:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** #define __USADA8                          __usada8
+ 101:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** #define __SSAT16                          __ssat16
+ 102:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** #define __USAT16                          __usat16
+ 103:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** #define __UXTB16                          __uxtb16
+ 104:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** #define __UXTAB16                         __uxtab16
+ 105:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** #define __SXTB16                          __sxtb16
+ 106:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** #define __SXTAB16                         __sxtab16
+ 107:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** #define __SMUAD                           __smuad
+ 108:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** #define __SMUADX                          __smuadx
+ 109:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** #define __SMLAD                           __smlad
+ 110:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** #define __SMLADX                          __smladx
+ 111:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** #define __SMLALD                          __smlald
+ 112:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** #define __SMLALDX                         __smlaldx
+ 113:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** #define __SMUSD                           __smusd
+ 114:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** #define __SMUSDX                          __smusdx
+ 115:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** #define __SMLSD                           __smlsd
+ 116:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** #define __SMLSDX                          __smlsdx
+ 117:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** #define __SMLSLD                          __smlsld
+ 118:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** #define __SMLSLDX                         __smlsldx
+ 119:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** #define __SEL                             __sel
+ 120:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** #define __QADD                            __qadd
+ 121:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** #define __QSUB                            __qsub
+ 122:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 123:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** #define __PKHBT(ARG1,ARG2,ARG3)          ( ((((uint32_t)(ARG1))          ) & 0x0000FFFFUL) |  \
+ 124:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****                                            ((((uint32_t)(ARG2)) << (ARG3)) & 0xFFFF0000UL)  )
+ 125:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 126:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** #define __PKHTB(ARG1,ARG2,ARG3)          ( ((((uint32_t)(ARG1))          ) & 0xFFFF0000UL) |  \
+ 127:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****                                            ((((uint32_t)(ARG2)) >> (ARG3)) & 0x0000FFFFUL)  )
+ 128:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 129:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** #define __SMMLA(ARG1,ARG2,ARG3)          ( (int32_t)((((int64_t)(ARG1) * (ARG2)) + \
+ 130:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****                                                       ((int64_t)(ARG3) << 32)      ) >> 32))
+ 131:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 132:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 133:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** #elif defined ( __GNUC__ ) /*------------------ GNU Compiler ---------------------*/
+ 134:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** /* GNU gcc specific functions */
+ 135:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** __attribute__( ( always_inline ) ) __STATIC_INLINE uint32_t __SADD8(uint32_t op1, uint32_t op2)
+ 136:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** {
+ 137:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   uint32_t result;
+ 138:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 139:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   __ASM volatile ("sadd8 %0, %1, %2" : "=r" (result) : "r" (op1), "r" (op2) );
+ 140:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   return(result);
+ 141:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** }
+ 142:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 143:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** __attribute__( ( always_inline ) ) __STATIC_INLINE uint32_t __QADD8(uint32_t op1, uint32_t op2)
+ 144:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** {
+ 145:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   uint32_t result;
+ 146:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 147:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   __ASM volatile ("qadd8 %0, %1, %2" : "=r" (result) : "r" (op1), "r" (op2) );
+ 148:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   return(result);
+ 149:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** }
+ 150:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 151:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** __attribute__( ( always_inline ) ) __STATIC_INLINE uint32_t __SHADD8(uint32_t op1, uint32_t op2)
+ 152:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** {
+ 153:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   uint32_t result;
+ 154:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 155:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   __ASM volatile ("shadd8 %0, %1, %2" : "=r" (result) : "r" (op1), "r" (op2) );
+ 156:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   return(result);
+ 157:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** }
+ 158:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 159:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** __attribute__( ( always_inline ) ) __STATIC_INLINE uint32_t __UADD8(uint32_t op1, uint32_t op2)
+ 160:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** {
+ 161:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   uint32_t result;
+ 162:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 163:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   __ASM volatile ("uadd8 %0, %1, %2" : "=r" (result) : "r" (op1), "r" (op2) );
+ 164:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   return(result);
+ 165:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** }
+ 166:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 167:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** __attribute__( ( always_inline ) ) __STATIC_INLINE uint32_t __UQADD8(uint32_t op1, uint32_t op2)
+ 168:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** {
+ 169:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   uint32_t result;
+ 170:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 171:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   __ASM volatile ("uqadd8 %0, %1, %2" : "=r" (result) : "r" (op1), "r" (op2) );
+ 172:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   return(result);
+ 173:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** }
+ 174:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 175:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** __attribute__( ( always_inline ) ) __STATIC_INLINE uint32_t __UHADD8(uint32_t op1, uint32_t op2)
+ 176:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** {
+ 177:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   uint32_t result;
+ 178:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 179:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   __ASM volatile ("uhadd8 %0, %1, %2" : "=r" (result) : "r" (op1), "r" (op2) );
+ 180:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   return(result);
+ 181:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** }
+ 182:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 183:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 184:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** __attribute__( ( always_inline ) ) __STATIC_INLINE uint32_t __SSUB8(uint32_t op1, uint32_t op2)
+ 185:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** {
+ 186:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   uint32_t result;
+ 187:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 188:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   __ASM volatile ("ssub8 %0, %1, %2" : "=r" (result) : "r" (op1), "r" (op2) );
+ 189:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   return(result);
+ 190:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** }
+ 191:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 192:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** __attribute__( ( always_inline ) ) __STATIC_INLINE uint32_t __QSUB8(uint32_t op1, uint32_t op2)
+ 193:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** {
+ 194:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   uint32_t result;
+ 195:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 196:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   __ASM volatile ("qsub8 %0, %1, %2" : "=r" (result) : "r" (op1), "r" (op2) );
+ 197:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   return(result);
+ 198:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** }
+ 199:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 200:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** __attribute__( ( always_inline ) ) __STATIC_INLINE uint32_t __SHSUB8(uint32_t op1, uint32_t op2)
+ 201:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** {
+ 202:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   uint32_t result;
+ 203:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 204:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   __ASM volatile ("shsub8 %0, %1, %2" : "=r" (result) : "r" (op1), "r" (op2) );
+ 205:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   return(result);
+ 206:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** }
+ 207:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 208:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** __attribute__( ( always_inline ) ) __STATIC_INLINE uint32_t __USUB8(uint32_t op1, uint32_t op2)
+ 209:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** {
+ 210:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   uint32_t result;
+ 211:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 212:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   __ASM volatile ("usub8 %0, %1, %2" : "=r" (result) : "r" (op1), "r" (op2) );
+ 213:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   return(result);
+ 214:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** }
+ 215:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 216:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** __attribute__( ( always_inline ) ) __STATIC_INLINE uint32_t __UQSUB8(uint32_t op1, uint32_t op2)
+ 217:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** {
+ 218:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   uint32_t result;
+ 219:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 220:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   __ASM volatile ("uqsub8 %0, %1, %2" : "=r" (result) : "r" (op1), "r" (op2) );
+ 221:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   return(result);
+ 222:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** }
+ 223:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 224:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** __attribute__( ( always_inline ) ) __STATIC_INLINE uint32_t __UHSUB8(uint32_t op1, uint32_t op2)
+ 225:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** {
+ 226:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   uint32_t result;
+ 227:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 228:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   __ASM volatile ("uhsub8 %0, %1, %2" : "=r" (result) : "r" (op1), "r" (op2) );
+ 229:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   return(result);
+ 230:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** }
+ 231:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 232:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 233:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** __attribute__( ( always_inline ) ) __STATIC_INLINE uint32_t __SADD16(uint32_t op1, uint32_t op2)
+ 234:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** {
+ 235:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   uint32_t result;
+ 236:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 237:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   __ASM volatile ("sadd16 %0, %1, %2" : "=r" (result) : "r" (op1), "r" (op2) );
+ 238:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   return(result);
+ 239:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** }
+ 240:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 241:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** __attribute__( ( always_inline ) ) __STATIC_INLINE uint32_t __QADD16(uint32_t op1, uint32_t op2)
+ 242:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** {
+ 243:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   uint32_t result;
+ 244:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 245:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   __ASM volatile ("qadd16 %0, %1, %2" : "=r" (result) : "r" (op1), "r" (op2) );
+ 246:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   return(result);
+ 247:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** }
+ 248:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 249:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** __attribute__( ( always_inline ) ) __STATIC_INLINE uint32_t __SHADD16(uint32_t op1, uint32_t op2)
+ 250:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** {
+ 251:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   uint32_t result;
+ 252:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 253:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   __ASM volatile ("shadd16 %0, %1, %2" : "=r" (result) : "r" (op1), "r" (op2) );
+ 254:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   return(result);
+ 255:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** }
+ 256:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 257:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** __attribute__( ( always_inline ) ) __STATIC_INLINE uint32_t __UADD16(uint32_t op1, uint32_t op2)
+ 258:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** {
+ 259:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   uint32_t result;
+ 260:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 261:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   __ASM volatile ("uadd16 %0, %1, %2" : "=r" (result) : "r" (op1), "r" (op2) );
+ 262:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   return(result);
+ 263:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** }
+ 264:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 265:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** __attribute__( ( always_inline ) ) __STATIC_INLINE uint32_t __UQADD16(uint32_t op1, uint32_t op2)
+ 266:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** {
+ 267:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   uint32_t result;
+ 268:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 269:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   __ASM volatile ("uqadd16 %0, %1, %2" : "=r" (result) : "r" (op1), "r" (op2) );
+ 270:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   return(result);
+ 271:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** }
+ 272:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 273:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** __attribute__( ( always_inline ) ) __STATIC_INLINE uint32_t __UHADD16(uint32_t op1, uint32_t op2)
+ 274:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** {
+ 275:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   uint32_t result;
+ 276:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 277:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   __ASM volatile ("uhadd16 %0, %1, %2" : "=r" (result) : "r" (op1), "r" (op2) );
+ 278:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   return(result);
+ 279:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** }
+ 280:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 281:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** __attribute__( ( always_inline ) ) __STATIC_INLINE uint32_t __SSUB16(uint32_t op1, uint32_t op2)
+ 282:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** {
+ 283:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   uint32_t result;
+ 284:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 285:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   __ASM volatile ("ssub16 %0, %1, %2" : "=r" (result) : "r" (op1), "r" (op2) );
+ 286:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   return(result);
+ 287:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** }
+ 288:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 289:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** __attribute__( ( always_inline ) ) __STATIC_INLINE uint32_t __QSUB16(uint32_t op1, uint32_t op2)
+ 290:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** {
+ 291:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   uint32_t result;
+ 292:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 293:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   __ASM volatile ("qsub16 %0, %1, %2" : "=r" (result) : "r" (op1), "r" (op2) );
+ 294:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   return(result);
+ 295:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** }
+ 296:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 297:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** __attribute__( ( always_inline ) ) __STATIC_INLINE uint32_t __SHSUB16(uint32_t op1, uint32_t op2)
+ 298:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** {
+ 299:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   uint32_t result;
+ 300:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 301:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   __ASM volatile ("shsub16 %0, %1, %2" : "=r" (result) : "r" (op1), "r" (op2) );
+ 302:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   return(result);
+ 303:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** }
+ 304:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 305:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** __attribute__( ( always_inline ) ) __STATIC_INLINE uint32_t __USUB16(uint32_t op1, uint32_t op2)
+ 306:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** {
+ 307:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   uint32_t result;
+ 308:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 309:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   __ASM volatile ("usub16 %0, %1, %2" : "=r" (result) : "r" (op1), "r" (op2) );
+ 310:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   return(result);
+ 311:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** }
+ 312:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 313:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** __attribute__( ( always_inline ) ) __STATIC_INLINE uint32_t __UQSUB16(uint32_t op1, uint32_t op2)
+ 314:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** {
+ 315:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   uint32_t result;
+ 316:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 317:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   __ASM volatile ("uqsub16 %0, %1, %2" : "=r" (result) : "r" (op1), "r" (op2) );
+ 318:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   return(result);
+ 319:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** }
+ 320:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 321:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** __attribute__( ( always_inline ) ) __STATIC_INLINE uint32_t __UHSUB16(uint32_t op1, uint32_t op2)
+ 322:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** {
+ 323:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   uint32_t result;
+ 324:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 325:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   __ASM volatile ("uhsub16 %0, %1, %2" : "=r" (result) : "r" (op1), "r" (op2) );
+ 326:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   return(result);
+ 327:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** }
+ 328:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 329:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** __attribute__( ( always_inline ) ) __STATIC_INLINE uint32_t __SASX(uint32_t op1, uint32_t op2)
+ 330:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** {
+ 331:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   uint32_t result;
+ 332:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 333:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   __ASM volatile ("sasx %0, %1, %2" : "=r" (result) : "r" (op1), "r" (op2) );
+ 334:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   return(result);
+ 335:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** }
+ 336:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 337:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** __attribute__( ( always_inline ) ) __STATIC_INLINE uint32_t __QASX(uint32_t op1, uint32_t op2)
+ 338:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** {
+ 339:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   uint32_t result;
+ 340:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 341:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   __ASM volatile ("qasx %0, %1, %2" : "=r" (result) : "r" (op1), "r" (op2) );
+ 342:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   return(result);
+ 343:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** }
+ 344:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 345:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** __attribute__( ( always_inline ) ) __STATIC_INLINE uint32_t __SHASX(uint32_t op1, uint32_t op2)
+ 346:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** {
+ 347:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   uint32_t result;
+ 348:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 349:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   __ASM volatile ("shasx %0, %1, %2" : "=r" (result) : "r" (op1), "r" (op2) );
+ 350:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   return(result);
+ 351:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** }
+ 352:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 353:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** __attribute__( ( always_inline ) ) __STATIC_INLINE uint32_t __UASX(uint32_t op1, uint32_t op2)
+ 354:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** {
+ 355:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   uint32_t result;
+ 356:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 357:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   __ASM volatile ("uasx %0, %1, %2" : "=r" (result) : "r" (op1), "r" (op2) );
+ 358:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   return(result);
+ 359:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** }
+ 360:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 361:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** __attribute__( ( always_inline ) ) __STATIC_INLINE uint32_t __UQASX(uint32_t op1, uint32_t op2)
+ 362:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** {
+ 363:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   uint32_t result;
+ 364:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 365:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   __ASM volatile ("uqasx %0, %1, %2" : "=r" (result) : "r" (op1), "r" (op2) );
+ 366:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   return(result);
+ 367:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** }
+ 368:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 369:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** __attribute__( ( always_inline ) ) __STATIC_INLINE uint32_t __UHASX(uint32_t op1, uint32_t op2)
+ 370:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** {
+ 371:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   uint32_t result;
+ 372:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 373:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   __ASM volatile ("uhasx %0, %1, %2" : "=r" (result) : "r" (op1), "r" (op2) );
+ 374:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   return(result);
+ 375:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** }
+ 376:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 377:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** __attribute__( ( always_inline ) ) __STATIC_INLINE uint32_t __SSAX(uint32_t op1, uint32_t op2)
+ 378:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** {
+ 379:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   uint32_t result;
+ 380:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 381:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   __ASM volatile ("ssax %0, %1, %2" : "=r" (result) : "r" (op1), "r" (op2) );
+ 382:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   return(result);
+ 383:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** }
+ 384:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 385:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** __attribute__( ( always_inline ) ) __STATIC_INLINE uint32_t __QSAX(uint32_t op1, uint32_t op2)
+ 386:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** {
+ 387:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   uint32_t result;
+ 388:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 389:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   __ASM volatile ("qsax %0, %1, %2" : "=r" (result) : "r" (op1), "r" (op2) );
+ 390:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   return(result);
+ 391:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** }
+ 392:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 393:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** __attribute__( ( always_inline ) ) __STATIC_INLINE uint32_t __SHSAX(uint32_t op1, uint32_t op2)
+ 394:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** {
+ 395:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   uint32_t result;
+ 396:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 397:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   __ASM volatile ("shsax %0, %1, %2" : "=r" (result) : "r" (op1), "r" (op2) );
+ 398:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   return(result);
+ 399:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** }
+ 400:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 401:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** __attribute__( ( always_inline ) ) __STATIC_INLINE uint32_t __USAX(uint32_t op1, uint32_t op2)
+ 402:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** {
+ 403:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   uint32_t result;
+ 404:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 405:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   __ASM volatile ("usax %0, %1, %2" : "=r" (result) : "r" (op1), "r" (op2) );
+ 406:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   return(result);
+ 407:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** }
+ 408:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 409:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** __attribute__( ( always_inline ) ) __STATIC_INLINE uint32_t __UQSAX(uint32_t op1, uint32_t op2)
+ 410:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** {
+ 411:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   uint32_t result;
+ 412:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 413:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   __ASM volatile ("uqsax %0, %1, %2" : "=r" (result) : "r" (op1), "r" (op2) );
+ 414:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   return(result);
+ 415:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** }
+ 416:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 417:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** __attribute__( ( always_inline ) ) __STATIC_INLINE uint32_t __UHSAX(uint32_t op1, uint32_t op2)
+ 418:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** {
+ 419:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   uint32_t result;
+ 420:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 421:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   __ASM volatile ("uhsax %0, %1, %2" : "=r" (result) : "r" (op1), "r" (op2) );
+ 422:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   return(result);
+ 423:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** }
+ 424:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 425:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** __attribute__( ( always_inline ) ) __STATIC_INLINE uint32_t __USAD8(uint32_t op1, uint32_t op2)
+ 426:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** {
+ 427:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   uint32_t result;
+ 428:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 429:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   __ASM volatile ("usad8 %0, %1, %2" : "=r" (result) : "r" (op1), "r" (op2) );
+ 430:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   return(result);
+ 431:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** }
+ 432:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 433:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** __attribute__( ( always_inline ) ) __STATIC_INLINE uint32_t __USADA8(uint32_t op1, uint32_t op2, ui
+ 434:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** {
+ 435:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   uint32_t result;
+ 436:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 437:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   __ASM volatile ("usada8 %0, %1, %2, %3" : "=r" (result) : "r" (op1), "r" (op2), "r" (op3) );
+ 438:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   return(result);
+ 439:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** }
+ 440:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 441:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** #define __SSAT16(ARG1,ARG2) \
+ 442:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** ({                          \
+ 443:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   uint32_t __RES, __ARG1 = (ARG1); \
+ 444:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   __ASM ("ssat16 %0, %1, %2" : "=r" (__RES) :  "I" (ARG2), "r" (__ARG1) ); \
+ 445:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   __RES; \
+ 446:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****  })
+ 447:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 448:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** #define __USAT16(ARG1,ARG2) \
+ 449:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** ({                          \
+ 450:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   uint32_t __RES, __ARG1 = (ARG1); \
+ 451:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   __ASM ("usat16 %0, %1, %2" : "=r" (__RES) :  "I" (ARG2), "r" (__ARG1) ); \
+ 452:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   __RES; \
+ 453:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****  })
+ 454:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 455:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** __attribute__( ( always_inline ) ) __STATIC_INLINE uint32_t __UXTB16(uint32_t op1)
+ 456:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** {
+ 457:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   uint32_t result;
+ 458:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 459:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   __ASM volatile ("uxtb16 %0, %1" : "=r" (result) : "r" (op1));
+ 460:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   return(result);
+ 461:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** }
+ 462:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 463:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** __attribute__( ( always_inline ) ) __STATIC_INLINE uint32_t __UXTAB16(uint32_t op1, uint32_t op2)
+ 464:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** {
+ 465:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   uint32_t result;
+ 466:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 467:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   __ASM volatile ("uxtab16 %0, %1, %2" : "=r" (result) : "r" (op1), "r" (op2) );
+ 468:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   return(result);
+ 469:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** }
+ 470:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 471:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** __attribute__( ( always_inline ) ) __STATIC_INLINE uint32_t __SXTB16(uint32_t op1)
+ 472:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** {
+ 473:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   uint32_t result;
+ 474:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 475:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   __ASM volatile ("sxtb16 %0, %1" : "=r" (result) : "r" (op1));
+ 476:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   return(result);
+ 477:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** }
+ 478:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 479:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** __attribute__( ( always_inline ) ) __STATIC_INLINE uint32_t __SXTAB16(uint32_t op1, uint32_t op2)
+ 480:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** {
+ 481:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   uint32_t result;
+ 482:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 483:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   __ASM volatile ("sxtab16 %0, %1, %2" : "=r" (result) : "r" (op1), "r" (op2) );
+ 484:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   return(result);
+ 485:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** }
+ 486:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 487:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** __attribute__( ( always_inline ) ) __STATIC_INLINE uint32_t __SMUAD  (uint32_t op1, uint32_t op2)
+ 488:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** {
+ 489:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   uint32_t result;
+ 490:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 491:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   __ASM volatile ("smuad %0, %1, %2" : "=r" (result) : "r" (op1), "r" (op2) );
+ 492:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   return(result);
+ 493:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** }
+ 494:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 495:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** __attribute__( ( always_inline ) ) __STATIC_INLINE uint32_t __SMUADX (uint32_t op1, uint32_t op2)
+ 496:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** {
+ 497:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   uint32_t result;
+ 498:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 499:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   __ASM volatile ("smuadx %0, %1, %2" : "=r" (result) : "r" (op1), "r" (op2) );
+ 500:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   return(result);
+ 501:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** }
+ 502:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 503:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** __attribute__( ( always_inline ) ) __STATIC_INLINE uint32_t __SMLAD (uint32_t op1, uint32_t op2, ui
+ 504:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** {
+ 505:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   uint32_t result;
+ 506:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 507:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   __ASM volatile ("smlad %0, %1, %2, %3" : "=r" (result) : "r" (op1), "r" (op2), "r" (op3) );
+ 508:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   return(result);
+ 509:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** }
+ 510:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 511:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** __attribute__( ( always_inline ) ) __STATIC_INLINE uint32_t __SMLADX (uint32_t op1, uint32_t op2, u
+ 512:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** {
+ 513:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   uint32_t result;
+ 514:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 515:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   __ASM volatile ("smladx %0, %1, %2, %3" : "=r" (result) : "r" (op1), "r" (op2), "r" (op3) );
+ 516:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   return(result);
+ 517:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** }
+ 518:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 519:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** __attribute__( ( always_inline ) ) __STATIC_INLINE uint64_t __SMLALD (uint32_t op1, uint32_t op2, u
+ 520:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** {
+ 521:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   union llreg_u{
+ 522:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****     uint32_t w32[2];
+ 523:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****     uint64_t w64;
+ 524:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   } llr;
+ 525:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   llr.w64 = acc;
+ 305              	 .loc 2 525 0
+ 306 01f4 D7E90E23 	 ldrd r2,[r7,#56]
+ 307 01f8 C7E90423 	 strd r2,[r7,#16]
+ 526:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 527:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** #ifndef __ARMEB__   // Little endian
+ 528:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   __ASM volatile ("smlald %0, %1, %2, %3" : "=r" (llr.w32[0]), "=r" (llr.w32[1]): "r" (op1), "r" (o
+ 308              	 .loc 2 528 0
+ 309 01fc 3A69     	 ldr r2,[r7,#16]
+ 310 01fe 7B69     	 ldr r3,[r7,#20]
+ 311 0200 796C     	 ldr r1,[r7,#68]
+ 312 0202 386C     	 ldr r0,[r7,#64]
+ 313              	
+ 314 0204 C1FBC023 	 smlald r2,r3,r1,r0
+ 315              	
+ 316              	 .thumb
+ 317 0208 3A61     	 str r2,[r7,#16]
+ 318 020a 7B61     	 str r3,[r7,#20]
+ 529:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** #else               // Big endian
+ 530:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   __ASM volatile ("smlald %0, %1, %2, %3" : "=r" (llr.w32[1]), "=r" (llr.w32[0]): "r" (op1), "r" (o
+ 531:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** #endif
+ 532:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 533:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h ****   return(llr.w64);
+ 319              	 .loc 2 533 0
+ 320 020c D7E90423 	 ldrd r2,[r7,#16]
+ 321              	.LBE8:
+ 322              	.LBE7:
+ 323              	 .loc 1 313 0
+ 324 0210 C7E92023 	 strd r2,[r7,#128]
+ 314:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****           sum = __SMLALD(pSourceA2, pSourceB2, sum);
+ 325              	 .loc 1 314 0
+ 326 0214 786D     	 ldr r0,[r7,#84]
+ 327 0216 396D     	 ldr r1,[r7,#80]
+ 328 0218 D7E92023 	 ldrd r2,[r7,#128]
+ 329 021c 7863     	 str r0,[r7,#52]
+ 330 021e 3963     	 str r1,[r7,#48]
+ 331 0220 C7E90A23 	 strd r2,[r7,#40]
+ 332              	.LBB9:
+ 333              	.LBB10:
+ 525:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** 
+ 334              	 .loc 2 525 0
+ 335 0224 D7E90A23 	 ldrd r2,[r7,#40]
+ 336 0228 C7E90623 	 strd r2,[r7,#24]
+ 528:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core/Libraries/CMSIS/Include\core_cmSimd.h **** #else               // Big endian
+ 337              	 .loc 2 528 0
+ 338 022c BA69     	 ldr r2,[r7,#24]
+ 339 022e FB69     	 ldr r3,[r7,#28]
+ 340 0230 796B     	 ldr r1,[r7,#52]
+ 341 0232 386B     	 ldr r0,[r7,#48]
+ 342              	
+ 343 0234 C1FBC023 	 smlald r2,r3,r1,r0
+ 344              	
+ 345              	 .thumb
+ 346 0238 BA61     	 str r2,[r7,#24]
+ 347 023a FB61     	 str r3,[r7,#28]
+ 348              	 .loc 2 533 0
+ 349 023c D7E90623 	 ldrd r2,[r7,#24]
+ 350              	.LBE10:
+ 351              	.LBE9:
+ 352              	 .loc 1 314 0
+ 353 0240 C7E92023 	 strd r2,[r7,#128]
+ 315:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 316:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** #else
+ 317:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****           /* read real and imag values from pSrcA and pSrcB buffer */
+ 318:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****           inA1 = *pInA++;
+ 319:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****           inB1 = *pInB++;
+ 320:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****           inA2 = *pInA++;
+ 321:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****           /* Multiply and Accumlates */
+ 322:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****           sum += inA1 * inB1;
+ 323:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****           inB2 = *pInB++;
+ 324:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 325:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****           inA1 = *pInA++;
+ 326:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****           inB1 = *pInB++;
+ 327:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****           /* Multiply and Accumlates */
+ 328:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****           sum += inA2 * inB2;
+ 329:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****           inA2 = *pInA++;
+ 330:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****           inB2 = *pInB++;
+ 331:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 332:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****           /* Multiply and Accumlates */
+ 333:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****           sum += inA1 * inB1;
+ 334:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****           sum += inA2 * inB2;
+ 335:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 336:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** #endif	/*	#ifndef UNALIGNED_SUPPORT_DISABLE	*/
+ 337:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 338:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****           /* Decrement the loop counter */
+ 339:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****           colCnt--;
+ 354              	 .loc 1 339 0
+ 355 0244 B7F87430 	 ldrh r3,[r7,#116]
+ 356 0248 013B     	 subs r3,r3,#1
+ 357 024a A7F87430 	 strh r3,[r7,#116]
+ 358              	.L9:
+ 300:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         {
+ 359              	 .loc 1 300 0
+ 360 024e B7F87430 	 ldrh r3,[r7,#116]
+ 361 0252 002B     	 cmp r3,#0
+ 362 0254 AAD1     	 bne .L12
+ 340:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         }
+ 341:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 342:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         /* process remaining column samples */
+ 343:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         colCnt = numColsA & 3u;
+ 363              	 .loc 1 343 0
+ 364 0256 B7F86630 	 ldrh r3,[r7,#102]
+ 365 025a 03F00303 	 and r3,r3,#3
+ 366 025e A7F87430 	 strh r3,[r7,#116]
+ 344:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 345:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         while(colCnt > 0u)
+ 367              	 .loc 1 345 0
+ 368 0262 1AE0     	 b .L13
+ 369              	.L14:
+ 346:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         {
+ 347:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****           /* c(m,n) = a(1,1)*b(1,1) + a(1,2) * b(2,1) + .... + a(m,p)*b(p,n) */
+ 348:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****           sum += *pInA++ * *pInB++;
+ 370              	 .loc 1 348 0
+ 371 0264 7B6A     	 ldr r3,[r7,#36]
+ 372 0266 9A1C     	 adds r2,r3,#2
+ 373 0268 7A62     	 str r2,[r7,#36]
+ 374 026a 1B88     	 ldrh r3,[r3]
+ 375 026c 1AB2     	 sxth r2,r3
+ 376 026e 3B6A     	 ldr r3,[r7,#32]
+ 377 0270 991C     	 adds r1,r3,#2
+ 378 0272 3962     	 str r1,[r7,#32]
+ 379 0274 1B88     	 ldrh r3,[r3]
+ 380 0276 1BB2     	 sxth r3,r3
+ 381 0278 03FB02F3 	 mul r3,r3,r2
+ 382 027c 1A46     	 mov r2,r3
+ 383 027e 4FEAE273 	 asr r3,r2,#31
+ 384 0282 D7E92001 	 ldrd r0,[r7,#128]
+ 385 0286 1218     	 adds r2,r2,r0
+ 386 0288 43EB0103 	 adc r3,r3,r1
+ 387 028c C7E92023 	 strd r2,[r7,#128]
+ 349:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 350:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****           /* Decrement the loop counter */
+ 351:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****           colCnt--;
+ 388              	 .loc 1 351 0
+ 389 0290 B7F87430 	 ldrh r3,[r7,#116]
+ 390 0294 013B     	 subs r3,r3,#1
+ 391 0296 A7F87430 	 strh r3,[r7,#116]
+ 392              	.L13:
+ 345:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         {
+ 393              	 .loc 1 345 0
+ 394 029a B7F87430 	 ldrh r3,[r7,#116]
+ 395 029e 002B     	 cmp r3,#0
+ 396 02a0 E0D1     	 bne .L14
+ 397              	.LBB11:
+ 352:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         }
+ 353:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 354:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         /* Saturate and store the result in the destination buffer */
+ 355:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         *px = (q15_t) (__SSAT((sum >> 15), 16));
+ 398              	 .loc 1 355 0
+ 399 02a2 D7E92023 	 ldrd r2,[r7,#128]
+ 400 02a6 D40B     	 lsrs r4,r2,#15
+ 401 02a8 44EA4344 	 orr r4,r4,r3,lsl#17
+ 402 02ac DD13     	 asrs r5,r3,#15
+ 403 02ae 2346     	 mov r3,r4
+ 404 02b0 FB64     	 str r3,[r7,#76]
+ 405 02b2 FB6C     	 ldr r3,[r7,#76]
+ 406              	
+ 407 02b4 03F30F03 	 ssat r3,#16,r3
+ 408              	
+ 409              	 .thumb
+ 410 02b8 BB64     	 str r3,[r7,#72]
+ 411 02ba BB6C     	 ldr r3,[r7,#72]
+ 412              	.LBE11:
+ 413 02bc 9AB2     	 uxth r2,r3
+ 414 02be FB6F     	 ldr r3,[r7,#124]
+ 415 02c0 1A80     	 strh r2,[r3]
+ 356:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         px++;
+ 416              	 .loc 1 356 0
+ 417 02c2 FB6F     	 ldr r3,[r7,#124]
+ 418 02c4 0233     	 adds r3,r3,#2
+ 419 02c6 FB67     	 str r3,[r7,#124]
+ 357:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 358:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         /* Decrement the column loop counter */
+ 359:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         col--;
+ 420              	 .loc 1 359 0
+ 421 02c8 B7F87A30 	 ldrh r3,[r7,#122]
+ 422 02cc 013B     	 subs r3,r3,#1
+ 423 02ce A7F87A30 	 strh r3,[r7,#122]
+ 360:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 361:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****       } while(col > 0u);
+ 424              	 .loc 1 361 0
+ 425 02d2 B7F87A30 	 ldrh r3,[r7,#122]
+ 426 02d6 002B     	 cmp r3,#0
+ 427 02d8 7FF455AF 	 bne .L15
+ 362:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 363:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****       i = i + numColsA;
+ 428              	 .loc 1 363 0
+ 429 02dc B7F87820 	 ldrh r2,[r7,#120]
+ 430 02e0 B7F86630 	 ldrh r3,[r7,#102]
+ 431 02e4 1344     	 add r3,r3,r2
+ 432 02e6 A7F87830 	 strh r3,[r7,#120]
+ 364:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 365:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****       /* Decrement the row loop counter */
+ 366:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****       row--;
+ 433              	 .loc 1 366 0
+ 434 02ea B7F87630 	 ldrh r3,[r7,#118]
+ 435 02ee 013B     	 subs r3,r3,#1
+ 436 02f0 A7F87630 	 strh r3,[r7,#118]
+ 367:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 368:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****     } while(row > 0u);
+ 437              	 .loc 1 368 0
+ 438 02f4 B7F87630 	 ldrh r3,[r7,#118]
+ 439 02f8 002B     	 cmp r3,#0
+ 440 02fa 7FF43EAF 	 bne .L16
+ 369:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 370:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** #else
+ 371:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 372:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****   /* Run the below code for Cortex-M0 */
+ 373:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 374:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****   q15_t *pIn1 = pSrcA->pData;                    /* input data matrix pointer A */
+ 375:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****   q15_t *pIn2 = pSrcB->pData;                    /* input data matrix pointer B */
+ 376:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****   q15_t *pInA = pSrcA->pData;                    /* input data matrix pointer A of Q15 type */
+ 377:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****   q15_t *pInB = pSrcB->pData;                    /* input data matrix pointer B of Q15 type */
+ 378:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****   q15_t *pOut = pDst->pData;                     /* output data matrix pointer */
+ 379:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****   q15_t *px;                                     /* Temporary output data matrix pointer */
+ 380:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****   uint16_t numColsB = pSrcB->numCols;            /* number of columns of input matrix B */
+ 381:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****   uint16_t numColsA = pSrcA->numCols;            /* number of columns of input matrix A */
+ 382:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****   uint16_t numRowsA = pSrcA->numRows;            /* number of rows of input matrix A    */
+ 383:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****   uint16_t col, i = 0u, row = numRowsA, colCnt;  /* loop counters */
+ 384:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****   arm_status status;                             /* status of matrix multiplication */
+ 385:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 386:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** #ifdef ARM_MATH_MATRIX_CHECK
+ 387:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 388:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****   /* Check for matrix mismatch condition */
+ 389:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****   if((pSrcA->numCols != pSrcB->numRows) ||
+ 390:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****      (pSrcA->numRows != pDst->numRows) || (pSrcB->numCols != pDst->numCols))
+ 391:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****   {
+ 392:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****     /* Set status as ARM_MATH_SIZE_MISMATCH */
+ 393:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****     status = ARM_MATH_SIZE_MISMATCH;
+ 394:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****   }
+ 395:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****   else
+ 396:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** #endif /*    #ifdef ARM_MATH_MATRIX_CHECK    */
+ 397:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 398:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****   {
+ 399:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****     /* The following loop performs the dot-product of each row in pSrcA with each column in pSrcB *
+ 400:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****     /* row loop */
+ 401:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****     do
+ 402:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****     {
+ 403:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****       /* Output pointer is set to starting address of the row being processed */
+ 404:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****       px = pOut + i;
+ 405:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 406:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****       /* For every row wise process, the column loop counter is to be initiated */
+ 407:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****       col = numColsB;
+ 408:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 409:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****       /* For every row wise process, the pIn2 pointer is set          
+ 410:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****        ** to the starting address of the pSrcB data */
+ 411:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****       pIn2 = pSrcB->pData;
+ 412:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 413:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****       /* column loop */
+ 414:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****       do
+ 415:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****       {
+ 416:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         /* Set the variable sum, that acts as accumulator, to zero */
+ 417:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         sum = 0;
+ 418:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 419:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         /* Initiate the pointer pIn1 to point to the starting address of pSrcA */
+ 420:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         pIn1 = pInA;
+ 421:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 422:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         /* Matrix A columns number of MAC operations are to be performed */
+ 423:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         colCnt = numColsA;
+ 424:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 425:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         /* matrix multiplication */
+ 426:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         while(colCnt > 0u)
+ 427:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         {
+ 428:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****           /* c(m,n) = a(1,1)*b(1,1) + a(1,2) * b(2,1) + .... + a(m,p)*b(p,n) */
+ 429:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****           /* Perform the multiply-accumulates */
+ 430:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****           sum += (q31_t) * pIn1++ * *pIn2;
+ 431:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****           pIn2 += numColsB;
+ 432:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 433:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****           /* Decrement the loop counter */
+ 434:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****           colCnt--;
+ 435:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         }
+ 436:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 437:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         /* Convert the result from 34.30 to 1.15 format and store the saturated value in destinatio
+ 438:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         /* Saturate and store the result in the destination buffer */
+ 439:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         *px++ = (q15_t) __SSAT((sum >> 15), 16);
+ 440:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 441:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         /* Decrement the column loop counter */
+ 442:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         col--;
+ 443:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 444:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         /* Update the pointer pIn2 to point to the  starting address of the next column */
+ 445:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****         pIn2 = pInB + (numColsB - col);
+ 446:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 447:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****       } while(col > 0u);
+ 448:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 449:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****       /* Update the pointer pSrcA to point to the  starting address of the next row */
+ 450:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****       i = i + numColsB;
+ 451:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****       pInA = pInA + numColsA;
+ 452:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 453:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****       /* Decrement the row loop counter */
+ 454:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****       row--;
+ 455:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 456:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****     } while(row > 0u);
+ 457:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 458:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** #endif /* #ifndef ARM_MATH_CM0_FAMILY */
+ 459:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****     /* set status as ARM_MATH_SUCCESS */
+ 460:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****     status = ARM_MATH_SUCCESS;
+ 441              	 .loc 1 460 0
+ 442 02fe 0023     	 movs r3,#0
+ 443 0300 87F87330 	 strb r3,[r7,#115]
+ 444              	.L4:
+ 461:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****   }
+ 462:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** 
+ 463:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****   /* Return to application */
+ 464:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c ****   return (status);
+ 445              	 .loc 1 464 0
+ 446 0304 97F87330 	 ldrb r3,[r7,#115]
+ 447 0308 5BB2     	 sxtb r3,r3
+ 465:../Dave/Generated/CMSIS_DSP/MatrixFunctions/arm_mat_mult_q15.c **** }
+ 448              	 .loc 1 465 0
+ 449 030a 1846     	 mov r0,r3
+ 450 030c 8C37     	 adds r7,r7,#140
+ 451              	.LCFI3:
+ 452              	 .cfi_def_cfa_offset 12
+ 453 030e BD46     	 mov sp,r7
+ 454              	.LCFI4:
+ 455              	 .cfi_def_cfa_register 13
+ 456              	 
+ 457 0310 B0BC     	 pop {r4,r5,r7}
+ 458              	.LCFI5:
+ 459              	 .cfi_restore 7
+ 460              	 .cfi_restore 5
+ 461              	 .cfi_restore 4
+ 462              	 .cfi_def_cfa_offset 0
+ 463 0312 7047     	 bx lr
+ 464              	 .cfi_endproc
+ 465              	.LFE139:
+ 467              	 .text
+ 468              	.Letext0:
+ 469              	 .file 3 "c:\\davev4-64bit\\dave-4.2.6\\eclipse\\arm-gcc-49\\arm-none-eabi\\include\\machine\\_default_types.h"
+ 470              	 .file 4 "c:\\davev4-64bit\\dave-4.2.6\\eclipse\\arm-gcc-49\\arm-none-eabi\\include\\stdint.h"
+ 471              	 .file 5 "C:\\Users\\Depes Crystalline\\Desktop\\school\\Active_Bike_Lighting_System\\Radar_Core\\Dave\\Generated/CMSIS_DSP/arm_math.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 arm_mat_mult_q15.c
+    {standard input}:19     .text.arm_mat_mult_q15:00000000 $t
+    {standard input}:24     .text.arm_mat_mult_q15:00000000 arm_mat_mult_q15
+                     .debug_frame:00000010 $d
+
+NO UNDEFINED SYMBOLS

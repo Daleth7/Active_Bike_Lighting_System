@@ -1,0 +1,1253 @@
+   1              	 .syntax unified
+   2              	 .cpu cortex-m4
+   3              	 .fpu softvfp
+   4              	 .eabi_attribute 20,1
+   5              	 .eabi_attribute 21,1
+   6              	 .eabi_attribute 23,3
+   7              	 .eabi_attribute 24,1
+   8              	 .eabi_attribute 25,1
+   9              	 .eabi_attribute 26,1
+  10              	 .eabi_attribute 30,6
+  11              	 .eabi_attribute 34,1
+  12              	 .eabi_attribute 18,4
+  13              	 .thumb
+  14              	 .file "arm_rfft_q31.c"
+  15              	 .text
+  16              	.Ltext0:
+  17              	 .cfi_sections .debug_frame
+  18              	 .section .text.arm_rfft_q31,"ax",%progbits
+  19              	 .align 2
+  20              	 .global arm_rfft_q31
+  21              	 .thumb
+  22              	 .thumb_func
+  24              	arm_rfft_q31:
+  25              	.LFB139:
+  26              	 .file 1 "../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c"
+   1:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** /* ----------------------------------------------------------------------    
+   2:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** * Copyright (C) 2010-2014 ARM Limited. All rights reserved.    
+   3:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** *    
+   4:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** * $Date:        31. July 2014 
+   5:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** * $Revision: 	V1.4.4  
+   6:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** *    
+   7:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** * Project: 	    CMSIS DSP Library    
+   8:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** * Title:	    arm_rfft_q31.c    
+   9:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** *    
+  10:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** * Description:	RFFT & RIFFT Q31 process function    
+  11:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** *    
+  12:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** *    
+  13:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** * Target Processor: Cortex-M4/Cortex-M3/Cortex-M0
+  14:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** *  
+  15:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** * Redistribution and use in source and binary forms, with or without 
+  16:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** * modification, are permitted provided that the following conditions
+  17:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** * are met:
+  18:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** *   - Redistributions of source code must retain the above copyright
+  19:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** *     notice, this list of conditions and the following disclaimer.
+  20:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** *   - Redistributions in binary form must reproduce the above copyright
+  21:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** *     notice, this list of conditions and the following disclaimer in
+  22:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** *     the documentation and/or other materials provided with the 
+  23:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** *     distribution.
+  24:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** *   - Neither the name of ARM LIMITED nor the names of its contributors
+  25:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** *     may be used to endorse or promote products derived from this
+  26:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** *     software without specific prior written permission.
+  27:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** *
+  28:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  29:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  30:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+  31:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** * FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE 
+  32:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** * COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+  33:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+  34:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  35:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+  36:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+  37:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+  38:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+  39:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** * POSSIBILITY OF SUCH DAMAGE.    
+  40:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** * -------------------------------------------------------------------- */
+  41:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** 
+  42:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** #include "CMSIS_DSP/cmsis_dsp.h"
+  43:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** 
+  44:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** /*--------------------------------------------------------------------    
+  45:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** *		Internal functions prototypes    
+  46:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** --------------------------------------------------------------------*/
+  47:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** 
+  48:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** void arm_split_rfft_q31(
+  49:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****     q31_t * pSrc,
+  50:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****     uint32_t fftLen,
+  51:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****     q31_t * pATable,
+  52:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****     q31_t * pBTable,
+  53:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****     q31_t * pDst,
+  54:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****     uint32_t modifier);
+  55:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** 
+  56:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** void arm_split_rifft_q31(
+  57:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****     q31_t * pSrc,
+  58:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****     uint32_t fftLen,
+  59:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****     q31_t * pATable,
+  60:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****     q31_t * pBTable,
+  61:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****     q31_t * pDst,
+  62:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****     uint32_t modifier);
+  63:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** 
+  64:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** /**    
+  65:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** * @addtogroup RealFFT    
+  66:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** * @{    
+  67:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** */
+  68:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** 
+  69:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** /**    
+  70:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** * @brief Processing function for the Q31 RFFT/RIFFT.   
+  71:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** * @param[in]  *S    points to an instance of the Q31 RFFT/RIFFT structure.   
+  72:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** * @param[in]  *pSrc points to the input buffer.   
+  73:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** * @param[out] *pDst points to the output buffer.   
+  74:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** * @return none.   
+  75:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** *    
+  76:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** * \par Input an output formats:   
+  77:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** * \par    
+  78:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** * Internally input is downscaled by 2 for every stage to avoid saturations inside CFFT/CIFFT proces
+  79:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** * Hence the output format is different for different RFFT sizes.    
+  80:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** * The input and output formats for different RFFT sizes and number of bits to upscale are mentioned
+  81:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** * \par    
+  82:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** * \image html RFFTQ31.gif "Input and Output Formats for Q31 RFFT"    
+  83:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** *    
+  84:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** * \par    
+  85:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** * \image html RIFFTQ31.gif "Input and Output Formats for Q31 RIFFT"    
+  86:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** */
+  87:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** void arm_rfft_q31(
+  88:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****     const arm_rfft_instance_q31 * S,
+  89:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****     q31_t * pSrc,
+  90:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****     q31_t * pDst)
+  91:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** {
+  27              	 .loc 1 91 0
+  28              	 .cfi_startproc
+  29              	 
+  30              	 
+  31 0000 B0B5     	 push {r4,r5,r7,lr}
+  32              	.LCFI0:
+  33              	 .cfi_def_cfa_offset 16
+  34              	 .cfi_offset 4,-16
+  35              	 .cfi_offset 5,-12
+  36              	 .cfi_offset 7,-8
+  37              	 .cfi_offset 14,-4
+  38 0002 8AB0     	 sub sp,sp,#40
+  39              	.LCFI1:
+  40              	 .cfi_def_cfa_offset 56
+  41 0004 02AF     	 add r7,sp,#8
+  42              	.LCFI2:
+  43              	 .cfi_def_cfa 7,48
+  44 0006 F860     	 str r0,[r7,#12]
+  45 0008 B960     	 str r1,[r7,#8]
+  46 000a 7A60     	 str r2,[r7,#4]
+  92:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****     const arm_cfft_instance_q31 *S_CFFT = S->pCfft;
+  47              	 .loc 1 92 0
+  48 000c FB68     	 ldr r3,[r7,#12]
+  49 000e 5B69     	 ldr r3,[r3,#20]
+  50 0010 BB61     	 str r3,[r7,#24]
+  93:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****     uint32_t i;
+  94:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****     uint32_t L2 = S->fftLenReal >> 1;
+  51              	 .loc 1 94 0
+  52 0012 FB68     	 ldr r3,[r7,#12]
+  53 0014 1B68     	 ldr r3,[r3]
+  54 0016 5B08     	 lsrs r3,r3,#1
+  55 0018 7B61     	 str r3,[r7,#20]
+  95:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** 
+  96:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****     /* Calculation of RIFFT of input */
+  97:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****     if(S->ifftFlagR == 1u)
+  56              	 .loc 1 97 0
+  57 001a FB68     	 ldr r3,[r7,#12]
+  58 001c 1B79     	 ldrb r3,[r3,#4]
+  59 001e 012B     	 cmp r3,#1
+  60 0020 2DD1     	 bne .L2
+  98:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****     {
+  99:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         /*  Real IFFT core process */
+ 100:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         arm_split_rifft_q31(pSrc, L2, S->pTwiddleAReal,
+  61              	 .loc 1 100 0
+  62 0022 FB68     	 ldr r3,[r7,#12]
+  63 0024 DD68     	 ldr r5,[r3,#12]
+  64 0026 FB68     	 ldr r3,[r7,#12]
+  65 0028 1C69     	 ldr r4,[r3,#16]
+  66 002a FB68     	 ldr r3,[r7,#12]
+  67 002c 9B68     	 ldr r3,[r3,#8]
+  68 002e 7A68     	 ldr r2,[r7,#4]
+  69 0030 0092     	 str r2,[sp]
+  70 0032 0193     	 str r3,[sp,#4]
+  71 0034 B868     	 ldr r0,[r7,#8]
+  72 0036 7969     	 ldr r1,[r7,#20]
+  73 0038 2A46     	 mov r2,r5
+  74 003a 2346     	 mov r3,r4
+  75 003c FFF7FEFF 	 bl arm_split_rifft_q31
+ 101:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****                             S->pTwiddleBReal, pDst, S->twidCoefRModifier);
+ 102:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         
+ 103:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         /* Complex IFFT process */
+ 104:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         arm_cfft_q31(S_CFFT, pDst, S->ifftFlagR, S->bitReverseFlagR);
+  76              	 .loc 1 104 0
+  77 0040 FB68     	 ldr r3,[r7,#12]
+  78 0042 1A79     	 ldrb r2,[r3,#4]
+  79 0044 FB68     	 ldr r3,[r7,#12]
+  80 0046 5B79     	 ldrb r3,[r3,#5]
+  81 0048 B869     	 ldr r0,[r7,#24]
+  82 004a 7968     	 ldr r1,[r7,#4]
+  83 004c FFF7FEFF 	 bl arm_cfft_q31
+ 105:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         
+ 106:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         for(i=0;i<S->fftLenReal;i++)
+  84              	 .loc 1 106 0
+  85 0050 0023     	 movs r3,#0
+  86 0052 FB61     	 str r3,[r7,#28]
+  87 0054 0DE0     	 b .L3
+  88              	.L4:
+ 107:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         {
+ 108:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****             pDst[i] = pDst[i] << 1;
+  89              	 .loc 1 108 0 discriminator 3
+  90 0056 FB69     	 ldr r3,[r7,#28]
+  91 0058 9B00     	 lsls r3,r3,#2
+  92 005a 7A68     	 ldr r2,[r7,#4]
+  93 005c 1344     	 add r3,r3,r2
+  94 005e FA69     	 ldr r2,[r7,#28]
+  95 0060 9200     	 lsls r2,r2,#2
+  96 0062 7968     	 ldr r1,[r7,#4]
+  97 0064 0A44     	 add r2,r2,r1
+  98 0066 1268     	 ldr r2,[r2]
+  99 0068 5200     	 lsls r2,r2,#1
+ 100 006a 1A60     	 str r2,[r3]
+ 106:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         {
+ 101              	 .loc 1 106 0 discriminator 3
+ 102 006c FB69     	 ldr r3,[r7,#28]
+ 103 006e 0133     	 adds r3,r3,#1
+ 104 0070 FB61     	 str r3,[r7,#28]
+ 105              	.L3:
+ 106:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         {
+ 106              	 .loc 1 106 0 is_stmt 0 discriminator 1
+ 107 0072 FB68     	 ldr r3,[r7,#12]
+ 108 0074 1A68     	 ldr r2,[r3]
+ 109 0076 FB69     	 ldr r3,[r7,#28]
+ 110 0078 9A42     	 cmp r2,r3
+ 111 007a ECD8     	 bhi .L4
+ 112 007c 16E0     	 b .L1
+ 113              	.L2:
+ 109:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         }
+ 110:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****     }
+ 111:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****     else
+ 112:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****     {
+ 113:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         /* Calculation of RFFT of input */
+ 114:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         
+ 115:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         /* Complex FFT process */
+ 116:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         arm_cfft_q31(S_CFFT, pSrc, S->ifftFlagR, S->bitReverseFlagR);
+ 114              	 .loc 1 116 0 is_stmt 1
+ 115 007e FB68     	 ldr r3,[r7,#12]
+ 116 0080 1A79     	 ldrb r2,[r3,#4]
+ 117 0082 FB68     	 ldr r3,[r7,#12]
+ 118 0084 5B79     	 ldrb r3,[r3,#5]
+ 119 0086 B869     	 ldr r0,[r7,#24]
+ 120 0088 B968     	 ldr r1,[r7,#8]
+ 121 008a FFF7FEFF 	 bl arm_cfft_q31
+ 117:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** 
+ 118:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         /*  Real FFT core process */
+ 119:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         arm_split_rfft_q31(pSrc, L2, S->pTwiddleAReal,
+ 122              	 .loc 1 119 0
+ 123 008e FB68     	 ldr r3,[r7,#12]
+ 124 0090 DD68     	 ldr r5,[r3,#12]
+ 125 0092 FB68     	 ldr r3,[r7,#12]
+ 126 0094 1C69     	 ldr r4,[r3,#16]
+ 127 0096 FB68     	 ldr r3,[r7,#12]
+ 128 0098 9B68     	 ldr r3,[r3,#8]
+ 129 009a 7A68     	 ldr r2,[r7,#4]
+ 130 009c 0092     	 str r2,[sp]
+ 131 009e 0193     	 str r3,[sp,#4]
+ 132 00a0 B868     	 ldr r0,[r7,#8]
+ 133 00a2 7969     	 ldr r1,[r7,#20]
+ 134 00a4 2A46     	 mov r2,r5
+ 135 00a6 2346     	 mov r3,r4
+ 136 00a8 FFF7FEFF 	 bl arm_split_rfft_q31
+ 137              	.L1:
+ 120:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****                             S->pTwiddleBReal, pDst, S->twidCoefRModifier);
+ 121:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****     }
+ 122:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** }
+ 138              	 .loc 1 122 0
+ 139 00ac 2037     	 adds r7,r7,#32
+ 140              	.LCFI3:
+ 141              	 .cfi_def_cfa_offset 16
+ 142 00ae BD46     	 mov sp,r7
+ 143              	.LCFI4:
+ 144              	 .cfi_def_cfa_register 13
+ 145              	 
+ 146 00b0 B0BD     	 pop {r4,r5,r7,pc}
+ 147              	 .cfi_endproc
+ 148              	.LFE139:
+ 150 00b2 00BF     	 .section .text.arm_split_rfft_q31,"ax",%progbits
+ 151              	 .align 2
+ 152              	 .global arm_split_rfft_q31
+ 153              	 .thumb
+ 154              	 .thumb_func
+ 156              	arm_split_rfft_q31:
+ 157              	.LFB140:
+ 123:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** 
+ 124:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** /**    
+ 125:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** * @} end of RealFFT group    
+ 126:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** */
+ 127:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** 
+ 128:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** /**    
+ 129:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** * @brief  Core Real FFT process    
+ 130:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** * @param[in]   *pSrc 				points to the input buffer.    
+ 131:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** * @param[in]   fftLen  			    length of FFT.   
+ 132:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** * @param[in]   *pATable 			points to the twiddle Coef A buffer.    
+ 133:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** * @param[in]   *pBTable 			points to the twiddle Coef B buffer.    
+ 134:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** * @param[out]  *pDst 				points to the output buffer.    
+ 135:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** * @param[in]   modifier 	        twiddle coefficient modifier that supports different size FFTs wit
+ 136:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** * @return none.    
+ 137:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** */
+ 138:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** void arm_split_rfft_q31(
+ 139:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****     q31_t * pSrc,
+ 140:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****     uint32_t fftLen,
+ 141:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****     q31_t * pATable,
+ 142:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****     q31_t * pBTable,
+ 143:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****     q31_t * pDst,
+ 144:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****     uint32_t modifier)
+ 145:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** {
+ 158              	 .loc 1 145 0
+ 159              	 .cfi_startproc
+ 160              	 
+ 161              	 
+ 162              	 
+ 163 0000 2DE9B00F 	 push {r4,r5,r7,r8,r9,r10,fp}
+ 164              	.LCFI5:
+ 165              	 .cfi_def_cfa_offset 28
+ 166              	 .cfi_offset 4,-28
+ 167              	 .cfi_offset 5,-24
+ 168              	 .cfi_offset 7,-20
+ 169              	 .cfi_offset 8,-16
+ 170              	 .cfi_offset 9,-12
+ 171              	 .cfi_offset 10,-8
+ 172              	 .cfi_offset 11,-4
+ 173 0004 A9B0     	 sub sp,sp,#164
+ 174              	.LCFI6:
+ 175              	 .cfi_def_cfa_offset 192
+ 176 0006 00AF     	 add r7,sp,#0
+ 177              	.LCFI7:
+ 178              	 .cfi_def_cfa_register 7
+ 179 0008 F866     	 str r0,[r7,#108]
+ 180 000a B966     	 str r1,[r7,#104]
+ 181 000c 7A66     	 str r2,[r7,#100]
+ 182 000e 3B66     	 str r3,[r7,#96]
+ 146:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****     uint32_t i;                                    /* Loop Counter */
+ 147:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****     q31_t outR, outI;                              /* Temporary variables for output */
+ 148:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****     q31_t *pCoefA, *pCoefB;                        /* Temporary pointers for twiddle factors */
+ 149:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****     q31_t CoefA1, CoefA2, CoefB1;                  /* Temporary variables for twiddle coefficients 
+ 150:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****     q31_t *pOut1 = &pDst[2], *pOut2 = &pDst[(4u * fftLen) - 1u];
+ 183              	 .loc 1 150 0
+ 184 0010 D7F8C030 	 ldr r3,[r7,#192]
+ 185 0014 0833     	 adds r3,r3,#8
+ 186 0016 C7F89030 	 str r3,[r7,#144]
+ 187 001a BB6E     	 ldr r3,[r7,#104]
+ 188 001c 1B01     	 lsls r3,r3,#4
+ 189 001e 1A1F     	 subs r2,r3,#4
+ 190 0020 D7F8C030 	 ldr r3,[r7,#192]
+ 191 0024 1344     	 add r3,r3,r2
+ 192 0026 C7F88C30 	 str r3,[r7,#140]
+ 151:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****     q31_t *pIn1 = &pSrc[2], *pIn2 = &pSrc[(2u * fftLen) - 1u];
+ 193              	 .loc 1 151 0
+ 194 002a FB6E     	 ldr r3,[r7,#108]
+ 195 002c 0833     	 adds r3,r3,#8
+ 196 002e C7F88830 	 str r3,[r7,#136]
+ 197 0032 BB6E     	 ldr r3,[r7,#104]
+ 198 0034 DB00     	 lsls r3,r3,#3
+ 199 0036 1A1F     	 subs r2,r3,#4
+ 200 0038 FB6E     	 ldr r3,[r7,#108]
+ 201 003a 1344     	 add r3,r3,r2
+ 202 003c C7F88430 	 str r3,[r7,#132]
+ 152:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** 
+ 153:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****     /* Init coefficient pointers */
+ 154:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****     pCoefA = &pATable[modifier * 2u];
+ 203              	 .loc 1 154 0
+ 204 0040 D7F8C430 	 ldr r3,[r7,#196]
+ 205 0044 DA00     	 lsls r2,r3,#3
+ 206 0046 7B6E     	 ldr r3,[r7,#100]
+ 207 0048 1344     	 add r3,r3,r2
+ 208 004a C7F89830 	 str r3,[r7,#152]
+ 155:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****     pCoefB = &pBTable[modifier * 2u];
+ 209              	 .loc 1 155 0
+ 210 004e D7F8C430 	 ldr r3,[r7,#196]
+ 211 0052 DA00     	 lsls r2,r3,#3
+ 212 0054 3B6E     	 ldr r3,[r7,#96]
+ 213 0056 1344     	 add r3,r3,r2
+ 214 0058 C7F89430 	 str r3,[r7,#148]
+ 156:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** 
+ 157:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****     i = fftLen - 1u;
+ 215              	 .loc 1 157 0
+ 216 005c BB6E     	 ldr r3,[r7,#104]
+ 217 005e 013B     	 subs r3,r3,#1
+ 218 0060 C7F89C30 	 str r3,[r7,#156]
+ 158:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** 
+ 159:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****     while(i > 0u)
+ 219              	 .loc 1 159 0
+ 220 0064 84E1     	 b .L7
+ 221              	.L8:
+ 160:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****     {
+ 161:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         /*    
+ 162:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         outR = (pSrc[2 * i] * pATable[2 * i] - pSrc[2 * i + 1] * pATable[2 * i + 1]    
+ 163:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         + pSrc[2 * n - 2 * i] * pBTable[2 * i] +    
+ 164:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         pSrc[2 * n - 2 * i + 1] * pBTable[2 * i + 1]);    
+ 165:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         */
+ 166:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** 
+ 167:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         /* outI = (pIn[2 * i + 1] * pATable[2 * i] + pIn[2 * i] * pATable[2 * i + 1] +    
+ 168:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         pIn[2 * n - 2 * i] * pBTable[2 * i + 1] -    
+ 169:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         pIn[2 * n - 2 * i + 1] * pBTable[2 * i]); */
+ 170:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** 
+ 171:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         CoefA1 = *pCoefA++;
+ 222              	 .loc 1 171 0
+ 223 0066 D7F89820 	 ldr r2,[r7,#152]
+ 224 006a 131D     	 adds r3,r2,#4
+ 225 006c C7F89830 	 str r3,[r7,#152]
+ 226 0070 1368     	 ldr r3,[r2]
+ 227 0072 C7F88030 	 str r3,[r7,#128]
+ 172:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         CoefA2 = *pCoefA;
+ 228              	 .loc 1 172 0
+ 229 0076 D7F89830 	 ldr r3,[r7,#152]
+ 230 007a 1B68     	 ldr r3,[r3]
+ 231 007c FB67     	 str r3,[r7,#124]
+ 173:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** 
+ 174:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         /* outR = (pSrc[2 * i] * pATable[2 * i] */    
+ 175:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         mult_32x32_keep32_R(outR, *pIn1, CoefA1);
+ 232              	 .loc 1 175 0
+ 233 007e D7F88830 	 ldr r3,[r7,#136]
+ 234 0082 1B68     	 ldr r3,[r3]
+ 235 0084 1846     	 mov r0,r3
+ 236 0086 4FEAE071 	 asr r1,r0,#31
+ 237 008a D7F88030 	 ldr r3,[r7,#128]
+ 238 008e 1A46     	 mov r2,r3
+ 239 0090 4FEAE273 	 asr r3,r2,#31
+ 240 0094 02FB01F5 	 mul r5,r2,r1
+ 241 0098 00FB03F4 	 mul r4,r0,r3
+ 242 009c 2C44     	 add r4,r4,r5
+ 243 009e A0FB0223 	 umull r2,r3,r0,r2
+ 244 00a2 E118     	 adds r1,r4,r3
+ 245 00a4 0B46     	 mov r3,r1
+ 246 00a6 12F10042 	 adds r2,r2,#-2147483648
+ 247 00aa 43F10003 	 adc r3,r3,#0
+ 248 00ae 1900     	 movs r1,r3
+ 249 00b0 B965     	 str r1,[r7,#88]
+ 250 00b2 DB17     	 asrs r3,r3,#31
+ 251 00b4 FB65     	 str r3,[r7,#92]
+ 252 00b6 BB6D     	 ldr r3,[r7,#88]
+ 253 00b8 BB67     	 str r3,[r7,#120]
+ 176:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** 
+ 177:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         /* outI = pIn[2 * i] * pATable[2 * i + 1] */
+ 178:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         mult_32x32_keep32_R(outI, *pIn1++, CoefA2);
+ 254              	 .loc 1 178 0
+ 255 00ba D7F88820 	 ldr r2,[r7,#136]
+ 256 00be 131D     	 adds r3,r2,#4
+ 257 00c0 C7F88830 	 str r3,[r7,#136]
+ 258 00c4 1368     	 ldr r3,[r2]
+ 259 00c6 1846     	 mov r0,r3
+ 260 00c8 4FEAE071 	 asr r1,r0,#31
+ 261 00cc FB6F     	 ldr r3,[r7,#124]
+ 262 00ce 1A46     	 mov r2,r3
+ 263 00d0 4FEAE273 	 asr r3,r2,#31
+ 264 00d4 02FB01F5 	 mul r5,r2,r1
+ 265 00d8 00FB03F4 	 mul r4,r0,r3
+ 266 00dc 2C44     	 add r4,r4,r5
+ 267 00de A0FB0223 	 umull r2,r3,r0,r2
+ 268 00e2 E118     	 adds r1,r4,r3
+ 269 00e4 0B46     	 mov r3,r1
+ 270 00e6 12F10042 	 adds r2,r2,#-2147483648
+ 271 00ea 43F10003 	 adc r3,r3,#0
+ 272 00ee 1900     	 movs r1,r3
+ 273 00f0 3965     	 str r1,[r7,#80]
+ 274 00f2 DB17     	 asrs r3,r3,#31
+ 275 00f4 7B65     	 str r3,[r7,#84]
+ 276 00f6 3B6D     	 ldr r3,[r7,#80]
+ 277 00f8 7B67     	 str r3,[r7,#116]
+ 179:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** 
+ 180:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         /* - pSrc[2 * i + 1] * pATable[2 * i + 1] */
+ 181:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         multSub_32x32_keep32_R(outR, *pIn1, CoefA2);
+ 278              	 .loc 1 181 0
+ 279 00fa BB6F     	 ldr r3,[r7,#120]
+ 280 00fc 1A46     	 mov r2,r3
+ 281 00fe 4FEAE273 	 asr r3,r2,#31
+ 282 0102 1300     	 movs r3,r2
+ 283 0104 FB64     	 str r3,[r7,#76]
+ 284 0106 0023     	 movs r3,#0
+ 285 0108 BB64     	 str r3,[r7,#72]
+ 286 010a D7F88830 	 ldr r3,[r7,#136]
+ 287 010e 1B68     	 ldr r3,[r3]
+ 288 0110 1846     	 mov r0,r3
+ 289 0112 4FEAE071 	 asr r1,r0,#31
+ 290 0116 FB6F     	 ldr r3,[r7,#124]
+ 291 0118 1A46     	 mov r2,r3
+ 292 011a 4FEAE273 	 asr r3,r2,#31
+ 293 011e 02FB01F5 	 mul r5,r2,r1
+ 294 0122 00FB03F4 	 mul r4,r0,r3
+ 295 0126 2C44     	 add r4,r4,r5
+ 296 0128 A0FB0201 	 umull r0,r1,r0,r2
+ 297 012c 6318     	 adds r3,r4,r1
+ 298 012e 1946     	 mov r1,r3
+ 299 0130 D7E91223 	 ldrd r2,[r7,#72]
+ 300 0134 121A     	 subs r2,r2,r0
+ 301 0136 63EB0103 	 sbc r3,r3,r1
+ 302 013a 12F10042 	 adds r2,r2,#-2147483648
+ 303 013e 43F10003 	 adc r3,r3,#0
+ 304 0142 1900     	 movs r1,r3
+ 305 0144 3964     	 str r1,[r7,#64]
+ 306 0146 DB17     	 asrs r3,r3,#31
+ 307 0148 7B64     	 str r3,[r7,#68]
+ 308 014a 3B6C     	 ldr r3,[r7,#64]
+ 309 014c BB67     	 str r3,[r7,#120]
+ 182:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** 
+ 183:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         /* (pIn[2 * i + 1] * pATable[2 * i] */
+ 184:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         multAcc_32x32_keep32_R(outI, *pIn1++, CoefA1);
+ 310              	 .loc 1 184 0
+ 311 014e 7B6F     	 ldr r3,[r7,#116]
+ 312 0150 1A46     	 mov r2,r3
+ 313 0152 4FEAE273 	 asr r3,r2,#31
+ 314 0156 1300     	 movs r3,r2
+ 315 0158 FB63     	 str r3,[r7,#60]
+ 316 015a 0023     	 movs r3,#0
+ 317 015c BB63     	 str r3,[r7,#56]
+ 318 015e D7F88820 	 ldr r2,[r7,#136]
+ 319 0162 131D     	 adds r3,r2,#4
+ 320 0164 C7F88830 	 str r3,[r7,#136]
+ 321 0168 1368     	 ldr r3,[r2]
+ 322 016a 1846     	 mov r0,r3
+ 323 016c 4FEAE071 	 asr r1,r0,#31
+ 324 0170 D7F88030 	 ldr r3,[r7,#128]
+ 325 0174 1A46     	 mov r2,r3
+ 326 0176 4FEAE273 	 asr r3,r2,#31
+ 327 017a 02FB01F5 	 mul r5,r2,r1
+ 328 017e 00FB03F4 	 mul r4,r0,r3
+ 329 0182 2C44     	 add r4,r4,r5
+ 330 0184 A0FB0201 	 umull r0,r1,r0,r2
+ 331 0188 6318     	 adds r3,r4,r1
+ 332 018a 1946     	 mov r1,r3
+ 333 018c D7E90E23 	 ldrd r2,[r7,#56]
+ 334 0190 1218     	 adds r2,r2,r0
+ 335 0192 43EB0103 	 adc r3,r3,r1
+ 336 0196 12F10042 	 adds r2,r2,#-2147483648
+ 337 019a 43F10003 	 adc r3,r3,#0
+ 338 019e 1900     	 movs r1,r3
+ 339 01a0 3963     	 str r1,[r7,#48]
+ 340 01a2 DB17     	 asrs r3,r3,#31
+ 341 01a4 7B63     	 str r3,[r7,#52]
+ 342 01a6 3B6B     	 ldr r3,[r7,#48]
+ 343 01a8 7B67     	 str r3,[r7,#116]
+ 185:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** 
+ 186:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         /* pSrc[2 * n - 2 * i] * pBTable[2 * i]  */
+ 187:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         multSub_32x32_keep32_R(outR, *pIn2, CoefA2);
+ 344              	 .loc 1 187 0
+ 345 01aa BB6F     	 ldr r3,[r7,#120]
+ 346 01ac 1A46     	 mov r2,r3
+ 347 01ae 4FEAE273 	 asr r3,r2,#31
+ 348 01b2 1300     	 movs r3,r2
+ 349 01b4 FB62     	 str r3,[r7,#44]
+ 350 01b6 0023     	 movs r3,#0
+ 351 01b8 BB62     	 str r3,[r7,#40]
+ 352 01ba D7F88430 	 ldr r3,[r7,#132]
+ 353 01be 1B68     	 ldr r3,[r3]
+ 354 01c0 1846     	 mov r0,r3
+ 355 01c2 4FEAE071 	 asr r1,r0,#31
+ 356 01c6 FB6F     	 ldr r3,[r7,#124]
+ 357 01c8 1A46     	 mov r2,r3
+ 358 01ca 4FEAE273 	 asr r3,r2,#31
+ 359 01ce 02FB01F5 	 mul r5,r2,r1
+ 360 01d2 00FB03F4 	 mul r4,r0,r3
+ 361 01d6 2C44     	 add r4,r4,r5
+ 362 01d8 A0FB0201 	 umull r0,r1,r0,r2
+ 363 01dc 6318     	 adds r3,r4,r1
+ 364 01de 1946     	 mov r1,r3
+ 365 01e0 D7E90A23 	 ldrd r2,[r7,#40]
+ 366 01e4 121A     	 subs r2,r2,r0
+ 367 01e6 63EB0103 	 sbc r3,r3,r1
+ 368 01ea 12F10042 	 adds r2,r2,#-2147483648
+ 369 01ee 43F10003 	 adc r3,r3,#0
+ 370 01f2 1900     	 movs r1,r3
+ 371 01f4 3962     	 str r1,[r7,#32]
+ 372 01f6 DB17     	 asrs r3,r3,#31
+ 373 01f8 7B62     	 str r3,[r7,#36]
+ 374 01fa 3B6A     	 ldr r3,[r7,#32]
+ 375 01fc BB67     	 str r3,[r7,#120]
+ 188:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         CoefB1 = *pCoefB;
+ 376              	 .loc 1 188 0
+ 377 01fe D7F89430 	 ldr r3,[r7,#148]
+ 378 0202 1B68     	 ldr r3,[r3]
+ 379 0204 3B67     	 str r3,[r7,#112]
+ 189:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** 
+ 190:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         /* pIn[2 * n - 2 * i] * pBTable[2 * i + 1] */
+ 191:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         multSub_32x32_keep32_R(outI, *pIn2--, CoefB1);
+ 380              	 .loc 1 191 0
+ 381 0206 7B6F     	 ldr r3,[r7,#116]
+ 382 0208 1A46     	 mov r2,r3
+ 383 020a 4FEAE273 	 asr r3,r2,#31
+ 384 020e 1300     	 movs r3,r2
+ 385 0210 FB61     	 str r3,[r7,#28]
+ 386 0212 0023     	 movs r3,#0
+ 387 0214 BB61     	 str r3,[r7,#24]
+ 388 0216 D7F88420 	 ldr r2,[r7,#132]
+ 389 021a 131F     	 subs r3,r2,#4
+ 390 021c C7F88430 	 str r3,[r7,#132]
+ 391 0220 1368     	 ldr r3,[r2]
+ 392 0222 1846     	 mov r0,r3
+ 393 0224 4FEAE071 	 asr r1,r0,#31
+ 394 0228 3B6F     	 ldr r3,[r7,#112]
+ 395 022a 1A46     	 mov r2,r3
+ 396 022c 4FEAE273 	 asr r3,r2,#31
+ 397 0230 02FB01F5 	 mul r5,r2,r1
+ 398 0234 00FB03F4 	 mul r4,r0,r3
+ 399 0238 2C44     	 add r4,r4,r5
+ 400 023a A0FB0201 	 umull r0,r1,r0,r2
+ 401 023e 6318     	 adds r3,r4,r1
+ 402 0240 1946     	 mov r1,r3
+ 403 0242 D7E90623 	 ldrd r2,[r7,#24]
+ 404 0246 121A     	 subs r2,r2,r0
+ 405 0248 63EB0103 	 sbc r3,r3,r1
+ 406 024c 12F10042 	 adds r2,r2,#-2147483648
+ 407 0250 43F10003 	 adc r3,r3,#0
+ 408 0254 1900     	 movs r1,r3
+ 409 0256 3961     	 str r1,[r7,#16]
+ 410 0258 DB17     	 asrs r3,r3,#31
+ 411 025a 7B61     	 str r3,[r7,#20]
+ 412 025c 3B69     	 ldr r3,[r7,#16]
+ 413 025e 7B67     	 str r3,[r7,#116]
+ 192:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** 
+ 193:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         /* pSrc[2 * n - 2 * i + 1] * pBTable[2 * i + 1] */
+ 194:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         multAcc_32x32_keep32_R(outR, *pIn2, CoefB1);
+ 414              	 .loc 1 194 0
+ 415 0260 BB6F     	 ldr r3,[r7,#120]
+ 416 0262 1A46     	 mov r2,r3
+ 417 0264 4FEAE273 	 asr r3,r2,#31
+ 418 0268 1300     	 movs r3,r2
+ 419 026a FB60     	 str r3,[r7,#12]
+ 420 026c 0023     	 movs r3,#0
+ 421 026e BB60     	 str r3,[r7,#8]
+ 422 0270 D7F88430 	 ldr r3,[r7,#132]
+ 423 0274 1B68     	 ldr r3,[r3]
+ 424 0276 1846     	 mov r0,r3
+ 425 0278 4FEAE071 	 asr r1,r0,#31
+ 426 027c 3B6F     	 ldr r3,[r7,#112]
+ 427 027e 1A46     	 mov r2,r3
+ 428 0280 4FEAE273 	 asr r3,r2,#31
+ 429 0284 02FB01F5 	 mul r5,r2,r1
+ 430 0288 00FB03F4 	 mul r4,r0,r3
+ 431 028c 2C44     	 add r4,r4,r5
+ 432 028e A0FB0201 	 umull r0,r1,r0,r2
+ 433 0292 6318     	 adds r3,r4,r1
+ 434 0294 1946     	 mov r1,r3
+ 435 0296 D7E90223 	 ldrd r2,[r7,#8]
+ 436 029a 1218     	 adds r2,r2,r0
+ 437 029c 43EB0103 	 adc r3,r3,r1
+ 438 02a0 12F10042 	 adds r2,r2,#-2147483648
+ 439 02a4 43F10003 	 adc r3,r3,#0
+ 440 02a8 9A46     	 mov r10,r3
+ 441 02aa 4FEAE37B 	 asr fp,r3,#31
+ 442 02ae 5346     	 mov r3,r10
+ 443 02b0 BB67     	 str r3,[r7,#120]
+ 195:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** 
+ 196:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         /* pIn[2 * n - 2 * i + 1] * pBTable[2 * i] */
+ 197:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         multSub_32x32_keep32_R(outI, *pIn2--, CoefA2);
+ 444              	 .loc 1 197 0
+ 445 02b2 7B6F     	 ldr r3,[r7,#116]
+ 446 02b4 1A46     	 mov r2,r3
+ 447 02b6 4FEAE273 	 asr r3,r2,#31
+ 448 02ba 1300     	 movs r3,r2
+ 449 02bc 7B60     	 str r3,[r7,#4]
+ 450 02be 0023     	 movs r3,#0
+ 451 02c0 3B60     	 str r3,[r7]
+ 452 02c2 D7F88420 	 ldr r2,[r7,#132]
+ 453 02c6 131F     	 subs r3,r2,#4
+ 454 02c8 C7F88430 	 str r3,[r7,#132]
+ 455 02cc 1368     	 ldr r3,[r2]
+ 456 02ce 1846     	 mov r0,r3
+ 457 02d0 4FEAE071 	 asr r1,r0,#31
+ 458 02d4 FB6F     	 ldr r3,[r7,#124]
+ 459 02d6 1A46     	 mov r2,r3
+ 460 02d8 4FEAE273 	 asr r3,r2,#31
+ 461 02dc 02FB01F5 	 mul r5,r2,r1
+ 462 02e0 00FB03F4 	 mul r4,r0,r3
+ 463 02e4 2C44     	 add r4,r4,r5
+ 464 02e6 A0FB0201 	 umull r0,r1,r0,r2
+ 465 02ea 6318     	 adds r3,r4,r1
+ 466 02ec 1946     	 mov r1,r3
+ 467 02ee D7E90023 	 ldrd r2,[r7]
+ 468 02f2 121A     	 subs r2,r2,r0
+ 469 02f4 63EB0103 	 sbc r3,r3,r1
+ 470 02f8 12F10042 	 adds r2,r2,#-2147483648
+ 471 02fc 43F10003 	 adc r3,r3,#0
+ 472 0300 9846     	 mov r8,r3
+ 473 0302 4FEAE379 	 asr r9,r3,#31
+ 474 0306 4346     	 mov r3,r8
+ 475 0308 7B67     	 str r3,[r7,#116]
+ 198:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** 
+ 199:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         /* write output */
+ 200:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         *pOut1++ = outR;
+ 476              	 .loc 1 200 0
+ 477 030a D7F89020 	 ldr r2,[r7,#144]
+ 478 030e 131D     	 adds r3,r2,#4
+ 479 0310 C7F89030 	 str r3,[r7,#144]
+ 480 0314 BB6F     	 ldr r3,[r7,#120]
+ 481 0316 1360     	 str r3,[r2]
+ 201:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         *pOut1++ = outI;
+ 482              	 .loc 1 201 0
+ 483 0318 D7F89020 	 ldr r2,[r7,#144]
+ 484 031c 131D     	 adds r3,r2,#4
+ 485 031e C7F89030 	 str r3,[r7,#144]
+ 486 0322 7B6F     	 ldr r3,[r7,#116]
+ 487 0324 1360     	 str r3,[r2]
+ 202:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** 
+ 203:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         /* write complex conjugate output */
+ 204:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         *pOut2-- = -outI;
+ 488              	 .loc 1 204 0
+ 489 0326 D7F88C20 	 ldr r2,[r7,#140]
+ 490 032a 131F     	 subs r3,r2,#4
+ 491 032c C7F88C30 	 str r3,[r7,#140]
+ 492 0330 7B6F     	 ldr r3,[r7,#116]
+ 493 0332 5B42     	 negs r3,r3
+ 494 0334 1360     	 str r3,[r2]
+ 205:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         *pOut2-- = outR;
+ 495              	 .loc 1 205 0
+ 496 0336 D7F88C20 	 ldr r2,[r7,#140]
+ 497 033a 131F     	 subs r3,r2,#4
+ 498 033c C7F88C30 	 str r3,[r7,#140]
+ 499 0340 BB6F     	 ldr r3,[r7,#120]
+ 500 0342 1360     	 str r3,[r2]
+ 206:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** 
+ 207:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         /* update coefficient pointer */
+ 208:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         pCoefB = pCoefB + (modifier * 2u);
+ 501              	 .loc 1 208 0
+ 502 0344 D7F8C430 	 ldr r3,[r7,#196]
+ 503 0348 DA00     	 lsls r2,r3,#3
+ 504 034a D7F89430 	 ldr r3,[r7,#148]
+ 505 034e 1344     	 add r3,r3,r2
+ 506 0350 C7F89430 	 str r3,[r7,#148]
+ 209:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         pCoefA = pCoefA + ((modifier * 2u) - 1u);
+ 507              	 .loc 1 209 0
+ 508 0354 D7F8C430 	 ldr r3,[r7,#196]
+ 509 0358 DB00     	 lsls r3,r3,#3
+ 510 035a 1A1F     	 subs r2,r3,#4
+ 511 035c D7F89830 	 ldr r3,[r7,#152]
+ 512 0360 1344     	 add r3,r3,r2
+ 513 0362 C7F89830 	 str r3,[r7,#152]
+ 210:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** 
+ 211:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         i--;
+ 514              	 .loc 1 211 0
+ 515 0366 D7F89C30 	 ldr r3,[r7,#156]
+ 516 036a 013B     	 subs r3,r3,#1
+ 517 036c C7F89C30 	 str r3,[r7,#156]
+ 518              	.L7:
+ 159:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****     {
+ 519              	 .loc 1 159 0
+ 520 0370 D7F89C30 	 ldr r3,[r7,#156]
+ 521 0374 002B     	 cmp r3,#0
+ 522 0376 7FF476AE 	 bne .L8
+ 212:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****     }
+ 213:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****     pDst[2u * fftLen] = (pSrc[0] - pSrc[1]) >> 1;
+ 523              	 .loc 1 213 0
+ 524 037a BB6E     	 ldr r3,[r7,#104]
+ 525 037c DB00     	 lsls r3,r3,#3
+ 526 037e D7F8C020 	 ldr r2,[r7,#192]
+ 527 0382 1344     	 add r3,r3,r2
+ 528 0384 FA6E     	 ldr r2,[r7,#108]
+ 529 0386 1168     	 ldr r1,[r2]
+ 530 0388 FA6E     	 ldr r2,[r7,#108]
+ 531 038a 0432     	 adds r2,r2,#4
+ 532 038c 1268     	 ldr r2,[r2]
+ 533 038e 8A1A     	 subs r2,r1,r2
+ 534 0390 5210     	 asrs r2,r2,#1
+ 535 0392 1A60     	 str r2,[r3]
+ 214:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****     pDst[(2u * fftLen) + 1u] = 0;
+ 536              	 .loc 1 214 0
+ 537 0394 BB6E     	 ldr r3,[r7,#104]
+ 538 0396 DB00     	 lsls r3,r3,#3
+ 539 0398 0433     	 adds r3,r3,#4
+ 540 039a D7F8C020 	 ldr r2,[r7,#192]
+ 541 039e 1344     	 add r3,r3,r2
+ 542 03a0 0022     	 movs r2,#0
+ 543 03a2 1A60     	 str r2,[r3]
+ 215:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** 
+ 216:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****     pDst[0] = (pSrc[0] + pSrc[1]) >> 1;
+ 544              	 .loc 1 216 0
+ 545 03a4 FB6E     	 ldr r3,[r7,#108]
+ 546 03a6 1A68     	 ldr r2,[r3]
+ 547 03a8 FB6E     	 ldr r3,[r7,#108]
+ 548 03aa 0433     	 adds r3,r3,#4
+ 549 03ac 1B68     	 ldr r3,[r3]
+ 550 03ae 1344     	 add r3,r3,r2
+ 551 03b0 5A10     	 asrs r2,r3,#1
+ 552 03b2 D7F8C030 	 ldr r3,[r7,#192]
+ 553 03b6 1A60     	 str r2,[r3]
+ 217:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****     pDst[1] = 0;
+ 554              	 .loc 1 217 0
+ 555 03b8 D7F8C030 	 ldr r3,[r7,#192]
+ 556 03bc 0433     	 adds r3,r3,#4
+ 557 03be 0022     	 movs r2,#0
+ 558 03c0 1A60     	 str r2,[r3]
+ 218:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** }
+ 559              	 .loc 1 218 0
+ 560 03c2 A437     	 adds r7,r7,#164
+ 561              	.LCFI8:
+ 562              	 .cfi_def_cfa_offset 28
+ 563 03c4 BD46     	 mov sp,r7
+ 564              	.LCFI9:
+ 565              	 .cfi_def_cfa_register 13
+ 566              	 
+ 567 03c6 BDE8B00F 	 pop {r4,r5,r7,r8,r9,r10,fp}
+ 568              	.LCFI10:
+ 569              	 .cfi_restore 11
+ 570              	 .cfi_restore 10
+ 571              	 .cfi_restore 9
+ 572              	 .cfi_restore 8
+ 573              	 .cfi_restore 7
+ 574              	 .cfi_restore 5
+ 575              	 .cfi_restore 4
+ 576              	 .cfi_def_cfa_offset 0
+ 577 03ca 7047     	 bx lr
+ 578              	 .cfi_endproc
+ 579              	.LFE140:
+ 581              	 .section .text.arm_split_rifft_q31,"ax",%progbits
+ 582              	 .align 2
+ 583              	 .global arm_split_rifft_q31
+ 584              	 .thumb
+ 585              	 .thumb_func
+ 587              	arm_split_rifft_q31:
+ 588              	.LFB141:
+ 219:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** 
+ 220:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** /**    
+ 221:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** * @brief  Core Real IFFT process    
+ 222:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** * @param[in]   *pSrc 				points to the input buffer.   
+ 223:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** * @param[in]   fftLen  			    length of FFT.    
+ 224:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** * @param[in]   *pATable 			points to the twiddle Coef A buffer.   
+ 225:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** * @param[in]   *pBTable 			points to the twiddle Coef B buffer.    
+ 226:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** * @param[out]  *pDst 				points to the output buffer.   
+ 227:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** * @param[in]   modifier 	        twiddle coefficient modifier that supports different size FFTs wit
+ 228:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** * @return none.    
+ 229:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** */
+ 230:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** void arm_split_rifft_q31(
+ 231:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****     q31_t * pSrc,
+ 232:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****     uint32_t fftLen,
+ 233:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****     q31_t * pATable,
+ 234:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****     q31_t * pBTable,
+ 235:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****     q31_t * pDst,
+ 236:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****     uint32_t modifier)
+ 237:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** {
+ 589              	 .loc 1 237 0
+ 590              	 .cfi_startproc
+ 591              	 
+ 592              	 
+ 593              	 
+ 594 0000 2DE9B00F 	 push {r4,r5,r7,r8,r9,r10,fp}
+ 595              	.LCFI11:
+ 596              	 .cfi_def_cfa_offset 28
+ 597              	 .cfi_offset 4,-28
+ 598              	 .cfi_offset 5,-24
+ 599              	 .cfi_offset 7,-20
+ 600              	 .cfi_offset 8,-16
+ 601              	 .cfi_offset 9,-12
+ 602              	 .cfi_offset 10,-8
+ 603              	 .cfi_offset 11,-4
+ 604 0004 A7B0     	 sub sp,sp,#156
+ 605              	.LCFI12:
+ 606              	 .cfi_def_cfa_offset 184
+ 607 0006 00AF     	 add r7,sp,#0
+ 608              	.LCFI13:
+ 609              	 .cfi_def_cfa_register 7
+ 610 0008 F866     	 str r0,[r7,#108]
+ 611 000a B966     	 str r1,[r7,#104]
+ 612 000c 7A66     	 str r2,[r7,#100]
+ 613 000e 3B66     	 str r3,[r7,#96]
+ 238:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****     q31_t outR, outI;                              /* Temporary variables for output */
+ 239:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****     q31_t *pCoefA, *pCoefB;                        /* Temporary pointers for twiddle factors */
+ 240:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****     q31_t CoefA1, CoefA2, CoefB1;                  /* Temporary variables for twiddle coefficients 
+ 241:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****     q31_t *pIn1 = &pSrc[0], *pIn2 = &pSrc[(2u * fftLen) + 1u];
+ 614              	 .loc 1 241 0
+ 615 0010 FB6E     	 ldr r3,[r7,#108]
+ 616 0012 C7F88C30 	 str r3,[r7,#140]
+ 617 0016 BB6E     	 ldr r3,[r7,#104]
+ 618 0018 DB00     	 lsls r3,r3,#3
+ 619 001a 1A1D     	 adds r2,r3,#4
+ 620 001c FB6E     	 ldr r3,[r7,#108]
+ 621 001e 1344     	 add r3,r3,r2
+ 622 0020 C7F88830 	 str r3,[r7,#136]
+ 242:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** 
+ 243:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****     pCoefA = &pATable[0];
+ 623              	 .loc 1 243 0
+ 624 0024 7B6E     	 ldr r3,[r7,#100]
+ 625 0026 C7F89430 	 str r3,[r7,#148]
+ 244:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****     pCoefB = &pBTable[0];
+ 626              	 .loc 1 244 0
+ 627 002a 3B6E     	 ldr r3,[r7,#96]
+ 628 002c C7F89030 	 str r3,[r7,#144]
+ 245:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** 
+ 246:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****     while(fftLen > 0u)
+ 629              	 .loc 1 246 0
+ 630 0030 79E1     	 b .L10
+ 631              	.L11:
+ 247:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****     {
+ 248:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         /*    
+ 249:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         outR = (pIn[2 * i] * pATable[2 * i] + pIn[2 * i + 1] * pATable[2 * i + 1] +    
+ 250:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         pIn[2 * n - 2 * i] * pBTable[2 * i] -    
+ 251:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         pIn[2 * n - 2 * i + 1] * pBTable[2 * i + 1]);    
+ 252:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** 
+ 253:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         outI = (pIn[2 * i + 1] * pATable[2 * i] - pIn[2 * i] * pATable[2 * i + 1] -    
+ 254:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         pIn[2 * n - 2 * i] * pBTable[2 * i + 1] -    
+ 255:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         pIn[2 * n - 2 * i + 1] * pBTable[2 * i]);   
+ 256:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         */
+ 257:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         CoefA1 = *pCoefA++;
+ 632              	 .loc 1 257 0
+ 633 0032 D7F89420 	 ldr r2,[r7,#148]
+ 634 0036 131D     	 adds r3,r2,#4
+ 635 0038 C7F89430 	 str r3,[r7,#148]
+ 636 003c 1368     	 ldr r3,[r2]
+ 637 003e C7F88430 	 str r3,[r7,#132]
+ 258:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         CoefA2 = *pCoefA;
+ 638              	 .loc 1 258 0
+ 639 0042 D7F89430 	 ldr r3,[r7,#148]
+ 640 0046 1B68     	 ldr r3,[r3]
+ 641 0048 C7F88030 	 str r3,[r7,#128]
+ 259:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** 
+ 260:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         /* outR = (pIn[2 * i] * pATable[2 * i] */
+ 261:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         mult_32x32_keep32_R(outR, *pIn1, CoefA1);
+ 642              	 .loc 1 261 0
+ 643 004c D7F88C30 	 ldr r3,[r7,#140]
+ 644 0050 1B68     	 ldr r3,[r3]
+ 645 0052 1846     	 mov r0,r3
+ 646 0054 4FEAE071 	 asr r1,r0,#31
+ 647 0058 D7F88430 	 ldr r3,[r7,#132]
+ 648 005c 1A46     	 mov r2,r3
+ 649 005e 4FEAE273 	 asr r3,r2,#31
+ 650 0062 02FB01F5 	 mul r5,r2,r1
+ 651 0066 00FB03F4 	 mul r4,r0,r3
+ 652 006a 2C44     	 add r4,r4,r5
+ 653 006c A0FB0223 	 umull r2,r3,r0,r2
+ 654 0070 E118     	 adds r1,r4,r3
+ 655 0072 0B46     	 mov r3,r1
+ 656 0074 12F10042 	 adds r2,r2,#-2147483648
+ 657 0078 43F10003 	 adc r3,r3,#0
+ 658 007c 1900     	 movs r1,r3
+ 659 007e B965     	 str r1,[r7,#88]
+ 660 0080 DB17     	 asrs r3,r3,#31
+ 661 0082 FB65     	 str r3,[r7,#92]
+ 662 0084 BB6D     	 ldr r3,[r7,#88]
+ 663 0086 FB67     	 str r3,[r7,#124]
+ 262:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** 
+ 263:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         /* - pIn[2 * i] * pATable[2 * i + 1] */
+ 264:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         mult_32x32_keep32_R(outI, *pIn1++, -CoefA2);
+ 664              	 .loc 1 264 0
+ 665 0088 D7F88C20 	 ldr r2,[r7,#140]
+ 666 008c 131D     	 adds r3,r2,#4
+ 667 008e C7F88C30 	 str r3,[r7,#140]
+ 668 0092 1368     	 ldr r3,[r2]
+ 669 0094 1846     	 mov r0,r3
+ 670 0096 4FEAE071 	 asr r1,r0,#31
+ 671 009a D7F88030 	 ldr r3,[r7,#128]
+ 672 009e 5B42     	 negs r3,r3
+ 673 00a0 1A46     	 mov r2,r3
+ 674 00a2 4FEAE273 	 asr r3,r2,#31
+ 675 00a6 02FB01F5 	 mul r5,r2,r1
+ 676 00aa 00FB03F4 	 mul r4,r0,r3
+ 677 00ae 2C44     	 add r4,r4,r5
+ 678 00b0 A0FB0223 	 umull r2,r3,r0,r2
+ 679 00b4 E118     	 adds r1,r4,r3
+ 680 00b6 0B46     	 mov r3,r1
+ 681 00b8 12F10042 	 adds r2,r2,#-2147483648
+ 682 00bc 43F10003 	 adc r3,r3,#0
+ 683 00c0 1900     	 movs r1,r3
+ 684 00c2 3965     	 str r1,[r7,#80]
+ 685 00c4 DB17     	 asrs r3,r3,#31
+ 686 00c6 7B65     	 str r3,[r7,#84]
+ 687 00c8 3B6D     	 ldr r3,[r7,#80]
+ 688 00ca BB67     	 str r3,[r7,#120]
+ 265:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         
+ 266:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         /* pIn[2 * i + 1] * pATable[2 * i + 1] */
+ 267:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         multAcc_32x32_keep32_R(outR, *pIn1, CoefA2);
+ 689              	 .loc 1 267 0
+ 690 00cc FB6F     	 ldr r3,[r7,#124]
+ 691 00ce 1A46     	 mov r2,r3
+ 692 00d0 4FEAE273 	 asr r3,r2,#31
+ 693 00d4 1300     	 movs r3,r2
+ 694 00d6 FB64     	 str r3,[r7,#76]
+ 695 00d8 0023     	 movs r3,#0
+ 696 00da BB64     	 str r3,[r7,#72]
+ 697 00dc D7F88C30 	 ldr r3,[r7,#140]
+ 698 00e0 1B68     	 ldr r3,[r3]
+ 699 00e2 1846     	 mov r0,r3
+ 700 00e4 4FEAE071 	 asr r1,r0,#31
+ 701 00e8 D7F88030 	 ldr r3,[r7,#128]
+ 702 00ec 1A46     	 mov r2,r3
+ 703 00ee 4FEAE273 	 asr r3,r2,#31
+ 704 00f2 02FB01F5 	 mul r5,r2,r1
+ 705 00f6 00FB03F4 	 mul r4,r0,r3
+ 706 00fa 2C44     	 add r4,r4,r5
+ 707 00fc A0FB0201 	 umull r0,r1,r0,r2
+ 708 0100 6318     	 adds r3,r4,r1
+ 709 0102 1946     	 mov r1,r3
+ 710 0104 D7E91223 	 ldrd r2,[r7,#72]
+ 711 0108 1218     	 adds r2,r2,r0
+ 712 010a 43EB0103 	 adc r3,r3,r1
+ 713 010e 12F10042 	 adds r2,r2,#-2147483648
+ 714 0112 43F10003 	 adc r3,r3,#0
+ 715 0116 1900     	 movs r1,r3
+ 716 0118 3964     	 str r1,[r7,#64]
+ 717 011a DB17     	 asrs r3,r3,#31
+ 718 011c 7B64     	 str r3,[r7,#68]
+ 719 011e 3B6C     	 ldr r3,[r7,#64]
+ 720 0120 FB67     	 str r3,[r7,#124]
+ 268:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** 
+ 269:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         /* pIn[2 * i + 1] * pATable[2 * i] */
+ 270:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         multAcc_32x32_keep32_R(outI, *pIn1++, CoefA1);
+ 721              	 .loc 1 270 0
+ 722 0122 BB6F     	 ldr r3,[r7,#120]
+ 723 0124 1A46     	 mov r2,r3
+ 724 0126 4FEAE273 	 asr r3,r2,#31
+ 725 012a 1300     	 movs r3,r2
+ 726 012c FB63     	 str r3,[r7,#60]
+ 727 012e 0023     	 movs r3,#0
+ 728 0130 BB63     	 str r3,[r7,#56]
+ 729 0132 D7F88C20 	 ldr r2,[r7,#140]
+ 730 0136 131D     	 adds r3,r2,#4
+ 731 0138 C7F88C30 	 str r3,[r7,#140]
+ 732 013c 1368     	 ldr r3,[r2]
+ 733 013e 1846     	 mov r0,r3
+ 734 0140 4FEAE071 	 asr r1,r0,#31
+ 735 0144 D7F88430 	 ldr r3,[r7,#132]
+ 736 0148 1A46     	 mov r2,r3
+ 737 014a 4FEAE273 	 asr r3,r2,#31
+ 738 014e 02FB01F5 	 mul r5,r2,r1
+ 739 0152 00FB03F4 	 mul r4,r0,r3
+ 740 0156 2C44     	 add r4,r4,r5
+ 741 0158 A0FB0201 	 umull r0,r1,r0,r2
+ 742 015c 6318     	 adds r3,r4,r1
+ 743 015e 1946     	 mov r1,r3
+ 744 0160 D7E90E23 	 ldrd r2,[r7,#56]
+ 745 0164 1218     	 adds r2,r2,r0
+ 746 0166 43EB0103 	 adc r3,r3,r1
+ 747 016a 12F10042 	 adds r2,r2,#-2147483648
+ 748 016e 43F10003 	 adc r3,r3,#0
+ 749 0172 1900     	 movs r1,r3
+ 750 0174 3963     	 str r1,[r7,#48]
+ 751 0176 DB17     	 asrs r3,r3,#31
+ 752 0178 7B63     	 str r3,[r7,#52]
+ 753 017a 3B6B     	 ldr r3,[r7,#48]
+ 754 017c BB67     	 str r3,[r7,#120]
+ 271:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** 
+ 272:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         /* pIn[2 * n - 2 * i] * pBTable[2 * i] */
+ 273:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         multAcc_32x32_keep32_R(outR, *pIn2, CoefA2);
+ 755              	 .loc 1 273 0
+ 756 017e FB6F     	 ldr r3,[r7,#124]
+ 757 0180 1A46     	 mov r2,r3
+ 758 0182 4FEAE273 	 asr r3,r2,#31
+ 759 0186 1300     	 movs r3,r2
+ 760 0188 FB62     	 str r3,[r7,#44]
+ 761 018a 0023     	 movs r3,#0
+ 762 018c BB62     	 str r3,[r7,#40]
+ 763 018e D7F88830 	 ldr r3,[r7,#136]
+ 764 0192 1B68     	 ldr r3,[r3]
+ 765 0194 1846     	 mov r0,r3
+ 766 0196 4FEAE071 	 asr r1,r0,#31
+ 767 019a D7F88030 	 ldr r3,[r7,#128]
+ 768 019e 1A46     	 mov r2,r3
+ 769 01a0 4FEAE273 	 asr r3,r2,#31
+ 770 01a4 02FB01F5 	 mul r5,r2,r1
+ 771 01a8 00FB03F4 	 mul r4,r0,r3
+ 772 01ac 2C44     	 add r4,r4,r5
+ 773 01ae A0FB0201 	 umull r0,r1,r0,r2
+ 774 01b2 6318     	 adds r3,r4,r1
+ 775 01b4 1946     	 mov r1,r3
+ 776 01b6 D7E90A23 	 ldrd r2,[r7,#40]
+ 777 01ba 1218     	 adds r2,r2,r0
+ 778 01bc 43EB0103 	 adc r3,r3,r1
+ 779 01c0 12F10042 	 adds r2,r2,#-2147483648
+ 780 01c4 43F10003 	 adc r3,r3,#0
+ 781 01c8 1900     	 movs r1,r3
+ 782 01ca 3962     	 str r1,[r7,#32]
+ 783 01cc DB17     	 asrs r3,r3,#31
+ 784 01ce 7B62     	 str r3,[r7,#36]
+ 785 01d0 3B6A     	 ldr r3,[r7,#32]
+ 786 01d2 FB67     	 str r3,[r7,#124]
+ 274:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         CoefB1 = *pCoefB;
+ 787              	 .loc 1 274 0
+ 788 01d4 D7F89030 	 ldr r3,[r7,#144]
+ 789 01d8 1B68     	 ldr r3,[r3]
+ 790 01da 7B67     	 str r3,[r7,#116]
+ 275:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** 
+ 276:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         /* pIn[2 * n - 2 * i] * pBTable[2 * i + 1] */
+ 277:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         multSub_32x32_keep32_R(outI, *pIn2--, CoefB1);
+ 791              	 .loc 1 277 0
+ 792 01dc BB6F     	 ldr r3,[r7,#120]
+ 793 01de 1A46     	 mov r2,r3
+ 794 01e0 4FEAE273 	 asr r3,r2,#31
+ 795 01e4 1300     	 movs r3,r2
+ 796 01e6 FB61     	 str r3,[r7,#28]
+ 797 01e8 0023     	 movs r3,#0
+ 798 01ea BB61     	 str r3,[r7,#24]
+ 799 01ec D7F88820 	 ldr r2,[r7,#136]
+ 800 01f0 131F     	 subs r3,r2,#4
+ 801 01f2 C7F88830 	 str r3,[r7,#136]
+ 802 01f6 1368     	 ldr r3,[r2]
+ 803 01f8 1846     	 mov r0,r3
+ 804 01fa 4FEAE071 	 asr r1,r0,#31
+ 805 01fe 7B6F     	 ldr r3,[r7,#116]
+ 806 0200 1A46     	 mov r2,r3
+ 807 0202 4FEAE273 	 asr r3,r2,#31
+ 808 0206 02FB01F5 	 mul r5,r2,r1
+ 809 020a 00FB03F4 	 mul r4,r0,r3
+ 810 020e 2C44     	 add r4,r4,r5
+ 811 0210 A0FB0201 	 umull r0,r1,r0,r2
+ 812 0214 6318     	 adds r3,r4,r1
+ 813 0216 1946     	 mov r1,r3
+ 814 0218 D7E90623 	 ldrd r2,[r7,#24]
+ 815 021c 121A     	 subs r2,r2,r0
+ 816 021e 63EB0103 	 sbc r3,r3,r1
+ 817 0222 12F10042 	 adds r2,r2,#-2147483648
+ 818 0226 43F10003 	 adc r3,r3,#0
+ 819 022a 1900     	 movs r1,r3
+ 820 022c 3961     	 str r1,[r7,#16]
+ 821 022e DB17     	 asrs r3,r3,#31
+ 822 0230 7B61     	 str r3,[r7,#20]
+ 823 0232 3B69     	 ldr r3,[r7,#16]
+ 824 0234 BB67     	 str r3,[r7,#120]
+ 278:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** 
+ 279:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         /* pIn[2 * n - 2 * i + 1] * pBTable[2 * i + 1] */
+ 280:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         multAcc_32x32_keep32_R(outR, *pIn2, CoefB1);
+ 825              	 .loc 1 280 0
+ 826 0236 FB6F     	 ldr r3,[r7,#124]
+ 827 0238 1A46     	 mov r2,r3
+ 828 023a 4FEAE273 	 asr r3,r2,#31
+ 829 023e 1300     	 movs r3,r2
+ 830 0240 FB60     	 str r3,[r7,#12]
+ 831 0242 0023     	 movs r3,#0
+ 832 0244 BB60     	 str r3,[r7,#8]
+ 833 0246 D7F88830 	 ldr r3,[r7,#136]
+ 834 024a 1B68     	 ldr r3,[r3]
+ 835 024c 1846     	 mov r0,r3
+ 836 024e 4FEAE071 	 asr r1,r0,#31
+ 837 0252 7B6F     	 ldr r3,[r7,#116]
+ 838 0254 1A46     	 mov r2,r3
+ 839 0256 4FEAE273 	 asr r3,r2,#31
+ 840 025a 02FB01F5 	 mul r5,r2,r1
+ 841 025e 00FB03F4 	 mul r4,r0,r3
+ 842 0262 2C44     	 add r4,r4,r5
+ 843 0264 A0FB0201 	 umull r0,r1,r0,r2
+ 844 0268 6318     	 adds r3,r4,r1
+ 845 026a 1946     	 mov r1,r3
+ 846 026c D7E90223 	 ldrd r2,[r7,#8]
+ 847 0270 1218     	 adds r2,r2,r0
+ 848 0272 43EB0103 	 adc r3,r3,r1
+ 849 0276 12F10042 	 adds r2,r2,#-2147483648
+ 850 027a 43F10003 	 adc r3,r3,#0
+ 851 027e 9A46     	 mov r10,r3
+ 852 0280 4FEAE37B 	 asr fp,r3,#31
+ 853 0284 5346     	 mov r3,r10
+ 854 0286 FB67     	 str r3,[r7,#124]
+ 281:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** 
+ 282:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         /* pIn[2 * n - 2 * i + 1] * pBTable[2 * i] */
+ 283:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         multAcc_32x32_keep32_R(outI, *pIn2--, CoefA2);
+ 855              	 .loc 1 283 0
+ 856 0288 BB6F     	 ldr r3,[r7,#120]
+ 857 028a 1A46     	 mov r2,r3
+ 858 028c 4FEAE273 	 asr r3,r2,#31
+ 859 0290 1300     	 movs r3,r2
+ 860 0292 7B60     	 str r3,[r7,#4]
+ 861 0294 0023     	 movs r3,#0
+ 862 0296 3B60     	 str r3,[r7]
+ 863 0298 D7F88820 	 ldr r2,[r7,#136]
+ 864 029c 131F     	 subs r3,r2,#4
+ 865 029e C7F88830 	 str r3,[r7,#136]
+ 866 02a2 1368     	 ldr r3,[r2]
+ 867 02a4 1846     	 mov r0,r3
+ 868 02a6 4FEAE071 	 asr r1,r0,#31
+ 869 02aa D7F88030 	 ldr r3,[r7,#128]
+ 870 02ae 1A46     	 mov r2,r3
+ 871 02b0 4FEAE273 	 asr r3,r2,#31
+ 872 02b4 02FB01F5 	 mul r5,r2,r1
+ 873 02b8 00FB03F4 	 mul r4,r0,r3
+ 874 02bc 2C44     	 add r4,r4,r5
+ 875 02be A0FB0201 	 umull r0,r1,r0,r2
+ 876 02c2 6318     	 adds r3,r4,r1
+ 877 02c4 1946     	 mov r1,r3
+ 878 02c6 D7E90023 	 ldrd r2,[r7]
+ 879 02ca 1218     	 adds r2,r2,r0
+ 880 02cc 43EB0103 	 adc r3,r3,r1
+ 881 02d0 12F10042 	 adds r2,r2,#-2147483648
+ 882 02d4 43F10003 	 adc r3,r3,#0
+ 883 02d8 9846     	 mov r8,r3
+ 884 02da 4FEAE379 	 asr r9,r3,#31
+ 885 02de 4346     	 mov r3,r8
+ 886 02e0 BB67     	 str r3,[r7,#120]
+ 284:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** 
+ 285:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         /* write output */
+ 286:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         *pDst++ = outR;
+ 887              	 .loc 1 286 0
+ 888 02e2 D7F8B820 	 ldr r2,[r7,#184]
+ 889 02e6 131D     	 adds r3,r2,#4
+ 890 02e8 C7F8B830 	 str r3,[r7,#184]
+ 891 02ec FB6F     	 ldr r3,[r7,#124]
+ 892 02ee 1360     	 str r3,[r2]
+ 287:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         *pDst++ = outI;
+ 893              	 .loc 1 287 0
+ 894 02f0 D7F8B820 	 ldr r2,[r7,#184]
+ 895 02f4 131D     	 adds r3,r2,#4
+ 896 02f6 C7F8B830 	 str r3,[r7,#184]
+ 897 02fa BB6F     	 ldr r3,[r7,#120]
+ 898 02fc 1360     	 str r3,[r2]
+ 288:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** 
+ 289:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         /* update coefficient pointer */
+ 290:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         pCoefB = pCoefB + (modifier * 2u);
+ 899              	 .loc 1 290 0
+ 900 02fe D7F8BC30 	 ldr r3,[r7,#188]
+ 901 0302 DA00     	 lsls r2,r3,#3
+ 902 0304 D7F89030 	 ldr r3,[r7,#144]
+ 903 0308 1344     	 add r3,r3,r2
+ 904 030a C7F89030 	 str r3,[r7,#144]
+ 291:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         pCoefA = pCoefA + ((modifier * 2u) - 1u);
+ 905              	 .loc 1 291 0
+ 906 030e D7F8BC30 	 ldr r3,[r7,#188]
+ 907 0312 DB00     	 lsls r3,r3,#3
+ 908 0314 1A1F     	 subs r2,r3,#4
+ 909 0316 D7F89430 	 ldr r3,[r7,#148]
+ 910 031a 1344     	 add r3,r3,r2
+ 911 031c C7F89430 	 str r3,[r7,#148]
+ 292:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** 
+ 293:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         /* Decrement loop count */
+ 294:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****         fftLen--;
+ 912              	 .loc 1 294 0
+ 913 0320 BB6E     	 ldr r3,[r7,#104]
+ 914 0322 013B     	 subs r3,r3,#1
+ 915 0324 BB66     	 str r3,[r7,#104]
+ 916              	.L10:
+ 246:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****     {
+ 917              	 .loc 1 246 0
+ 918 0326 BB6E     	 ldr r3,[r7,#104]
+ 919 0328 002B     	 cmp r3,#0
+ 920 032a 7FF482AE 	 bne .L11
+ 295:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c ****     }
+ 296:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_rfft_q31.c **** }
+ 921              	 .loc 1 296 0
+ 922 032e 9C37     	 adds r7,r7,#156
+ 923              	.LCFI14:
+ 924              	 .cfi_def_cfa_offset 28
+ 925 0330 BD46     	 mov sp,r7
+ 926              	.LCFI15:
+ 927              	 .cfi_def_cfa_register 13
+ 928              	 
+ 929 0332 BDE8B00F 	 pop {r4,r5,r7,r8,r9,r10,fp}
+ 930              	.LCFI16:
+ 931              	 .cfi_restore 11
+ 932              	 .cfi_restore 10
+ 933              	 .cfi_restore 9
+ 934              	 .cfi_restore 8
+ 935              	 .cfi_restore 7
+ 936              	 .cfi_restore 5
+ 937              	 .cfi_restore 4
+ 938              	 .cfi_def_cfa_offset 0
+ 939 0336 7047     	 bx lr
+ 940              	 .cfi_endproc
+ 941              	.LFE141:
+ 943              	 .text
+ 944              	.Letext0:
+ 945              	 .file 2 "c:\\davev4-64bit\\dave-4.2.6\\eclipse\\arm-gcc-49\\arm-none-eabi\\include\\machine\\_default_types.h"
+ 946              	 .file 3 "c:\\davev4-64bit\\dave-4.2.6\\eclipse\\arm-gcc-49\\arm-none-eabi\\include\\stdint.h"
+ 947              	 .file 4 "C:\\Users\\Depes Crystalline\\Desktop\\school\\Active_Bike_Lighting_System\\Radar_Core\\Dave\\Generated/CMSIS_DSP/arm_math.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 arm_rfft_q31.c
+    {standard input}:19     .text.arm_rfft_q31:00000000 $t
+    {standard input}:24     .text.arm_rfft_q31:00000000 arm_rfft_q31
+    {standard input}:587    .text.arm_split_rifft_q31:00000000 arm_split_rifft_q31
+    {standard input}:156    .text.arm_split_rfft_q31:00000000 arm_split_rfft_q31
+    {standard input}:151    .text.arm_split_rfft_q31:00000000 $t
+    {standard input}:582    .text.arm_split_rifft_q31:00000000 $t
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+arm_cfft_q31

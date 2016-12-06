@@ -1,0 +1,1410 @@
+   1              	 .syntax unified
+   2              	 .cpu cortex-m4
+   3              	 .fpu softvfp
+   4              	 .eabi_attribute 20,1
+   5              	 .eabi_attribute 21,1
+   6              	 .eabi_attribute 23,3
+   7              	 .eabi_attribute 24,1
+   8              	 .eabi_attribute 25,1
+   9              	 .eabi_attribute 26,1
+  10              	 .eabi_attribute 30,6
+  11              	 .eabi_attribute 34,1
+  12              	 .eabi_attribute 18,4
+  13              	 .thumb
+  14              	 .file "arm_fir_decimate_f32.c"
+  15              	 .text
+  16              	.Ltext0:
+  17              	 .cfi_sections .debug_frame
+  18              	 .global __aeabi_fmul
+  19              	 .global __aeabi_fadd
+  20              	 .section .text.arm_fir_decimate_f32,"ax",%progbits
+  21              	 .align 2
+  22              	 .global arm_fir_decimate_f32
+  23              	 .thumb
+  24              	 .thumb_func
+  26              	arm_fir_decimate_f32:
+  27              	.LFB139:
+  28              	 .file 1 "../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c"
+   1:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** /* ----------------------------------------------------------------------    
+   2:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** * Copyright (C) 2010-2014 ARM Limited. All rights reserved.    
+   3:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** *    
+   4:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** * $Date:        12. March 2014
+   5:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** * $Revision: 	V1.4.4
+   6:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** *    
+   7:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** * Project: 	    CMSIS DSP Library    
+   8:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** * Title:	    arm_fir_decimate_f32.c    
+   9:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** *    
+  10:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** * Description:	FIR decimation for floating-point sequences.    
+  11:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** *    
+  12:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** * Target Processor: Cortex-M4/Cortex-M3/Cortex-M0
+  13:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** *  
+  14:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** * Redistribution and use in source and binary forms, with or without 
+  15:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** * modification, are permitted provided that the following conditions
+  16:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** * are met:
+  17:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** *   - Redistributions of source code must retain the above copyright
+  18:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** *     notice, this list of conditions and the following disclaimer.
+  19:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** *   - Redistributions in binary form must reproduce the above copyright
+  20:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** *     notice, this list of conditions and the following disclaimer in
+  21:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** *     the documentation and/or other materials provided with the 
+  22:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** *     distribution.
+  23:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** *   - Neither the name of ARM LIMITED nor the names of its contributors
+  24:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** *     may be used to endorse or promote products derived from this
+  25:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** *     software without specific prior written permission.
+  26:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** *
+  27:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  28:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  29:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+  30:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** * FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE 
+  31:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** * COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+  32:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+  33:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  34:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+  35:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+  36:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+  37:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+  38:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** * POSSIBILITY OF SUCH DAMAGE. 
+  39:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** * -------------------------------------------------------------------- */
+  40:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+  41:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** #include "CMSIS_DSP/cmsis_dsp.h"
+  42:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+  43:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** /**    
+  44:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****  * @ingroup groupFilters    
+  45:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****  */
+  46:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+  47:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** /**    
+  48:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****  * @defgroup FIR_decimate Finite Impulse Response (FIR) Decimator    
+  49:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****  *    
+  50:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****  * These functions combine an FIR filter together with a decimator.    
+  51:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****  * They are used in multirate systems for reducing the sample rate of a signal without introducing 
+  52:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****  * Conceptually, the functions are equivalent to the block diagram below:    
+  53:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****  * \image html FIRDecimator.gif "Components included in the FIR Decimator functions"    
+  54:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****  * When decimating by a factor of <code>M</code>, the signal should be prefiltered by a lowpass fil
+  55:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****  * cutoff frequency of <code>1/M</code> in order to prevent aliasing distortion.    
+  56:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****  * The user of the function is responsible for providing the filter coefficients.    
+  57:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****  *    
+  58:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****  * The FIR decimator functions provided in the CMSIS DSP Library combine the FIR filter and the dec
+  59:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****  * Instead of calculating all of the FIR filter outputs and discarding <code>M-1</code> out of ever
+  60:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****  * samples output by the decimator are computed.    
+  61:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****  * The functions operate on blocks of input and output data.    
+  62:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****  * <code>pSrc</code> points to an array of <code>blockSize</code> input values and    
+  63:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****  * <code>pDst</code> points to an array of <code>blockSize/M</code> output values.    
+  64:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****  * In order to have an integer number of output samples <code>blockSize</code>    
+  65:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****  * must always be a multiple of the decimation factor <code>M</code>.    
+  66:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****  *    
+  67:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****  * The library provides separate functions for Q15, Q31 and floating-point data types.    
+  68:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****  *    
+  69:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****  * \par Algorithm:    
+  70:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****  * The FIR portion of the algorithm uses the standard form filter:    
+  71:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****  * <pre>    
+  72:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****  *    y[n] = b[0] * x[n] + b[1] * x[n-1] + b[2] * x[n-2] + ...+ b[numTaps-1] * x[n-numTaps+1]    
+  73:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****  * </pre>    
+  74:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****  * where, <code>b[n]</code> are the filter coefficients.    
+  75:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****  * \par   
+  76:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****  * The <code>pCoeffs</code> points to a coefficient array of size <code>numTaps</code>.    
+  77:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****  * Coefficients are stored in time reversed order.    
+  78:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****  * \par    
+  79:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****  * <pre>    
+  80:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****  *    {b[numTaps-1], b[numTaps-2], b[N-2], ..., b[1], b[0]}    
+  81:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****  * </pre>    
+  82:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****  * \par    
+  83:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****  * <code>pState</code> points to a state array of size <code>numTaps + blockSize - 1</code>.    
+  84:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****  * Samples in the state buffer are stored in the order:    
+  85:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****  * \par    
+  86:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****  * <pre>    
+  87:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****  *    {x[n-numTaps+1], x[n-numTaps], x[n-numTaps-1], x[n-numTaps-2]....x[0], x[1], ..., x[blockSize
+  88:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****  * </pre>    
+  89:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****  * The state variables are updated after each block of data is processed, the coefficients are unto
+  90:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****  *    
+  91:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****  * \par Instance Structure    
+  92:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****  * The coefficients and state variables for a filter are stored together in an instance data struct
+  93:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****  * A separate instance structure must be defined for each filter.    
+  94:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****  * Coefficient arrays may be shared among several instances while state variable array should be al
+  95:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****  * There are separate instance structure declarations for each of the 3 supported data types.    
+  96:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****  *    
+  97:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****  * \par Initialization Functions    
+  98:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****  * There is also an associated initialization function for each data type.    
+  99:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****  * The initialization function performs the following operations:    
+ 100:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****  * - Sets the values of the internal structure fields.    
+ 101:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****  * - Zeros out the values in the state buffer.    
+ 102:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****  * - Checks to make sure that the size of the input is a multiple of the decimation factor.    
+ 103:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****  * To do this manually without calling the init function, assign the follow subfields of the instan
+ 104:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****  * numTaps, pCoeffs, M (decimation factor), pState. Also set all of the values in pState to zero. 
+ 105:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****  *    
+ 106:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****  * \par    
+ 107:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****  * Use of the initialization function is optional.    
+ 108:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****  * However, if the initialization function is used, then the instance structure cannot be placed in
+ 109:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****  * To place an instance structure into a const data section, the instance structure must be manuall
+ 110:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****  * The code below statically initializes each of the 3 different data type filter instance structur
+ 111:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****  * <pre>    
+ 112:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****  *arm_fir_decimate_instance_f32 S = {M, numTaps, pCoeffs, pState};    
+ 113:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****  *arm_fir_decimate_instance_q31 S = {M, numTaps, pCoeffs, pState};    
+ 114:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****  *arm_fir_decimate_instance_q15 S = {M, numTaps, pCoeffs, pState};    
+ 115:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****  * </pre>    
+ 116:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****  * where <code>M</code> is the decimation factor; <code>numTaps</code> is the number of filter coef
+ 117:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****  * <code>pCoeffs</code> is the address of the coefficient buffer;    
+ 118:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****  * <code>pState</code> is the address of the state buffer.    
+ 119:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****  * Be sure to set the values in the state buffer to zeros when doing static initialization.    
+ 120:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****  *    
+ 121:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****  * \par Fixed-Point Behavior    
+ 122:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****  * Care must be taken when using the fixed-point versions of the FIR decimate filter functions.    
+ 123:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****  * In particular, the overflow and saturation behavior of the accumulator used in each function mus
+ 124:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****  * Refer to the function specific documentation below for usage guidelines.    
+ 125:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****  */
+ 126:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 127:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** /**    
+ 128:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****  * @addtogroup FIR_decimate    
+ 129:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****  * @{    
+ 130:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****  */
+ 131:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 132:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****   /**    
+ 133:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****    * @brief Processing function for the floating-point FIR decimator.    
+ 134:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****    * @param[in] *S        points to an instance of the floating-point FIR decimator structure.    
+ 135:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****    * @param[in] *pSrc     points to the block of input data.    
+ 136:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****    * @param[out] *pDst    points to the block of output data.    
+ 137:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****    * @param[in] blockSize number of input samples to process per call.    
+ 138:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****    * @return none.    
+ 139:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****    */
+ 140:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 141:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** void arm_fir_decimate_f32(
+ 142:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****   const arm_fir_decimate_instance_f32 * S,
+ 143:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****   float32_t * pSrc,
+ 144:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****   float32_t * pDst,
+ 145:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****   uint32_t blockSize)
+ 146:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** {
+  29              	 .loc 1 146 0
+  30              	 .cfi_startproc
+  31              	 
+  32              	 
+  33 0000 80B5     	 push {r7,lr}
+  34              	.LCFI0:
+  35              	 .cfi_def_cfa_offset 8
+  36              	 .cfi_offset 7,-8
+  37              	 .cfi_offset 14,-4
+  38 0002 9EB0     	 sub sp,sp,#120
+  39              	.LCFI1:
+  40              	 .cfi_def_cfa_offset 128
+  41 0004 00AF     	 add r7,sp,#0
+  42              	.LCFI2:
+  43              	 .cfi_def_cfa_register 7
+  44 0006 F860     	 str r0,[r7,#12]
+  45 0008 B960     	 str r1,[r7,#8]
+  46 000a 7A60     	 str r2,[r7,#4]
+  47 000c 3B60     	 str r3,[r7]
+ 147:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****   float32_t *pState = S->pState;                 /* State pointer */
+  48              	 .loc 1 147 0
+  49 000e FB68     	 ldr r3,[r7,#12]
+  50 0010 9B68     	 ldr r3,[r3,#8]
+  51 0012 7B67     	 str r3,[r7,#116]
+ 148:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****   float32_t *pCoeffs = S->pCoeffs;               /* Coefficient pointer */
+  52              	 .loc 1 148 0
+  53 0014 FB68     	 ldr r3,[r7,#12]
+  54 0016 5B68     	 ldr r3,[r3,#4]
+  55 0018 3B63     	 str r3,[r7,#48]
+ 149:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****   float32_t *pStateCurnt;                        /* Points to the current sample of the state */
+ 150:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****   float32_t *px, *pb;                            /* Temporary pointers for state and coefficient bu
+ 151:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****   float32_t sum0;                                /* Accumulator */
+ 152:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****   float32_t x0, c0;                              /* Temporary variables to hold state and coefficie
+ 153:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****   uint32_t numTaps = S->numTaps;                 /* Number of filter coefficients in the filter */
+  56              	 .loc 1 153 0
+  57 001a FB68     	 ldr r3,[r7,#12]
+  58 001c 5B88     	 ldrh r3,[r3,#2]
+  59 001e FB62     	 str r3,[r7,#44]
+ 154:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****   uint32_t i, tapCnt, blkCnt, outBlockSize = blockSize / S->M;  /* Loop counters */
+  60              	 .loc 1 154 0
+  61 0020 FB68     	 ldr r3,[r7,#12]
+  62 0022 1B78     	 ldrb r3,[r3]
+  63 0024 1A46     	 mov r2,r3
+  64 0026 3B68     	 ldr r3,[r7]
+  65 0028 B3FBF2F3 	 udiv r3,r3,r2
+  66 002c BB62     	 str r3,[r7,#40]
+ 155:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 156:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** #ifndef ARM_MATH_CM0_FAMILY
+ 157:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 158:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****   uint32_t blkCntN4;
+ 159:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****   float32_t *px0, *px1, *px2, *px3;
+ 160:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****   float32_t acc0, acc1, acc2, acc3;
+ 161:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****   float32_t x1, x2, x3;
+ 162:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 163:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****   /* Run the below code for Cortex-M4 and Cortex-M3 */
+ 164:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 165:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****   /* S->pState buffer contains previous frame (numTaps - 1) samples */
+ 166:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****   /* pStateCurnt points to the location where the new input data should be written */
+ 167:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****   pStateCurnt = S->pState + (numTaps - 1u);
+  67              	 .loc 1 167 0
+  68 002e FB68     	 ldr r3,[r7,#12]
+  69 0030 9A68     	 ldr r2,[r3,#8]
+  70 0032 FB6A     	 ldr r3,[r7,#44]
+  71 0034 03F18043 	 add r3,r3,#1073741824
+  72 0038 013B     	 subs r3,r3,#1
+  73 003a 9B00     	 lsls r3,r3,#2
+  74 003c 1344     	 add r3,r3,r2
+  75 003e 3B67     	 str r3,[r7,#112]
+ 168:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 169:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****   /* Total number of output samples to be computed */
+ 170:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****   blkCnt = outBlockSize / 4;
+  76              	 .loc 1 170 0
+  77 0040 BB6A     	 ldr r3,[r7,#40]
+  78 0042 9B08     	 lsrs r3,r3,#2
+  79 0044 BB65     	 str r3,[r7,#88]
+ 171:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****   blkCntN4 = outBlockSize - (4 * blkCnt);
+  80              	 .loc 1 171 0
+  81 0046 BB6D     	 ldr r3,[r7,#88]
+  82 0048 9B00     	 lsls r3,r3,#2
+  83 004a BA6A     	 ldr r2,[r7,#40]
+  84 004c D31A     	 subs r3,r2,r3
+  85 004e 7B65     	 str r3,[r7,#84]
+ 172:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 173:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****   while(blkCnt > 0u)
+  86              	 .loc 1 173 0
+  87 0050 C6E1     	 b .L2
+  88              	.L8:
+ 174:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****   {
+ 175:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     /* Copy 4 * decimation factor number of new input samples into the state buffer */
+ 176:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     i = 4 * S->M;
+  89              	 .loc 1 176 0
+  90 0052 FB68     	 ldr r3,[r7,#12]
+  91 0054 1B78     	 ldrb r3,[r3]
+  92 0056 9B00     	 lsls r3,r3,#2
+  93 0058 3B66     	 str r3,[r7,#96]
+  94              	.L3:
+ 177:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 178:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     do
+ 179:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     {
+ 180:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       *pStateCurnt++ = *pSrc++;
+  95              	 .loc 1 180 0 discriminator 1
+  96 005a 3B6F     	 ldr r3,[r7,#112]
+  97 005c 1A1D     	 adds r2,r3,#4
+  98 005e 3A67     	 str r2,[r7,#112]
+  99 0060 BA68     	 ldr r2,[r7,#8]
+ 100 0062 111D     	 adds r1,r2,#4
+ 101 0064 B960     	 str r1,[r7,#8]
+ 102 0066 1268     	 ldr r2,[r2]
+ 103 0068 1A60     	 str r2,[r3]
+ 181:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 182:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     } while(--i);
+ 104              	 .loc 1 182 0 discriminator 1
+ 105 006a 3B6E     	 ldr r3,[r7,#96]
+ 106 006c 013B     	 subs r3,r3,#1
+ 107 006e 3B66     	 str r3,[r7,#96]
+ 108 0070 3B6E     	 ldr r3,[r7,#96]
+ 109 0072 002B     	 cmp r3,#0
+ 110 0074 F1D1     	 bne .L3
+ 183:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 184:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     /* Set accumulators to zero */
+ 185:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     acc0 = 0.0f;
+ 111              	 .loc 1 185 0
+ 112 0076 4FF00003 	 mov r3,#0
+ 113 007a 3B64     	 str r3,[r7,#64]
+ 186:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     acc1 = 0.0f;
+ 114              	 .loc 1 186 0
+ 115 007c 4FF00003 	 mov r3,#0
+ 116 0080 FB63     	 str r3,[r7,#60]
+ 187:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     acc2 = 0.0f;
+ 117              	 .loc 1 187 0
+ 118 0082 4FF00003 	 mov r3,#0
+ 119 0086 BB63     	 str r3,[r7,#56]
+ 188:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     acc3 = 0.0f;
+ 120              	 .loc 1 188 0
+ 121 0088 4FF00003 	 mov r3,#0
+ 122 008c 7B63     	 str r3,[r7,#52]
+ 189:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 190:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     /* Initialize state pointer for all the samples */
+ 191:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     px0 = pState;
+ 123              	 .loc 1 191 0
+ 124 008e 7B6F     	 ldr r3,[r7,#116]
+ 125 0090 3B65     	 str r3,[r7,#80]
+ 192:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     px1 = pState + S->M;
+ 126              	 .loc 1 192 0
+ 127 0092 FB68     	 ldr r3,[r7,#12]
+ 128 0094 1B78     	 ldrb r3,[r3]
+ 129 0096 9B00     	 lsls r3,r3,#2
+ 130 0098 7A6F     	 ldr r2,[r7,#116]
+ 131 009a 1344     	 add r3,r3,r2
+ 132 009c FB64     	 str r3,[r7,#76]
+ 193:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     px2 = pState + 2 * S->M;
+ 133              	 .loc 1 193 0
+ 134 009e FB68     	 ldr r3,[r7,#12]
+ 135 00a0 1B78     	 ldrb r3,[r3]
+ 136 00a2 DB00     	 lsls r3,r3,#3
+ 137 00a4 1A46     	 mov r2,r3
+ 138 00a6 7B6F     	 ldr r3,[r7,#116]
+ 139 00a8 1344     	 add r3,r3,r2
+ 140 00aa BB64     	 str r3,[r7,#72]
+ 194:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     px3 = pState + 3 * S->M;
+ 141              	 .loc 1 194 0
+ 142 00ac FB68     	 ldr r3,[r7,#12]
+ 143 00ae 1B78     	 ldrb r3,[r3]
+ 144 00b0 1A46     	 mov r2,r3
+ 145 00b2 1346     	 mov r3,r2
+ 146 00b4 5B00     	 lsls r3,r3,#1
+ 147 00b6 1344     	 add r3,r3,r2
+ 148 00b8 9B00     	 lsls r3,r3,#2
+ 149 00ba 1A46     	 mov r2,r3
+ 150 00bc 7B6F     	 ldr r3,[r7,#116]
+ 151 00be 1344     	 add r3,r3,r2
+ 152 00c0 7B64     	 str r3,[r7,#68]
+ 195:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 196:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     /* Initialize coeff pointer */
+ 197:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     pb = pCoeffs;
+ 153              	 .loc 1 197 0
+ 154 00c2 3B6B     	 ldr r3,[r7,#48]
+ 155 00c4 BB66     	 str r3,[r7,#104]
+ 198:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 199:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     /* Loop unrolling.  Process 4 taps at a time. */
+ 200:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     tapCnt = numTaps >> 2;
+ 156              	 .loc 1 200 0
+ 157 00c6 FB6A     	 ldr r3,[r7,#44]
+ 158 00c8 9B08     	 lsrs r3,r3,#2
+ 159 00ca FB65     	 str r3,[r7,#92]
+ 201:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 202:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     /* Loop over the number of taps.  Unroll by a factor of 4.       
+ 203:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****      ** Repeat until we've computed numTaps-4 coefficients. */
+ 204:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 205:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     while(tapCnt > 0u)
+ 160              	 .loc 1 205 0
+ 161 00cc 16E1     	 b .L4
+ 162              	.L5:
+ 206:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     {
+ 207:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       /* Read the b[numTaps-1] coefficient */
+ 208:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       c0 = *(pb++);
+ 163              	 .loc 1 208 0
+ 164 00ce BB6E     	 ldr r3,[r7,#104]
+ 165 00d0 1A1D     	 adds r2,r3,#4
+ 166 00d2 BA66     	 str r2,[r7,#104]
+ 167 00d4 1B68     	 ldr r3,[r3]
+ 168 00d6 7B62     	 str r3,[r7,#36]
+ 209:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 210:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       /* Read x[n-numTaps-1] sample for acc0 */
+ 211:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       x0 = *(px0++);
+ 169              	 .loc 1 211 0
+ 170 00d8 3B6D     	 ldr r3,[r7,#80]
+ 171 00da 1A1D     	 adds r2,r3,#4
+ 172 00dc 3A65     	 str r2,[r7,#80]
+ 173 00de 1B68     	 ldr r3,[r3]
+ 174 00e0 3B62     	 str r3,[r7,#32]
+ 212:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       /* Read x[n-numTaps-1] sample for acc1 */
+ 213:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       x1 = *(px1++);
+ 175              	 .loc 1 213 0
+ 176 00e2 FB6C     	 ldr r3,[r7,#76]
+ 177 00e4 1A1D     	 adds r2,r3,#4
+ 178 00e6 FA64     	 str r2,[r7,#76]
+ 179 00e8 1B68     	 ldr r3,[r3]
+ 180 00ea FB61     	 str r3,[r7,#28]
+ 214:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       /* Read x[n-numTaps-1] sample for acc2 */
+ 215:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       x2 = *(px2++);
+ 181              	 .loc 1 215 0
+ 182 00ec BB6C     	 ldr r3,[r7,#72]
+ 183 00ee 1A1D     	 adds r2,r3,#4
+ 184 00f0 BA64     	 str r2,[r7,#72]
+ 185 00f2 1B68     	 ldr r3,[r3]
+ 186 00f4 BB61     	 str r3,[r7,#24]
+ 216:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       /* Read x[n-numTaps-1] sample for acc3 */
+ 217:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       x3 = *(px3++);
+ 187              	 .loc 1 217 0
+ 188 00f6 7B6C     	 ldr r3,[r7,#68]
+ 189 00f8 1A1D     	 adds r2,r3,#4
+ 190 00fa 7A64     	 str r2,[r7,#68]
+ 191 00fc 1B68     	 ldr r3,[r3]
+ 192 00fe 7B61     	 str r3,[r7,#20]
+ 218:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 219:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       /* Perform the multiply-accumulate */
+ 220:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       acc0 += x0 * c0;
+ 193              	 .loc 1 220 0
+ 194 0100 386A     	 ldr r0,[r7,#32]
+ 195 0102 796A     	 ldr r1,[r7,#36]
+ 196 0104 FFF7FEFF 	 bl __aeabi_fmul
+ 197 0108 0346     	 mov r3,r0
+ 198 010a 386C     	 ldr r0,[r7,#64]
+ 199 010c 1946     	 mov r1,r3
+ 200 010e FFF7FEFF 	 bl __aeabi_fadd
+ 201 0112 0346     	 mov r3,r0
+ 202 0114 3B64     	 str r3,[r7,#64]
+ 221:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       acc1 += x1 * c0;
+ 203              	 .loc 1 221 0
+ 204 0116 F869     	 ldr r0,[r7,#28]
+ 205 0118 796A     	 ldr r1,[r7,#36]
+ 206 011a FFF7FEFF 	 bl __aeabi_fmul
+ 207 011e 0346     	 mov r3,r0
+ 208 0120 F86B     	 ldr r0,[r7,#60]
+ 209 0122 1946     	 mov r1,r3
+ 210 0124 FFF7FEFF 	 bl __aeabi_fadd
+ 211 0128 0346     	 mov r3,r0
+ 212 012a FB63     	 str r3,[r7,#60]
+ 222:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       acc2 += x2 * c0;
+ 213              	 .loc 1 222 0
+ 214 012c B869     	 ldr r0,[r7,#24]
+ 215 012e 796A     	 ldr r1,[r7,#36]
+ 216 0130 FFF7FEFF 	 bl __aeabi_fmul
+ 217 0134 0346     	 mov r3,r0
+ 218 0136 B86B     	 ldr r0,[r7,#56]
+ 219 0138 1946     	 mov r1,r3
+ 220 013a FFF7FEFF 	 bl __aeabi_fadd
+ 221 013e 0346     	 mov r3,r0
+ 222 0140 BB63     	 str r3,[r7,#56]
+ 223:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       acc3 += x3 * c0;
+ 223              	 .loc 1 223 0
+ 224 0142 7869     	 ldr r0,[r7,#20]
+ 225 0144 796A     	 ldr r1,[r7,#36]
+ 226 0146 FFF7FEFF 	 bl __aeabi_fmul
+ 227 014a 0346     	 mov r3,r0
+ 228 014c 786B     	 ldr r0,[r7,#52]
+ 229 014e 1946     	 mov r1,r3
+ 230 0150 FFF7FEFF 	 bl __aeabi_fadd
+ 231 0154 0346     	 mov r3,r0
+ 232 0156 7B63     	 str r3,[r7,#52]
+ 224:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 225:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       /* Read the b[numTaps-2] coefficient */
+ 226:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       c0 = *(pb++);
+ 233              	 .loc 1 226 0
+ 234 0158 BB6E     	 ldr r3,[r7,#104]
+ 235 015a 1A1D     	 adds r2,r3,#4
+ 236 015c BA66     	 str r2,[r7,#104]
+ 237 015e 1B68     	 ldr r3,[r3]
+ 238 0160 7B62     	 str r3,[r7,#36]
+ 227:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 228:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       /* Read x[n-numTaps-2] sample for acc0, acc1, acc2, acc3 */
+ 229:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       x0 = *(px0++);
+ 239              	 .loc 1 229 0
+ 240 0162 3B6D     	 ldr r3,[r7,#80]
+ 241 0164 1A1D     	 adds r2,r3,#4
+ 242 0166 3A65     	 str r2,[r7,#80]
+ 243 0168 1B68     	 ldr r3,[r3]
+ 244 016a 3B62     	 str r3,[r7,#32]
+ 230:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       x1 = *(px1++);
+ 245              	 .loc 1 230 0
+ 246 016c FB6C     	 ldr r3,[r7,#76]
+ 247 016e 1A1D     	 adds r2,r3,#4
+ 248 0170 FA64     	 str r2,[r7,#76]
+ 249 0172 1B68     	 ldr r3,[r3]
+ 250 0174 FB61     	 str r3,[r7,#28]
+ 231:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       x2 = *(px2++);
+ 251              	 .loc 1 231 0
+ 252 0176 BB6C     	 ldr r3,[r7,#72]
+ 253 0178 1A1D     	 adds r2,r3,#4
+ 254 017a BA64     	 str r2,[r7,#72]
+ 255 017c 1B68     	 ldr r3,[r3]
+ 256 017e BB61     	 str r3,[r7,#24]
+ 232:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       x3 = *(px3++);
+ 257              	 .loc 1 232 0
+ 258 0180 7B6C     	 ldr r3,[r7,#68]
+ 259 0182 1A1D     	 adds r2,r3,#4
+ 260 0184 7A64     	 str r2,[r7,#68]
+ 261 0186 1B68     	 ldr r3,[r3]
+ 262 0188 7B61     	 str r3,[r7,#20]
+ 233:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 234:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       /* Perform the multiply-accumulate */
+ 235:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       acc0 += x0 * c0;
+ 263              	 .loc 1 235 0
+ 264 018a 386A     	 ldr r0,[r7,#32]
+ 265 018c 796A     	 ldr r1,[r7,#36]
+ 266 018e FFF7FEFF 	 bl __aeabi_fmul
+ 267 0192 0346     	 mov r3,r0
+ 268 0194 386C     	 ldr r0,[r7,#64]
+ 269 0196 1946     	 mov r1,r3
+ 270 0198 FFF7FEFF 	 bl __aeabi_fadd
+ 271 019c 0346     	 mov r3,r0
+ 272 019e 3B64     	 str r3,[r7,#64]
+ 236:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       acc1 += x1 * c0;
+ 273              	 .loc 1 236 0
+ 274 01a0 F869     	 ldr r0,[r7,#28]
+ 275 01a2 796A     	 ldr r1,[r7,#36]
+ 276 01a4 FFF7FEFF 	 bl __aeabi_fmul
+ 277 01a8 0346     	 mov r3,r0
+ 278 01aa F86B     	 ldr r0,[r7,#60]
+ 279 01ac 1946     	 mov r1,r3
+ 280 01ae FFF7FEFF 	 bl __aeabi_fadd
+ 281 01b2 0346     	 mov r3,r0
+ 282 01b4 FB63     	 str r3,[r7,#60]
+ 237:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       acc2 += x2 * c0;
+ 283              	 .loc 1 237 0
+ 284 01b6 B869     	 ldr r0,[r7,#24]
+ 285 01b8 796A     	 ldr r1,[r7,#36]
+ 286 01ba FFF7FEFF 	 bl __aeabi_fmul
+ 287 01be 0346     	 mov r3,r0
+ 288 01c0 B86B     	 ldr r0,[r7,#56]
+ 289 01c2 1946     	 mov r1,r3
+ 290 01c4 FFF7FEFF 	 bl __aeabi_fadd
+ 291 01c8 0346     	 mov r3,r0
+ 292 01ca BB63     	 str r3,[r7,#56]
+ 238:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       acc3 += x3 * c0;
+ 293              	 .loc 1 238 0
+ 294 01cc 7869     	 ldr r0,[r7,#20]
+ 295 01ce 796A     	 ldr r1,[r7,#36]
+ 296 01d0 FFF7FEFF 	 bl __aeabi_fmul
+ 297 01d4 0346     	 mov r3,r0
+ 298 01d6 786B     	 ldr r0,[r7,#52]
+ 299 01d8 1946     	 mov r1,r3
+ 300 01da FFF7FEFF 	 bl __aeabi_fadd
+ 301 01de 0346     	 mov r3,r0
+ 302 01e0 7B63     	 str r3,[r7,#52]
+ 239:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 240:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       /* Read the b[numTaps-3] coefficient */
+ 241:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       c0 = *(pb++);
+ 303              	 .loc 1 241 0
+ 304 01e2 BB6E     	 ldr r3,[r7,#104]
+ 305 01e4 1A1D     	 adds r2,r3,#4
+ 306 01e6 BA66     	 str r2,[r7,#104]
+ 307 01e8 1B68     	 ldr r3,[r3]
+ 308 01ea 7B62     	 str r3,[r7,#36]
+ 242:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 243:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       /* Read x[n-numTaps-3] sample acc0, acc1, acc2, acc3 */
+ 244:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       x0 = *(px0++);
+ 309              	 .loc 1 244 0
+ 310 01ec 3B6D     	 ldr r3,[r7,#80]
+ 311 01ee 1A1D     	 adds r2,r3,#4
+ 312 01f0 3A65     	 str r2,[r7,#80]
+ 313 01f2 1B68     	 ldr r3,[r3]
+ 314 01f4 3B62     	 str r3,[r7,#32]
+ 245:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       x1 = *(px1++);
+ 315              	 .loc 1 245 0
+ 316 01f6 FB6C     	 ldr r3,[r7,#76]
+ 317 01f8 1A1D     	 adds r2,r3,#4
+ 318 01fa FA64     	 str r2,[r7,#76]
+ 319 01fc 1B68     	 ldr r3,[r3]
+ 320 01fe FB61     	 str r3,[r7,#28]
+ 246:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       x2 = *(px2++);
+ 321              	 .loc 1 246 0
+ 322 0200 BB6C     	 ldr r3,[r7,#72]
+ 323 0202 1A1D     	 adds r2,r3,#4
+ 324 0204 BA64     	 str r2,[r7,#72]
+ 325 0206 1B68     	 ldr r3,[r3]
+ 326 0208 BB61     	 str r3,[r7,#24]
+ 247:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       x3 = *(px3++);
+ 327              	 .loc 1 247 0
+ 328 020a 7B6C     	 ldr r3,[r7,#68]
+ 329 020c 1A1D     	 adds r2,r3,#4
+ 330 020e 7A64     	 str r2,[r7,#68]
+ 331 0210 1B68     	 ldr r3,[r3]
+ 332 0212 7B61     	 str r3,[r7,#20]
+ 248:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 249:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       /* Perform the multiply-accumulate */
+ 250:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       acc0 += x0 * c0;
+ 333              	 .loc 1 250 0
+ 334 0214 386A     	 ldr r0,[r7,#32]
+ 335 0216 796A     	 ldr r1,[r7,#36]
+ 336 0218 FFF7FEFF 	 bl __aeabi_fmul
+ 337 021c 0346     	 mov r3,r0
+ 338 021e 386C     	 ldr r0,[r7,#64]
+ 339 0220 1946     	 mov r1,r3
+ 340 0222 FFF7FEFF 	 bl __aeabi_fadd
+ 341 0226 0346     	 mov r3,r0
+ 342 0228 3B64     	 str r3,[r7,#64]
+ 251:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       acc1 += x1 * c0;
+ 343              	 .loc 1 251 0
+ 344 022a F869     	 ldr r0,[r7,#28]
+ 345 022c 796A     	 ldr r1,[r7,#36]
+ 346 022e FFF7FEFF 	 bl __aeabi_fmul
+ 347 0232 0346     	 mov r3,r0
+ 348 0234 F86B     	 ldr r0,[r7,#60]
+ 349 0236 1946     	 mov r1,r3
+ 350 0238 FFF7FEFF 	 bl __aeabi_fadd
+ 351 023c 0346     	 mov r3,r0
+ 352 023e FB63     	 str r3,[r7,#60]
+ 252:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       acc2 += x2 * c0;
+ 353              	 .loc 1 252 0
+ 354 0240 B869     	 ldr r0,[r7,#24]
+ 355 0242 796A     	 ldr r1,[r7,#36]
+ 356 0244 FFF7FEFF 	 bl __aeabi_fmul
+ 357 0248 0346     	 mov r3,r0
+ 358 024a B86B     	 ldr r0,[r7,#56]
+ 359 024c 1946     	 mov r1,r3
+ 360 024e FFF7FEFF 	 bl __aeabi_fadd
+ 361 0252 0346     	 mov r3,r0
+ 362 0254 BB63     	 str r3,[r7,#56]
+ 253:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       acc3 += x3 * c0;
+ 363              	 .loc 1 253 0
+ 364 0256 7869     	 ldr r0,[r7,#20]
+ 365 0258 796A     	 ldr r1,[r7,#36]
+ 366 025a FFF7FEFF 	 bl __aeabi_fmul
+ 367 025e 0346     	 mov r3,r0
+ 368 0260 786B     	 ldr r0,[r7,#52]
+ 369 0262 1946     	 mov r1,r3
+ 370 0264 FFF7FEFF 	 bl __aeabi_fadd
+ 371 0268 0346     	 mov r3,r0
+ 372 026a 7B63     	 str r3,[r7,#52]
+ 254:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 255:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       /* Read the b[numTaps-4] coefficient */
+ 256:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       c0 = *(pb++);
+ 373              	 .loc 1 256 0
+ 374 026c BB6E     	 ldr r3,[r7,#104]
+ 375 026e 1A1D     	 adds r2,r3,#4
+ 376 0270 BA66     	 str r2,[r7,#104]
+ 377 0272 1B68     	 ldr r3,[r3]
+ 378 0274 7B62     	 str r3,[r7,#36]
+ 257:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 258:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       /* Read x[n-numTaps-4] sample acc0, acc1, acc2, acc3 */
+ 259:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       x0 = *(px0++);
+ 379              	 .loc 1 259 0
+ 380 0276 3B6D     	 ldr r3,[r7,#80]
+ 381 0278 1A1D     	 adds r2,r3,#4
+ 382 027a 3A65     	 str r2,[r7,#80]
+ 383 027c 1B68     	 ldr r3,[r3]
+ 384 027e 3B62     	 str r3,[r7,#32]
+ 260:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       x1 = *(px1++);
+ 385              	 .loc 1 260 0
+ 386 0280 FB6C     	 ldr r3,[r7,#76]
+ 387 0282 1A1D     	 adds r2,r3,#4
+ 388 0284 FA64     	 str r2,[r7,#76]
+ 389 0286 1B68     	 ldr r3,[r3]
+ 390 0288 FB61     	 str r3,[r7,#28]
+ 261:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       x2 = *(px2++);
+ 391              	 .loc 1 261 0
+ 392 028a BB6C     	 ldr r3,[r7,#72]
+ 393 028c 1A1D     	 adds r2,r3,#4
+ 394 028e BA64     	 str r2,[r7,#72]
+ 395 0290 1B68     	 ldr r3,[r3]
+ 396 0292 BB61     	 str r3,[r7,#24]
+ 262:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       x3 = *(px3++);
+ 397              	 .loc 1 262 0
+ 398 0294 7B6C     	 ldr r3,[r7,#68]
+ 399 0296 1A1D     	 adds r2,r3,#4
+ 400 0298 7A64     	 str r2,[r7,#68]
+ 401 029a 1B68     	 ldr r3,[r3]
+ 402 029c 7B61     	 str r3,[r7,#20]
+ 263:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 264:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       /* Perform the multiply-accumulate */
+ 265:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       acc0 += x0 * c0;
+ 403              	 .loc 1 265 0
+ 404 029e 386A     	 ldr r0,[r7,#32]
+ 405 02a0 796A     	 ldr r1,[r7,#36]
+ 406 02a2 FFF7FEFF 	 bl __aeabi_fmul
+ 407 02a6 0346     	 mov r3,r0
+ 408 02a8 386C     	 ldr r0,[r7,#64]
+ 409 02aa 1946     	 mov r1,r3
+ 410 02ac FFF7FEFF 	 bl __aeabi_fadd
+ 411 02b0 0346     	 mov r3,r0
+ 412 02b2 3B64     	 str r3,[r7,#64]
+ 266:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       acc1 += x1 * c0;
+ 413              	 .loc 1 266 0
+ 414 02b4 F869     	 ldr r0,[r7,#28]
+ 415 02b6 796A     	 ldr r1,[r7,#36]
+ 416 02b8 FFF7FEFF 	 bl __aeabi_fmul
+ 417 02bc 0346     	 mov r3,r0
+ 418 02be F86B     	 ldr r0,[r7,#60]
+ 419 02c0 1946     	 mov r1,r3
+ 420 02c2 FFF7FEFF 	 bl __aeabi_fadd
+ 421 02c6 0346     	 mov r3,r0
+ 422 02c8 FB63     	 str r3,[r7,#60]
+ 267:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       acc2 += x2 * c0;
+ 423              	 .loc 1 267 0
+ 424 02ca B869     	 ldr r0,[r7,#24]
+ 425 02cc 796A     	 ldr r1,[r7,#36]
+ 426 02ce FFF7FEFF 	 bl __aeabi_fmul
+ 427 02d2 0346     	 mov r3,r0
+ 428 02d4 B86B     	 ldr r0,[r7,#56]
+ 429 02d6 1946     	 mov r1,r3
+ 430 02d8 FFF7FEFF 	 bl __aeabi_fadd
+ 431 02dc 0346     	 mov r3,r0
+ 432 02de BB63     	 str r3,[r7,#56]
+ 268:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       acc3 += x3 * c0;
+ 433              	 .loc 1 268 0
+ 434 02e0 7869     	 ldr r0,[r7,#20]
+ 435 02e2 796A     	 ldr r1,[r7,#36]
+ 436 02e4 FFF7FEFF 	 bl __aeabi_fmul
+ 437 02e8 0346     	 mov r3,r0
+ 438 02ea 786B     	 ldr r0,[r7,#52]
+ 439 02ec 1946     	 mov r1,r3
+ 440 02ee FFF7FEFF 	 bl __aeabi_fadd
+ 441 02f2 0346     	 mov r3,r0
+ 442 02f4 7B63     	 str r3,[r7,#52]
+ 269:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 270:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       /* Decrement the loop counter */
+ 271:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       tapCnt--;
+ 443              	 .loc 1 271 0
+ 444 02f6 FB6D     	 ldr r3,[r7,#92]
+ 445 02f8 013B     	 subs r3,r3,#1
+ 446 02fa FB65     	 str r3,[r7,#92]
+ 447              	.L4:
+ 205:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     {
+ 448              	 .loc 1 205 0
+ 449 02fc FB6D     	 ldr r3,[r7,#92]
+ 450 02fe 002B     	 cmp r3,#0
+ 451 0300 7FF4E5AE 	 bne .L5
+ 272:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     }
+ 273:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 274:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     /* If the filter length is not a multiple of 4, compute the remaining filter taps */
+ 275:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     tapCnt = numTaps % 0x4u;
+ 452              	 .loc 1 275 0
+ 453 0304 FB6A     	 ldr r3,[r7,#44]
+ 454 0306 03F00303 	 and r3,r3,#3
+ 455 030a FB65     	 str r3,[r7,#92]
+ 276:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 277:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     while(tapCnt > 0u)
+ 456              	 .loc 1 277 0
+ 457 030c 47E0     	 b .L6
+ 458              	.L7:
+ 278:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     {
+ 279:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       /* Read coefficients */
+ 280:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       c0 = *(pb++);
+ 459              	 .loc 1 280 0
+ 460 030e BB6E     	 ldr r3,[r7,#104]
+ 461 0310 1A1D     	 adds r2,r3,#4
+ 462 0312 BA66     	 str r2,[r7,#104]
+ 463 0314 1B68     	 ldr r3,[r3]
+ 464 0316 7B62     	 str r3,[r7,#36]
+ 281:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 282:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       /* Fetch  state variables for acc0, acc1, acc2, acc3 */
+ 283:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       x0 = *(px0++);
+ 465              	 .loc 1 283 0
+ 466 0318 3B6D     	 ldr r3,[r7,#80]
+ 467 031a 1A1D     	 adds r2,r3,#4
+ 468 031c 3A65     	 str r2,[r7,#80]
+ 469 031e 1B68     	 ldr r3,[r3]
+ 470 0320 3B62     	 str r3,[r7,#32]
+ 284:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       x1 = *(px1++);
+ 471              	 .loc 1 284 0
+ 472 0322 FB6C     	 ldr r3,[r7,#76]
+ 473 0324 1A1D     	 adds r2,r3,#4
+ 474 0326 FA64     	 str r2,[r7,#76]
+ 475 0328 1B68     	 ldr r3,[r3]
+ 476 032a FB61     	 str r3,[r7,#28]
+ 285:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       x2 = *(px2++);
+ 477              	 .loc 1 285 0
+ 478 032c BB6C     	 ldr r3,[r7,#72]
+ 479 032e 1A1D     	 adds r2,r3,#4
+ 480 0330 BA64     	 str r2,[r7,#72]
+ 481 0332 1B68     	 ldr r3,[r3]
+ 482 0334 BB61     	 str r3,[r7,#24]
+ 286:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       x3 = *(px3++);
+ 483              	 .loc 1 286 0
+ 484 0336 7B6C     	 ldr r3,[r7,#68]
+ 485 0338 1A1D     	 adds r2,r3,#4
+ 486 033a 7A64     	 str r2,[r7,#68]
+ 487 033c 1B68     	 ldr r3,[r3]
+ 488 033e 7B61     	 str r3,[r7,#20]
+ 287:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 288:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       /* Perform the multiply-accumulate */
+ 289:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       acc0 += x0 * c0;
+ 489              	 .loc 1 289 0
+ 490 0340 386A     	 ldr r0,[r7,#32]
+ 491 0342 796A     	 ldr r1,[r7,#36]
+ 492 0344 FFF7FEFF 	 bl __aeabi_fmul
+ 493 0348 0346     	 mov r3,r0
+ 494 034a 386C     	 ldr r0,[r7,#64]
+ 495 034c 1946     	 mov r1,r3
+ 496 034e FFF7FEFF 	 bl __aeabi_fadd
+ 497 0352 0346     	 mov r3,r0
+ 498 0354 3B64     	 str r3,[r7,#64]
+ 290:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       acc1 += x1 * c0;
+ 499              	 .loc 1 290 0
+ 500 0356 F869     	 ldr r0,[r7,#28]
+ 501 0358 796A     	 ldr r1,[r7,#36]
+ 502 035a FFF7FEFF 	 bl __aeabi_fmul
+ 503 035e 0346     	 mov r3,r0
+ 504 0360 F86B     	 ldr r0,[r7,#60]
+ 505 0362 1946     	 mov r1,r3
+ 506 0364 FFF7FEFF 	 bl __aeabi_fadd
+ 507 0368 0346     	 mov r3,r0
+ 508 036a FB63     	 str r3,[r7,#60]
+ 291:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       acc2 += x2 * c0;
+ 509              	 .loc 1 291 0
+ 510 036c B869     	 ldr r0,[r7,#24]
+ 511 036e 796A     	 ldr r1,[r7,#36]
+ 512 0370 FFF7FEFF 	 bl __aeabi_fmul
+ 513 0374 0346     	 mov r3,r0
+ 514 0376 B86B     	 ldr r0,[r7,#56]
+ 515 0378 1946     	 mov r1,r3
+ 516 037a FFF7FEFF 	 bl __aeabi_fadd
+ 517 037e 0346     	 mov r3,r0
+ 518 0380 BB63     	 str r3,[r7,#56]
+ 292:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       acc3 += x3 * c0;
+ 519              	 .loc 1 292 0
+ 520 0382 7869     	 ldr r0,[r7,#20]
+ 521 0384 796A     	 ldr r1,[r7,#36]
+ 522 0386 FFF7FEFF 	 bl __aeabi_fmul
+ 523 038a 0346     	 mov r3,r0
+ 524 038c 786B     	 ldr r0,[r7,#52]
+ 525 038e 1946     	 mov r1,r3
+ 526 0390 FFF7FEFF 	 bl __aeabi_fadd
+ 527 0394 0346     	 mov r3,r0
+ 528 0396 7B63     	 str r3,[r7,#52]
+ 293:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 294:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       /* Decrement the loop counter */
+ 295:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       tapCnt--;
+ 529              	 .loc 1 295 0
+ 530 0398 FB6D     	 ldr r3,[r7,#92]
+ 531 039a 013B     	 subs r3,r3,#1
+ 532 039c FB65     	 str r3,[r7,#92]
+ 533              	.L6:
+ 277:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     {
+ 534              	 .loc 1 277 0
+ 535 039e FB6D     	 ldr r3,[r7,#92]
+ 536 03a0 002B     	 cmp r3,#0
+ 537 03a2 B4D1     	 bne .L7
+ 296:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     }
+ 297:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 298:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     /* Advance the state pointer by the decimation factor       
+ 299:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****      * to process the next group of decimation factor number samples */
+ 300:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     pState = pState + 4 * S->M;
+ 538              	 .loc 1 300 0
+ 539 03a4 FB68     	 ldr r3,[r7,#12]
+ 540 03a6 1B78     	 ldrb r3,[r3]
+ 541 03a8 1B01     	 lsls r3,r3,#4
+ 542 03aa 1A46     	 mov r2,r3
+ 543 03ac 7B6F     	 ldr r3,[r7,#116]
+ 544 03ae 1344     	 add r3,r3,r2
+ 545 03b0 7B67     	 str r3,[r7,#116]
+ 301:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 302:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     /* The result is in the accumulator, store in the destination buffer. */
+ 303:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     *pDst++ = acc0;
+ 546              	 .loc 1 303 0
+ 547 03b2 7B68     	 ldr r3,[r7,#4]
+ 548 03b4 1A1D     	 adds r2,r3,#4
+ 549 03b6 7A60     	 str r2,[r7,#4]
+ 550 03b8 3A6C     	 ldr r2,[r7,#64]
+ 551 03ba 1A60     	 str r2,[r3]
+ 304:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     *pDst++ = acc1;
+ 552              	 .loc 1 304 0
+ 553 03bc 7B68     	 ldr r3,[r7,#4]
+ 554 03be 1A1D     	 adds r2,r3,#4
+ 555 03c0 7A60     	 str r2,[r7,#4]
+ 556 03c2 FA6B     	 ldr r2,[r7,#60]
+ 557 03c4 1A60     	 str r2,[r3]
+ 305:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     *pDst++ = acc2;
+ 558              	 .loc 1 305 0
+ 559 03c6 7B68     	 ldr r3,[r7,#4]
+ 560 03c8 1A1D     	 adds r2,r3,#4
+ 561 03ca 7A60     	 str r2,[r7,#4]
+ 562 03cc BA6B     	 ldr r2,[r7,#56]
+ 563 03ce 1A60     	 str r2,[r3]
+ 306:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     *pDst++ = acc3;
+ 564              	 .loc 1 306 0
+ 565 03d0 7B68     	 ldr r3,[r7,#4]
+ 566 03d2 1A1D     	 adds r2,r3,#4
+ 567 03d4 7A60     	 str r2,[r7,#4]
+ 568 03d6 7A6B     	 ldr r2,[r7,#52]
+ 569 03d8 1A60     	 str r2,[r3]
+ 307:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 308:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     /* Decrement the loop counter */
+ 309:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     blkCnt--;
+ 570              	 .loc 1 309 0
+ 571 03da BB6D     	 ldr r3,[r7,#88]
+ 572 03dc 013B     	 subs r3,r3,#1
+ 573 03de BB65     	 str r3,[r7,#88]
+ 574              	.L2:
+ 173:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****   {
+ 575              	 .loc 1 173 0
+ 576 03e0 BB6D     	 ldr r3,[r7,#88]
+ 577 03e2 002B     	 cmp r3,#0
+ 578 03e4 7FF435AE 	 bne .L8
+ 310:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****   }
+ 311:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 312:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****   while(blkCntN4 > 0u)
+ 579              	 .loc 1 312 0
+ 580 03e8 A3E0     	 b .L9
+ 581              	.L15:
+ 313:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****   {
+ 314:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     /* Copy decimation factor number of new input samples into the state buffer */
+ 315:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     i = S->M;
+ 582              	 .loc 1 315 0
+ 583 03ea FB68     	 ldr r3,[r7,#12]
+ 584 03ec 1B78     	 ldrb r3,[r3]
+ 585 03ee 3B66     	 str r3,[r7,#96]
+ 586              	.L10:
+ 316:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 317:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     do
+ 318:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     {
+ 319:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       *pStateCurnt++ = *pSrc++;
+ 587              	 .loc 1 319 0 discriminator 1
+ 588 03f0 3B6F     	 ldr r3,[r7,#112]
+ 589 03f2 1A1D     	 adds r2,r3,#4
+ 590 03f4 3A67     	 str r2,[r7,#112]
+ 591 03f6 BA68     	 ldr r2,[r7,#8]
+ 592 03f8 111D     	 adds r1,r2,#4
+ 593 03fa B960     	 str r1,[r7,#8]
+ 594 03fc 1268     	 ldr r2,[r2]
+ 595 03fe 1A60     	 str r2,[r3]
+ 320:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 321:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     } while(--i);
+ 596              	 .loc 1 321 0 discriminator 1
+ 597 0400 3B6E     	 ldr r3,[r7,#96]
+ 598 0402 013B     	 subs r3,r3,#1
+ 599 0404 3B66     	 str r3,[r7,#96]
+ 600 0406 3B6E     	 ldr r3,[r7,#96]
+ 601 0408 002B     	 cmp r3,#0
+ 602 040a F1D1     	 bne .L10
+ 322:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 323:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     /* Set accumulator to zero */
+ 324:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     sum0 = 0.0f;
+ 603              	 .loc 1 324 0
+ 604 040c 4FF00003 	 mov r3,#0
+ 605 0410 7B66     	 str r3,[r7,#100]
+ 325:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 326:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     /* Initialize state pointer */
+ 327:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     px = pState;
+ 606              	 .loc 1 327 0
+ 607 0412 7B6F     	 ldr r3,[r7,#116]
+ 608 0414 FB66     	 str r3,[r7,#108]
+ 328:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 329:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     /* Initialize coeff pointer */
+ 330:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     pb = pCoeffs;
+ 609              	 .loc 1 330 0
+ 610 0416 3B6B     	 ldr r3,[r7,#48]
+ 611 0418 BB66     	 str r3,[r7,#104]
+ 331:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 332:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     /* Loop unrolling.  Process 4 taps at a time. */
+ 333:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     tapCnt = numTaps >> 2;
+ 612              	 .loc 1 333 0
+ 613 041a FB6A     	 ldr r3,[r7,#44]
+ 614 041c 9B08     	 lsrs r3,r3,#2
+ 615 041e FB65     	 str r3,[r7,#92]
+ 334:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 335:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     /* Loop over the number of taps.  Unroll by a factor of 4.       
+ 336:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****      ** Repeat until we've computed numTaps-4 coefficients. */
+ 337:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     while(tapCnt > 0u)
+ 616              	 .loc 1 337 0
+ 617 0420 56E0     	 b .L11
+ 618              	.L12:
+ 338:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     {
+ 339:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       /* Read the b[numTaps-1] coefficient */
+ 340:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       c0 = *(pb++);
+ 619              	 .loc 1 340 0
+ 620 0422 BB6E     	 ldr r3,[r7,#104]
+ 621 0424 1A1D     	 adds r2,r3,#4
+ 622 0426 BA66     	 str r2,[r7,#104]
+ 623 0428 1B68     	 ldr r3,[r3]
+ 624 042a 7B62     	 str r3,[r7,#36]
+ 341:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 342:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       /* Read x[n-numTaps-1] sample */
+ 343:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       x0 = *(px++);
+ 625              	 .loc 1 343 0
+ 626 042c FB6E     	 ldr r3,[r7,#108]
+ 627 042e 1A1D     	 adds r2,r3,#4
+ 628 0430 FA66     	 str r2,[r7,#108]
+ 629 0432 1B68     	 ldr r3,[r3]
+ 630 0434 3B62     	 str r3,[r7,#32]
+ 344:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 345:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       /* Perform the multiply-accumulate */
+ 346:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       sum0 += x0 * c0;
+ 631              	 .loc 1 346 0
+ 632 0436 386A     	 ldr r0,[r7,#32]
+ 633 0438 796A     	 ldr r1,[r7,#36]
+ 634 043a FFF7FEFF 	 bl __aeabi_fmul
+ 635 043e 0346     	 mov r3,r0
+ 636 0440 786E     	 ldr r0,[r7,#100]
+ 637 0442 1946     	 mov r1,r3
+ 638 0444 FFF7FEFF 	 bl __aeabi_fadd
+ 639 0448 0346     	 mov r3,r0
+ 640 044a 7B66     	 str r3,[r7,#100]
+ 347:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 348:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       /* Read the b[numTaps-2] coefficient */
+ 349:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       c0 = *(pb++);
+ 641              	 .loc 1 349 0
+ 642 044c BB6E     	 ldr r3,[r7,#104]
+ 643 044e 1A1D     	 adds r2,r3,#4
+ 644 0450 BA66     	 str r2,[r7,#104]
+ 645 0452 1B68     	 ldr r3,[r3]
+ 646 0454 7B62     	 str r3,[r7,#36]
+ 350:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 351:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       /* Read x[n-numTaps-2] sample */
+ 352:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       x0 = *(px++);
+ 647              	 .loc 1 352 0
+ 648 0456 FB6E     	 ldr r3,[r7,#108]
+ 649 0458 1A1D     	 adds r2,r3,#4
+ 650 045a FA66     	 str r2,[r7,#108]
+ 651 045c 1B68     	 ldr r3,[r3]
+ 652 045e 3B62     	 str r3,[r7,#32]
+ 353:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 354:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       /* Perform the multiply-accumulate */
+ 355:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       sum0 += x0 * c0;
+ 653              	 .loc 1 355 0
+ 654 0460 386A     	 ldr r0,[r7,#32]
+ 655 0462 796A     	 ldr r1,[r7,#36]
+ 656 0464 FFF7FEFF 	 bl __aeabi_fmul
+ 657 0468 0346     	 mov r3,r0
+ 658 046a 786E     	 ldr r0,[r7,#100]
+ 659 046c 1946     	 mov r1,r3
+ 660 046e FFF7FEFF 	 bl __aeabi_fadd
+ 661 0472 0346     	 mov r3,r0
+ 662 0474 7B66     	 str r3,[r7,#100]
+ 356:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 357:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       /* Read the b[numTaps-3] coefficient */
+ 358:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       c0 = *(pb++);
+ 663              	 .loc 1 358 0
+ 664 0476 BB6E     	 ldr r3,[r7,#104]
+ 665 0478 1A1D     	 adds r2,r3,#4
+ 666 047a BA66     	 str r2,[r7,#104]
+ 667 047c 1B68     	 ldr r3,[r3]
+ 668 047e 7B62     	 str r3,[r7,#36]
+ 359:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 360:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       /* Read x[n-numTaps-3] sample */
+ 361:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       x0 = *(px++);
+ 669              	 .loc 1 361 0
+ 670 0480 FB6E     	 ldr r3,[r7,#108]
+ 671 0482 1A1D     	 adds r2,r3,#4
+ 672 0484 FA66     	 str r2,[r7,#108]
+ 673 0486 1B68     	 ldr r3,[r3]
+ 674 0488 3B62     	 str r3,[r7,#32]
+ 362:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 363:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       /* Perform the multiply-accumulate */
+ 364:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       sum0 += x0 * c0;
+ 675              	 .loc 1 364 0
+ 676 048a 386A     	 ldr r0,[r7,#32]
+ 677 048c 796A     	 ldr r1,[r7,#36]
+ 678 048e FFF7FEFF 	 bl __aeabi_fmul
+ 679 0492 0346     	 mov r3,r0
+ 680 0494 786E     	 ldr r0,[r7,#100]
+ 681 0496 1946     	 mov r1,r3
+ 682 0498 FFF7FEFF 	 bl __aeabi_fadd
+ 683 049c 0346     	 mov r3,r0
+ 684 049e 7B66     	 str r3,[r7,#100]
+ 365:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 366:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       /* Read the b[numTaps-4] coefficient */
+ 367:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       c0 = *(pb++);
+ 685              	 .loc 1 367 0
+ 686 04a0 BB6E     	 ldr r3,[r7,#104]
+ 687 04a2 1A1D     	 adds r2,r3,#4
+ 688 04a4 BA66     	 str r2,[r7,#104]
+ 689 04a6 1B68     	 ldr r3,[r3]
+ 690 04a8 7B62     	 str r3,[r7,#36]
+ 368:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 369:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       /* Read x[n-numTaps-4] sample */
+ 370:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       x0 = *(px++);
+ 691              	 .loc 1 370 0
+ 692 04aa FB6E     	 ldr r3,[r7,#108]
+ 693 04ac 1A1D     	 adds r2,r3,#4
+ 694 04ae FA66     	 str r2,[r7,#108]
+ 695 04b0 1B68     	 ldr r3,[r3]
+ 696 04b2 3B62     	 str r3,[r7,#32]
+ 371:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 372:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       /* Perform the multiply-accumulate */
+ 373:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       sum0 += x0 * c0;
+ 697              	 .loc 1 373 0
+ 698 04b4 386A     	 ldr r0,[r7,#32]
+ 699 04b6 796A     	 ldr r1,[r7,#36]
+ 700 04b8 FFF7FEFF 	 bl __aeabi_fmul
+ 701 04bc 0346     	 mov r3,r0
+ 702 04be 786E     	 ldr r0,[r7,#100]
+ 703 04c0 1946     	 mov r1,r3
+ 704 04c2 FFF7FEFF 	 bl __aeabi_fadd
+ 705 04c6 0346     	 mov r3,r0
+ 706 04c8 7B66     	 str r3,[r7,#100]
+ 374:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 375:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       /* Decrement the loop counter */
+ 376:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       tapCnt--;
+ 707              	 .loc 1 376 0
+ 708 04ca FB6D     	 ldr r3,[r7,#92]
+ 709 04cc 013B     	 subs r3,r3,#1
+ 710 04ce FB65     	 str r3,[r7,#92]
+ 711              	.L11:
+ 337:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     {
+ 712              	 .loc 1 337 0
+ 713 04d0 FB6D     	 ldr r3,[r7,#92]
+ 714 04d2 002B     	 cmp r3,#0
+ 715 04d4 A5D1     	 bne .L12
+ 377:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     }
+ 378:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 379:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     /* If the filter length is not a multiple of 4, compute the remaining filter taps */
+ 380:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     tapCnt = numTaps % 0x4u;
+ 716              	 .loc 1 380 0
+ 717 04d6 FB6A     	 ldr r3,[r7,#44]
+ 718 04d8 03F00303 	 and r3,r3,#3
+ 719 04dc FB65     	 str r3,[r7,#92]
+ 381:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 382:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     while(tapCnt > 0u)
+ 720              	 .loc 1 382 0
+ 721 04de 17E0     	 b .L13
+ 722              	.L14:
+ 383:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     {
+ 384:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       /* Read coefficients */
+ 385:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       c0 = *(pb++);
+ 723              	 .loc 1 385 0
+ 724 04e0 BB6E     	 ldr r3,[r7,#104]
+ 725 04e2 1A1D     	 adds r2,r3,#4
+ 726 04e4 BA66     	 str r2,[r7,#104]
+ 727 04e6 1B68     	 ldr r3,[r3]
+ 728 04e8 7B62     	 str r3,[r7,#36]
+ 386:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 387:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       /* Fetch 1 state variable */
+ 388:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       x0 = *(px++);
+ 729              	 .loc 1 388 0
+ 730 04ea FB6E     	 ldr r3,[r7,#108]
+ 731 04ec 1A1D     	 adds r2,r3,#4
+ 732 04ee FA66     	 str r2,[r7,#108]
+ 733 04f0 1B68     	 ldr r3,[r3]
+ 734 04f2 3B62     	 str r3,[r7,#32]
+ 389:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 390:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       /* Perform the multiply-accumulate */
+ 391:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       sum0 += x0 * c0;
+ 735              	 .loc 1 391 0
+ 736 04f4 386A     	 ldr r0,[r7,#32]
+ 737 04f6 796A     	 ldr r1,[r7,#36]
+ 738 04f8 FFF7FEFF 	 bl __aeabi_fmul
+ 739 04fc 0346     	 mov r3,r0
+ 740 04fe 786E     	 ldr r0,[r7,#100]
+ 741 0500 1946     	 mov r1,r3
+ 742 0502 FFF7FEFF 	 bl __aeabi_fadd
+ 743 0506 0346     	 mov r3,r0
+ 744 0508 7B66     	 str r3,[r7,#100]
+ 392:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 393:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       /* Decrement the loop counter */
+ 394:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       tapCnt--;
+ 745              	 .loc 1 394 0
+ 746 050a FB6D     	 ldr r3,[r7,#92]
+ 747 050c 013B     	 subs r3,r3,#1
+ 748 050e FB65     	 str r3,[r7,#92]
+ 749              	.L13:
+ 382:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     {
+ 750              	 .loc 1 382 0
+ 751 0510 FB6D     	 ldr r3,[r7,#92]
+ 752 0512 002B     	 cmp r3,#0
+ 753 0514 E4D1     	 bne .L14
+ 395:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     }
+ 396:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 397:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     /* Advance the state pointer by the decimation factor       
+ 398:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****      * to process the next group of decimation factor number samples */
+ 399:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     pState = pState + S->M;
+ 754              	 .loc 1 399 0
+ 755 0516 FB68     	 ldr r3,[r7,#12]
+ 756 0518 1B78     	 ldrb r3,[r3]
+ 757 051a 9B00     	 lsls r3,r3,#2
+ 758 051c 7A6F     	 ldr r2,[r7,#116]
+ 759 051e 1344     	 add r3,r3,r2
+ 760 0520 7B67     	 str r3,[r7,#116]
+ 400:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 401:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     /* The result is in the accumulator, store in the destination buffer. */
+ 402:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     *pDst++ = sum0;
+ 761              	 .loc 1 402 0
+ 762 0522 7B68     	 ldr r3,[r7,#4]
+ 763 0524 1A1D     	 adds r2,r3,#4
+ 764 0526 7A60     	 str r2,[r7,#4]
+ 765 0528 7A6E     	 ldr r2,[r7,#100]
+ 766 052a 1A60     	 str r2,[r3]
+ 403:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 404:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     /* Decrement the loop counter */
+ 405:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     blkCntN4--;
+ 767              	 .loc 1 405 0
+ 768 052c 7B6D     	 ldr r3,[r7,#84]
+ 769 052e 013B     	 subs r3,r3,#1
+ 770 0530 7B65     	 str r3,[r7,#84]
+ 771              	.L9:
+ 312:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****   {
+ 772              	 .loc 1 312 0
+ 773 0532 7B6D     	 ldr r3,[r7,#84]
+ 774 0534 002B     	 cmp r3,#0
+ 775 0536 7FF458AF 	 bne .L15
+ 406:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****   }
+ 407:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 408:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****   /* Processing is complete.    
+ 409:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****    ** Now copy the last numTaps - 1 samples to the satrt of the state buffer.    
+ 410:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****    ** This prepares the state buffer for the next function call. */
+ 411:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 412:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****   /* Points to the start of the state buffer */
+ 413:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****   pStateCurnt = S->pState;
+ 776              	 .loc 1 413 0
+ 777 053a FB68     	 ldr r3,[r7,#12]
+ 778 053c 9B68     	 ldr r3,[r3,#8]
+ 779 053e 3B67     	 str r3,[r7,#112]
+ 414:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 415:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****   i = (numTaps - 1u) >> 2;
+ 780              	 .loc 1 415 0
+ 781 0540 FB6A     	 ldr r3,[r7,#44]
+ 782 0542 013B     	 subs r3,r3,#1
+ 783 0544 9B08     	 lsrs r3,r3,#2
+ 784 0546 3B66     	 str r3,[r7,#96]
+ 416:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 417:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****   /* copy data */
+ 418:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****   while(i > 0u)
+ 785              	 .loc 1 418 0
+ 786 0548 22E0     	 b .L16
+ 787              	.L17:
+ 419:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****   {
+ 420:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     *pStateCurnt++ = *pState++;
+ 788              	 .loc 1 420 0
+ 789 054a 3B6F     	 ldr r3,[r7,#112]
+ 790 054c 1A1D     	 adds r2,r3,#4
+ 791 054e 3A67     	 str r2,[r7,#112]
+ 792 0550 7A6F     	 ldr r2,[r7,#116]
+ 793 0552 111D     	 adds r1,r2,#4
+ 794 0554 7967     	 str r1,[r7,#116]
+ 795 0556 1268     	 ldr r2,[r2]
+ 796 0558 1A60     	 str r2,[r3]
+ 421:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     *pStateCurnt++ = *pState++;
+ 797              	 .loc 1 421 0
+ 798 055a 3B6F     	 ldr r3,[r7,#112]
+ 799 055c 1A1D     	 adds r2,r3,#4
+ 800 055e 3A67     	 str r2,[r7,#112]
+ 801 0560 7A6F     	 ldr r2,[r7,#116]
+ 802 0562 111D     	 adds r1,r2,#4
+ 803 0564 7967     	 str r1,[r7,#116]
+ 804 0566 1268     	 ldr r2,[r2]
+ 805 0568 1A60     	 str r2,[r3]
+ 422:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     *pStateCurnt++ = *pState++;
+ 806              	 .loc 1 422 0
+ 807 056a 3B6F     	 ldr r3,[r7,#112]
+ 808 056c 1A1D     	 adds r2,r3,#4
+ 809 056e 3A67     	 str r2,[r7,#112]
+ 810 0570 7A6F     	 ldr r2,[r7,#116]
+ 811 0572 111D     	 adds r1,r2,#4
+ 812 0574 7967     	 str r1,[r7,#116]
+ 813 0576 1268     	 ldr r2,[r2]
+ 814 0578 1A60     	 str r2,[r3]
+ 423:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     *pStateCurnt++ = *pState++;
+ 815              	 .loc 1 423 0
+ 816 057a 3B6F     	 ldr r3,[r7,#112]
+ 817 057c 1A1D     	 adds r2,r3,#4
+ 818 057e 3A67     	 str r2,[r7,#112]
+ 819 0580 7A6F     	 ldr r2,[r7,#116]
+ 820 0582 111D     	 adds r1,r2,#4
+ 821 0584 7967     	 str r1,[r7,#116]
+ 822 0586 1268     	 ldr r2,[r2]
+ 823 0588 1A60     	 str r2,[r3]
+ 424:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 425:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     /* Decrement the loop counter */
+ 426:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     i--;
+ 824              	 .loc 1 426 0
+ 825 058a 3B6E     	 ldr r3,[r7,#96]
+ 826 058c 013B     	 subs r3,r3,#1
+ 827 058e 3B66     	 str r3,[r7,#96]
+ 828              	.L16:
+ 418:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****   {
+ 829              	 .loc 1 418 0
+ 830 0590 3B6E     	 ldr r3,[r7,#96]
+ 831 0592 002B     	 cmp r3,#0
+ 832 0594 D9D1     	 bne .L17
+ 427:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****   }
+ 428:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 429:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****   i = (numTaps - 1u) % 0x04u;
+ 833              	 .loc 1 429 0
+ 834 0596 FB6A     	 ldr r3,[r7,#44]
+ 835 0598 013B     	 subs r3,r3,#1
+ 836 059a 03F00303 	 and r3,r3,#3
+ 837 059e 3B66     	 str r3,[r7,#96]
+ 430:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 431:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****   /* copy data */
+ 432:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****   while(i > 0u)
+ 838              	 .loc 1 432 0
+ 839 05a0 0AE0     	 b .L18
+ 840              	.L19:
+ 433:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****   {
+ 434:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     *pStateCurnt++ = *pState++;
+ 841              	 .loc 1 434 0
+ 842 05a2 3B6F     	 ldr r3,[r7,#112]
+ 843 05a4 1A1D     	 adds r2,r3,#4
+ 844 05a6 3A67     	 str r2,[r7,#112]
+ 845 05a8 7A6F     	 ldr r2,[r7,#116]
+ 846 05aa 111D     	 adds r1,r2,#4
+ 847 05ac 7967     	 str r1,[r7,#116]
+ 848 05ae 1268     	 ldr r2,[r2]
+ 849 05b0 1A60     	 str r2,[r3]
+ 435:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 436:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     /* Decrement the loop counter */
+ 437:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     i--;
+ 850              	 .loc 1 437 0
+ 851 05b2 3B6E     	 ldr r3,[r7,#96]
+ 852 05b4 013B     	 subs r3,r3,#1
+ 853 05b6 3B66     	 str r3,[r7,#96]
+ 854              	.L18:
+ 432:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****   {
+ 855              	 .loc 1 432 0
+ 856 05b8 3B6E     	 ldr r3,[r7,#96]
+ 857 05ba 002B     	 cmp r3,#0
+ 858 05bc F1D1     	 bne .L19
+ 438:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****   }
+ 439:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 440:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** #else
+ 441:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 442:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** /* Run the below code for Cortex-M0 */
+ 443:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 444:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****   /* S->pState buffer contains previous frame (numTaps - 1) samples */
+ 445:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****   /* pStateCurnt points to the location where the new input data should be written */
+ 446:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****   pStateCurnt = S->pState + (numTaps - 1u);
+ 447:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 448:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****   /* Total number of output samples to be computed */
+ 449:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****   blkCnt = outBlockSize;
+ 450:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 451:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****   while(blkCnt > 0u)
+ 452:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****   {
+ 453:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     /* Copy decimation factor number of new input samples into the state buffer */
+ 454:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     i = S->M;
+ 455:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 456:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     do
+ 457:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     {
+ 458:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       *pStateCurnt++ = *pSrc++;
+ 459:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 460:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     } while(--i);
+ 461:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 462:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     /* Set accumulator to zero */
+ 463:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     sum0 = 0.0f;
+ 464:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 465:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     /* Initialize state pointer */
+ 466:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     px = pState;
+ 467:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 468:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     /* Initialize coeff pointer */
+ 469:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     pb = pCoeffs;
+ 470:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 471:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     tapCnt = numTaps;
+ 472:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 473:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     while(tapCnt > 0u)
+ 474:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     {
+ 475:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       /* Read coefficients */
+ 476:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       c0 = *pb++;
+ 477:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 478:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       /* Fetch 1 state variable */
+ 479:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       x0 = *px++;
+ 480:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 481:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       /* Perform the multiply-accumulate */
+ 482:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       sum0 += x0 * c0;
+ 483:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 484:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       /* Decrement the loop counter */
+ 485:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****       tapCnt--;
+ 486:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     }
+ 487:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 488:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     /* Advance the state pointer by the decimation factor           
+ 489:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****      * to process the next group of decimation factor number samples */
+ 490:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     pState = pState + S->M;
+ 491:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 492:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     /* The result is in the accumulator, store in the destination buffer. */
+ 493:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     *pDst++ = sum0;
+ 494:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 495:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     /* Decrement the loop counter */
+ 496:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     blkCnt--;
+ 497:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****   }
+ 498:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 499:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****   /* Processing is complete.         
+ 500:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****    ** Now copy the last numTaps - 1 samples to the start of the state buffer.       
+ 501:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****    ** This prepares the state buffer for the next function call. */
+ 502:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 503:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****   /* Points to the start of the state buffer */
+ 504:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****   pStateCurnt = S->pState;
+ 505:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 506:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****   /* Copy numTaps number of values */
+ 507:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****   i = (numTaps - 1u);
+ 508:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 509:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****   /* copy data */
+ 510:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****   while(i > 0u)
+ 511:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****   {
+ 512:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     *pStateCurnt++ = *pState++;
+ 513:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 514:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     /* Decrement the loop counter */
+ 515:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****     i--;
+ 516:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c ****   }
+ 517:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 518:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** #endif /*   #ifndef ARM_MATH_CM0_FAMILY        */
+ 519:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** 
+ 520:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_decimate_f32.c **** }
+ 859              	 .loc 1 520 0
+ 860 05be 7837     	 adds r7,r7,#120
+ 861              	.LCFI3:
+ 862              	 .cfi_def_cfa_offset 8
+ 863 05c0 BD46     	 mov sp,r7
+ 864              	.LCFI4:
+ 865              	 .cfi_def_cfa_register 13
+ 866              	 
+ 867 05c2 80BD     	 pop {r7,pc}
+ 868              	 .cfi_endproc
+ 869              	.LFE139:
+ 871              	 .text
+ 872              	.Letext0:
+ 873              	 .file 2 "c:\\davev4-64bit\\dave-4.2.6\\eclipse\\arm-gcc-49\\arm-none-eabi\\include\\machine\\_default_types.h"
+ 874              	 .file 3 "c:\\davev4-64bit\\dave-4.2.6\\eclipse\\arm-gcc-49\\arm-none-eabi\\include\\stdint.h"
+ 875              	 .file 4 "C:\\Users\\Depes Crystalline\\Desktop\\school\\Active_Bike_Lighting_System\\Radar_Core\\Dave\\Generated/CMSIS_DSP/arm_math.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 arm_fir_decimate_f32.c
+    {standard input}:21     .text.arm_fir_decimate_f32:00000000 $t
+    {standard input}:26     .text.arm_fir_decimate_f32:00000000 arm_fir_decimate_f32
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+__aeabi_fmul
+__aeabi_fadd
