@@ -98,9 +98,6 @@ void checkLeftTurn(){ // interrupt call function for checking left turn signal s
 	
 	if ((digitalRead(LEFTSW)) == 1){ // read digital value of LEFT TURN pin
 		leftTurnFlag = false; // clear left turn flag
-		digitalWrite(INNERLEFT, LOW);
-		digitalWrite(MIDLEFT, LOW);
-		digitalWrite(OUTERLEFT, LOW);
 	}
 	
 }
@@ -114,9 +111,6 @@ void checkRightTurn() { // interrupt call function for checking right turn signa
 	
 	if ((digitalRead(RIGHTSW)) == 1){ // read digital value of RIGHT TURN pin
 		rightTurnFlag = false; // clear right turn flag
-		digitalWrite(OUTERRIGHT, LOW);
-		digitalWrite(MIDRIGHT, LOW);
-		digitalWrite(INNERRIGHT, LOW);
 	}
 
 
@@ -128,18 +122,13 @@ void loop() // put your main code here, to run repeatedly:
 	// polling for brake status
 	checkBrakeSignals();
 	
-//	checkLeftTurn();
-//	checkRightTurn();
 	//processSignals(); // processing turn signals & brake signals, and displays appropriately
 	displayLEDs(); // function to call for displaying LED's
   
 }
 
 void pwm_overflow_cb(std::uint32_t){
-//	if(brakeFlag)
-//	{
-		digitalWrite(BRAKEPIN, HIGH);
-//	}
+    digitalWrite(BRAKEPIN, HIGH);
 }
 
 void pwm_match_cb(std::uint32_t){
@@ -192,7 +181,46 @@ void timer_overflow_cb(std::uint32_t){ // operating off 4 Hz timer/counter setti
 			arrow_pin = INNER_ARROW;
 		}
 	}
+/*  // New logic code to avoid switch-cases and if statements
+	//emergency case
+	static bool emergency_toggle_state = true;
 
+    const bool
+            // Turn on arrows on both sides if both switches are on
+            both_sw_on      = (rightTurnFlag && leftTurnFlag),
+            both_turn_on    = emergency_toggle_state & both_sw_on,
+            // If in cycling state, determine which arrow should be on
+            outer_right_cyc = rightTurnFlag & (arrow_pin == OUTER_ARROW);
+            outer_left_cyc  = leftTurnFlag  & (arrow_pin == OUTER_ARROW),
+            mid_right_cyc   = rightTurnFlag & (arrow_pin == MIDDLE_ARROW),
+            mid_left_cyc    = leftTurnFlag  & (arrow_pin == MIDDLE_ARROW),
+            inner_right_cyc = rightTurnFlag & (arrow_pin == INNER_ARROW),
+            inner_left_cyc  = leftTurnFlag  & (arrow_pin == INNER_ARROW),
+            // Calculate final turn on state
+            outer_right_on  = both_turn_on | (!both_sw_on & outer_right_cyc),
+            outer_left_on   = both_turn_on | (!both_sw_on & outer_left_cyc),
+            mid_right_on    = both_turn_on | (!both_sw_on & mid_right_cyc),
+            mid_left_on     = both_turn_on | (!both_sw_on & mid_left_cyc),
+            inner_right_on  = both_turn_on | (!both_sw_on & inner_right_cyc),
+            inner_left_on   = both_turn_on | (!both_sw_on & inner_left_cyc)
+            ;
+
+    digitalWrite(OUTERRIGHT,    outer_right_on);
+    digitalWrite(OUTERLEFT,     outer_left_on);
+    digitalWrite(MIDRIGHT,      mid_right_on);
+    digitalWrite(MIDLEFT,       mid_left_on);
+    digitalWrite(INNERRIGHT,    inner_right_on);
+    digitalWrite(INNERLEFT,     inner_left_on);
+
+    // cycle through the arrows (from inner to outer)
+    ++arrow_pin;
+    if(arrow_pin > OUTER_ARROW)
+    {
+        arrow_pin = INNER_ARROW;
+    }
+
+    emergency_toggle_state = !emergency_toggle_state;
+*/
 	
 }
 
