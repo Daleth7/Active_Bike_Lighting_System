@@ -10,7 +10,7 @@
 #define YELLOW2_PIN 6
 #define GREEN2_PIN  5
 
-#define WHITE_PIN   9
+#define WHITE_PIN   3
 
 #define OUT_PIN 13
 
@@ -85,7 +85,7 @@ void loop(){
     else                pwm.set_duty_cycle(0.075);
     brake_harder = !brake_harder;
 
-    delay(500);
+    delay(10000);
 }
 
 void pwm_overflow_cb(std::uint32_t counter){
