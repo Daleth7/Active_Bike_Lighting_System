@@ -1,61 +1,19 @@
 // list of includes
 
-#include <Adafruit_NeoPixel.h>
-#ifdef __AVR__
-  #include <avr/power.h>
-#endif
-
 #include <cstdint>
 #include "timer8_tc.hpp"
 #include "generic_clock_generator.hpp"
+#include "interrupt_callbacks.hpp"
+#include "led_strip.hpp"
+#include "brakes.hpp"
 
-#define LEDPIN 6 // this is the dedicated data line for the LED strip
-	
-Adafruit_NeoPixel strip = Adafruit_NeoPixel(30, LEDPIN, NEO_RGBW + NEO_KHZ800); // call LED Strip library
-
-// states for LED strip
-
-#define GREENLEDSTRIP 1
-#define YELLOWLEDSTRIP 2
-#define REDLEDSTRIP 3
-
-// pin defines
-
-#define OUTERRIGHT	4 	// RIGHT1
-#define MIDRIGHT 	5	// RIGHT2
-#define INNERRIGHT 	7 	// RIGHT3
-#define OUTERLEFT 	12 	// LEFT1
-#define MIDLEFT 	11	// LEFT2
-#define INNERLEFT 	10 	// LEFT3
-
-#define OUTER_ARROW 	3
-#define MIDDLE_ARROW 	2
-#define INNER_ARROW 	1
-
-#define BRAKEPIN 3
-
-#define LEFTSW 8
-#define RIGHTSW 9
-
-
-#define RIGHTBRAKE A1
-#define LEFTBRAKE A2
+#include "pin_defines.h"
 
 // initialization of all global variables
 
-TimerCount3& timer = TimerCount3::singleton();
-TimerCount4& pwm = TimerCount4::singleton();
-
-bool leftTurnFlag = false; // initialize turn signal flag variables as 1 = ON
-bool rightTurnFlag = false; 
-std::uint8_t arrow_pin = OUTER_ARROW; // Keep track of which arrow is turned on (Inner, Middle, Outer)
-
-bool brakeFlag = false; // initializes brake signal flag variables, 1 = ON 
-
-float leftBrakeVoltage = 0; // initialize ADC brake converted voltage value
-float rightBrakeVoltage = 0;
-
-int ledStripMode = GREENLEDSTRIP; // initializes variable to be pulsing Green on LED strip
+static TimerCount3& timer = TimerCount3::singleton();
+static TimerCount4& pwm = TimerCount4::singleton();
+static TimerCount5& striptimer = TimerCount5::singleton();
 
 // list of used functions
 
@@ -68,52 +26,24 @@ void pwm_match_cb(std::uint32_t counter);
 void timer_overflow_cb(std::uint32_t);
 void timer_match_cb(std::uint32_t);
 
+void striptimer_overflow_cb(std::uint32_t);
+void striptimer_match_cb(std::uint32_t);
+
 void setup() { // setup code to run once for initalization
 
 
 
 	configure_pins();
+
 	configure_timers();
-    
-    timer.enable();
-    pwm.enable();
-	
-	// setting interrupt
-	interrupts (); // initalizes interrupts to be ON explicitly
-	
-	attachInterrupt(LEFTSW, checkLeftTurn, CHANGE); // creates an interrupt for CHECKING Left turn signal
-	attachInterrupt(RIGHTSW, checkRightTurn, CHANGE); // creates an interrupt for CHECKING Right turn signal
+	configure_interrupts();
+
+	NVIC_SetPriority(TC5_IRQn, 4);	// set TC6 ISR to lowest priority
+	NVIC_SetPriority(TC4_IRQn, 3);	// set TC6 ISR to lowest priority
+	NVIC_SetPriority(TC3_IRQn, 2);	// set TC6 ISR to lowest priority
 	
 	// initalize LED strip
-	strip.begin(); //
-	strip.show(); // Initialize all pixels to 'off'
-}
-
-void checkLeftTurn(){ // interrupt call function for checking left turn signal status
-	
-	if ((digitalRead(LEFTSW)) == 0){ // read digital value of LEFT TURN pin
-		leftTurnFlag = true; // sets LEFT TURN flag
-		arrow_pin = INNER_ARROW;
-	}
-	
-	if ((digitalRead(LEFTSW)) == 1){ // read digital value of LEFT TURN pin
-		leftTurnFlag = false; // clear left turn flag
-	}
-	
-}
-
-void checkRightTurn() { // interrupt call function for checking right turn signal status
-
-	if ((digitalRead(RIGHTSW)) == 0){ // read digital value of RIGHT TURN pin
-		rightTurnFlag = true; // sets RIGHT TURN flag
-		arrow_pin = INNER_ARROW;
-	}
-	
-	if ((digitalRead(RIGHTSW)) == 1){ // read digital value of RIGHT TURN pin
-		rightTurnFlag = false; // clear right turn flag
-	}
-
-
+	initialize_strip();
 }
 
 void loop() // put your main code here, to run repeatedly:
@@ -123,108 +53,8 @@ void loop() // put your main code here, to run repeatedly:
 	checkBrakeSignals();
 	
 	//processSignals(); // processing turn signals & brake signals, and displays appropriately
-	displayLEDs(); // function to call for displaying LED's
+//	displayLEDs(); // function to call for displaying LED's
   
-}
-
-void pwm_overflow_cb(std::uint32_t){
-    digitalWrite(BRAKEPIN, HIGH);
-}
-
-void pwm_match_cb(std::uint32_t){
-    digitalWrite(BRAKEPIN, LOW);
-}
-
-void timer_overflow_cb(std::uint32_t){ // operating off 4 Hz timer/counter setting
-	//emergency case
-	static int emergency_arrows = 1;
-	if (rightTurnFlag && leftTurnFlag) {
-		
-		digitalWrite(OUTERRIGHT, emergency_arrows);
-		digitalWrite(OUTERLEFT, emergency_arrows);
-		digitalWrite(MIDRIGHT, emergency_arrows);
-		digitalWrite(MIDLEFT, emergency_arrows);
-		digitalWrite(INNERRIGHT, emergency_arrows);
-		digitalWrite(INNERLEFT, emergency_arrows);	
-		
-		emergency_arrows = !emergency_arrows;
-	}
-	else {
-		
-		digitalWrite(MIDRIGHT, LOW);
-		digitalWrite(MIDLEFT, LOW);
-		digitalWrite(INNERRIGHT, LOW);
-		digitalWrite(INNERLEFT, LOW);
-		digitalWrite(OUTERRIGHT, LOW);
-		digitalWrite(OUTERLEFT, LOW);
-		
-		switch(arrow_pin){
-			case OUTER_ARROW:
-				digitalWrite(OUTERRIGHT, rightTurnFlag);
-				digitalWrite(OUTERLEFT, leftTurnFlag);
-				break;
-			case MIDDLE_ARROW:
-				digitalWrite(MIDRIGHT, rightTurnFlag);
-				digitalWrite(MIDLEFT, leftTurnFlag);
-				break;
-			case INNER_ARROW:
-				digitalWrite(INNERRIGHT, rightTurnFlag);
-				digitalWrite(INNERLEFT, leftTurnFlag);
-				break;
-			default: break;	// Should never happen
-		}
-		// cycle through the arrows (from inner to outer)
-		++arrow_pin;
-		
-		if(arrow_pin > OUTER_ARROW)
-		{
-			arrow_pin = INNER_ARROW;
-		}
-	}
-/*  // New logic code to avoid switch-cases and if statements
-	//emergency case
-	static bool emergency_toggle_state = true;
-
-    const bool
-            // Turn on arrows on both sides if both switches are on
-            both_sw_on      = (rightTurnFlag && leftTurnFlag),
-            both_turn_on    = emergency_toggle_state & both_sw_on,
-            // If in cycling state, determine which arrow should be on
-            outer_right_cyc = rightTurnFlag & (arrow_pin == OUTER_ARROW);
-            outer_left_cyc  = leftTurnFlag  & (arrow_pin == OUTER_ARROW),
-            mid_right_cyc   = rightTurnFlag & (arrow_pin == MIDDLE_ARROW),
-            mid_left_cyc    = leftTurnFlag  & (arrow_pin == MIDDLE_ARROW),
-            inner_right_cyc = rightTurnFlag & (arrow_pin == INNER_ARROW),
-            inner_left_cyc  = leftTurnFlag  & (arrow_pin == INNER_ARROW),
-            // Calculate final turn on state
-            outer_right_on  = both_turn_on | (!both_sw_on & outer_right_cyc),
-            outer_left_on   = both_turn_on | (!both_sw_on & outer_left_cyc),
-            mid_right_on    = both_turn_on | (!both_sw_on & mid_right_cyc),
-            mid_left_on     = both_turn_on | (!both_sw_on & mid_left_cyc),
-            inner_right_on  = both_turn_on | (!both_sw_on & inner_right_cyc),
-            inner_left_on   = both_turn_on | (!both_sw_on & inner_left_cyc)
-            ;
-
-    digitalWrite(OUTERRIGHT,    outer_right_on);
-    digitalWrite(OUTERLEFT,     outer_left_on);
-    digitalWrite(MIDRIGHT,      mid_right_on);
-    digitalWrite(MIDLEFT,       mid_left_on);
-    digitalWrite(INNERRIGHT,    inner_right_on);
-    digitalWrite(INNERLEFT,     inner_left_on);
-
-    // cycle through the arrows (from inner to outer)
-    ++arrow_pin;
-    if(arrow_pin > OUTER_ARROW)
-    {
-        arrow_pin = INNER_ARROW;
-    }
-
-    emergency_toggle_state = !emergency_toggle_state;
-*/
-	
-}
-
-void timer_match_cb(std::uint32_t){
 }
 
 void configure_pins(){
@@ -287,203 +117,19 @@ void configure_timers(){
                 32.768e3// Reference frequency
                 );
 	pwm.set_duty_cycle(0.075);
+	
+    striptimer.init(   
+				0x6,    // prescale by 256 --> 128 Hz
+                8,    // 8-bit counter period -->  16 Hz
+                true,   // Interrupt on overflow
+                true,   // Interrupt on match
+                0,     // Match value
+                striptimer_overflow_cb, striptimer_match_cb,
+                0x2,    // Use generic clock generator 2
+                32.768e3// Reference frequency
+                );
+	
+    timer.enable();
+    pwm.enable();
+	striptimer.enable();
 }
-
-/*
-void processSignals() { // process turn and brake signals
-	
-	static int turnTimeL = 0; // initalizes counter for arrow display. ie. turns on 3 for 10 cycles, 2 for 10 cycles, 1 for 10 cycles
-	static int turnTimeR = 0; // counter for RIGHT display
-	
-	if (leftTurnFlag == 1) { // Left Turn button is ON
-	
-		if (turnTimeL < 20000){ // turns on arrow closest to middle (arrow 1)
-			
-			digitalWrite(10, HIGH); // LEFT3
-			
-		}
-		if (turnTimeL == 20000) { // after 10 cycles, go to arrow 2
-		
-			digitalWrite (10, LOW); // turns LEFT3 OFF
-			digitalWrite (11, HIGH); // turns LEFT2 ON
-			
-		}
-		
-		if (turnTimeL == 40000) { // after 10 cycles, go to arrow 3
-		
-			digitalWrite (11, LOW); // turns LEFT2 OFF
-			digitalWrite (12, HIGH); // turns LEFT1 ON
-			
-		}
-		
-		if (turnTimeL == 60000){ // reset & turn off arrow 3
-		
-			turnTimeL = 0; // resets counter for arrow display
-			digitalWrite (12, LOW); // turns LEFT1 OFF
-			
-		}
-        
-		turnTimeL++; 
-	}
-	
-	else {
-		
-		clearLeftTurn(&turnTimeL);
-		
-	}
-	
-	if (rightTurnFlag == 1) { // Right Turn button is ON
-		if (turnTimeR < 20000){ // turns on arrow closest to middle (arrow 1)
-			
-			digitalWrite(7, HIGH); // LEFT3
-			
-		}
-		
-		if (turnTimeR == 20000) { // after 10 cycles, go to arrow 2
-		
-			digitalWrite (7, LOW); // turns LEFT3 OFF
-			digitalWrite (5, HIGH); // turns LEFT2 ON
-			
-		}
-		
-		if (turnTimeR == 40000) { // after 10 cycles, go to arrow 3
-		
-			digitalWrite (5, LOW); // turns LEFT2 OFF
-			digitalWrite (4, HIGH); // turns LEFT1 ON
-			
-		}
-		
-		if (turnTimeR == 60000){ // reset & turn off arrow 3
-		
-			turnTimeR = 0; // resets counter for arrow display
-			digitalWrite (4, LOW); // turns LEFT1 OFF
-			
-		}
-        
-		turnTimeR++; 
-	}
-	
-	if (brakeFlag == 1) { // Brake Flag is ON, either LEFT or RIGHT is engaged
-	
-		digitalWrite(13, HIGH); // SEND 100% duty cycle value to brakes, FULL BRIGHTNESS
-		
-	}
-}
-*/
-
-void displayLEDs() { // LED strip display function
-	
-	switch (ledStripMode){
-		
-		case GREENLEDSTRIP:
-			
-			greenLEDs();
-			break;
-			
-		case YELLOWLEDSTRIP:
-			//put code here
-			break;
-			
-		case REDLEDSTRIP:
-			//put code here
-			break;
-			
-	}
-
-}
-
-
-void checkBrakeSignals() {
-	
-	// read the input on analog pin 1:
-	int leftSensorValue = analogRead(RIGHTBRAKE); // reads analog voltage on pin A1 for Left Brakes
-	int rightSensorValue = analogRead(LEFTBRAKE); // reads analog voltage on pin A2 for Right Brakes
-	
-	// Convert the analog reading (which goes from 0 - 1023) to a voltage (0 - 3.3V):
-	leftBrakeVoltage = leftSensorValue * (3.3 / 1023.0); // Conversion of int ADC value to voltage, using 3.3V reference limit
-	rightBrakeVoltage = rightSensorValue * (3.3 / 1023.0); // 
-
-	// Raising brake flag if EITHER left OR right brake is engaged
-	// if value read by ADC after conversion is less than 2.7, raise brake flag
-	static bool braked = false;	// Make sure register is not constantly being written to.
-								//	If so, the duty cycle will fluctuate.
-	if((leftBrakeVoltage < 2.7) || (rightBrakeVoltage < 2.7)){
-		pwm.set_duty_cycle(0.2);	// Turn brighter
-		braked = true;
-	} else if(braked){
-		braked = false;
-		pwm.set_duty_cycle(0.075);	// Turn dimmer
-	}
-}
-
-void greenLEDs() { // Pulsing Green, 3 LED's are on at a time
-
-	static int greenCounter = 0;
-
-	if (greenCounter == 3000){
-	
-		static int b = 0;
-		static int offCounter = 0; // initializes counter
-	
-		strip.setPixelColor(b, 255, 0, 0, 0);
-		strip.setPixelColor(b+1, 255, 0, 0, 0);
-		strip.setPixelColor(b+2, 255, 0, 0, 0);
-	
-		if (offCounter == 1){ // turns off LEDs after a cycle of being on
-		
-			strip.setPixelColor(b-1, 0, 0, 0);
-		
-			offCounter = -1;
-		}	
-	
-		strip.show();
-		//delay (50);
-	
-		offCounter++;
-		b++;
-		greenCounter = 0;
-		
-		if (b == 31) { // resets LED strip counter
-			b = 0;
-		}
-	}
-	greenCounter++;
-}
-
-void RedLEDs() {
-
-  for (int i=0; i<5; i++) {
-    
-  for (int j=0; j<30; j++) {
-    strip.setPixelColor(j, 0, 255, 0, 0);
-    strip.show(); 
-  }
-
-  delay(50);
-  for (int k=0; k<30; k++) {
-    strip.setPixelColor(k, 0, 0, 0, 0);
-    strip.show();
-    }
-    delay (50);
-  }
-}
-
-void YellowLEDs() {
-
-  for (int i=0; i<10; i++) {
-    
-    for (int c=0; c<30; c++) {
-  strip.setPixelColor(c, 255, 255, 0, 0);
-  strip.show(); 
-  }
-
-  delay(200);
-  for (int d=0; d<30; d++) {
-    strip.setPixelColor(d, 0, 0, 0, 0);
-    strip.show();
-    }
-  delay (200);
-}
-}
-
-

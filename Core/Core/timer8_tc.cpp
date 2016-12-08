@@ -38,6 +38,20 @@ void TC4_Handler(){
     }
 }
 
+void TC5_Handler(){
+    static std::uint32_t not_so_secret_timer_counter = 0;
+    TimerCount5& tc5_timer = TimerCount5::singleton();
+
+    if(tc5_timer.overflowed()){
+        tc5_timer.ISR_overflow_cb(not_so_secret_timer_counter++);
+        tc5_timer.clear_overflow_interrupt();
+    }
+    if(tc5_timer.matched()){
+        tc5_timer.ISR_match_cb(not_so_secret_timer_counter);
+        tc5_timer.clear_match_interrupt();
+    }
+}
+
 /*************************************************************************
                     Timer Interrupt Service Routine end
 *************************************************************************/
