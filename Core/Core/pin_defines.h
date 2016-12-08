@@ -16,17 +16,9 @@
 #define LEFTSW 8
 #define RIGHTSW 9
 
-#define OUTER_ARROW 	3
-#define MIDDLE_ARROW 	2
-#define INNER_ARROW 	1
-
 
 // states for LED strip
 
 #define LEDPIN 6 // this is the dedicated data line for the LED strip
-
-#define GREENLEDSTRIP 1
-#define YELLOWLEDSTRIP 2
-#define REDLEDSTRIP 3
 
 #endif

@@ -3,7 +3,6 @@
 
 #include <cstdint>	// For std::uint32_t
 
-void configure_interrupts();
 void checkLeftTurn();
 void checkRightTurn();
 

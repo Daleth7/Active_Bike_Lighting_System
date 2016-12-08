@@ -1,7 +1,8 @@
 // list of includes
 
 #include <cstdint>
-#include "timer8_tc.hpp"
+
+#include "common_types.hpp"
 #include "generic_clock_generator.hpp"
 #include "interrupt_callbacks.hpp"
 #include "led_strip.hpp"
@@ -11,54 +12,64 @@
 
 // initialization of all global variables
 
-static TimerCount3& timer = TimerCount3::singleton();
-static TimerCount4& pwm = TimerCount4::singleton();
-static TimerCount5& striptimer = TimerCount5::singleton();
-
-// list of used functions
+static TurnSignalTimer& turn_signal_timer   = TurnSignalTimer::singleton();
+static BrakePWM&        brake_pwm           = BrakePWM::singleton();
+static StripTimer&      striptimer          = StripTimer::singleton();
 
 void configure_pins();
 void configure_timers();
+void configure_ext_interrupts();
 
-void pwm_overflow_cb(std::uint32_t counter);
-void pwm_match_cb(std::uint32_t counter);
-
-void timer_overflow_cb(std::uint32_t);
-void timer_match_cb(std::uint32_t);
-
-void striptimer_overflow_cb(std::uint32_t);
-void striptimer_match_cb(std::uint32_t);
+std::uint8_t strip_state = 0;
 
 void setup() { // setup code to run once for initalization
 
-
-
-	configure_pins();
-
-	configure_timers();
-	configure_interrupts();
-
-	NVIC_SetPriority(TC5_IRQn, 4);	// set TC6 ISR to lowest priority
-	NVIC_SetPriority(TC4_IRQn, 3);	// set TC6 ISR to lowest priority
-	NVIC_SetPriority(TC3_IRQn, 2);	// set TC6 ISR to lowest priority
+    configure_pins();
+    configure_timers();
+    configure_ext_interrupts();
 	
 	// initalize LED strip
 	initialize_strip();
+
 }
 
 void loop() // put your main code here, to run repeatedly:
 {
-
 	// polling for brake status
 	checkBrakeSignals();
-	
-	//processSignals(); // processing turn signals & brake signals, and displays appropriately
-//	displayLEDs(); // function to call for displaying LED's
-  
+
+    extern bool led_strip_flag;
+    if(led_strip_flag){
+        if(strip_state == 77){
+            cycle_strip_white();
+        }
+        switch(strip_state%6){
+            case 0:
+                cycle_strip_red();
+                break;
+            case 1:
+                cycle_strip_yellow();
+                break;
+            case 2:
+                cycle_strip_green();
+                break;
+            case 3:
+                cycle_strip_cyan();
+                break;
+            case 4:
+                cycle_strip_blue();
+                break;
+            case 5:
+                cycle_strip_magenta();
+                break;
+            default: break; // Should never happen
+        }
+        ++strip_state;
+    }
 }
 
+
 void configure_pins(){
-	
 	// setup output pins for turn signals
 	pinMode(OUTERRIGHT, OUTPUT); // RIGHT 1 OUTERMOST
 	pinMode(MIDRIGHT, OUTPUT); // RIGHT 2
@@ -96,40 +107,44 @@ void configure_timers(){
                         osculp32k_clk   // Use Ultra low power OSC as the generator source (32.768 kHz)
                         );
 	
-    // Sets a timer at 4 Hz
-    timer.init( 0x7,    // prescale by 1024 --> 32 Hz
-                8,    // 8-bit counter period --> 4 Hz
-                true,   // Interrupt on overflow
-                true,   // Interrupt on match
-                4,     // Match value
-                timer_overflow_cb, timer_match_cb,
-                0x2,    // Use generic clock generator 2
-                32.768e3// Reference frequency
-                );
+    // Sets a turn_signal_timer at 4 Hz
+    turn_signal_timer.init( 0x7,    // prescale by 1024 --> 32 Hz
+                            8,      // 8-bit counter period --> 4 Hz
+                            true,   // Interrupt on overflow
+                            true,   // Interrupt on match
+                            4,      // Match value
+                            timer_overflow_cb, timer_match_cb,
+                            0x2,    // Use generic clock generator 2
+                            32.768e3// Reference frequency
+                            );
     // Sets a PWM at 131.072 Hz
-    pwm.init(   0x0,    // prescale by 1 --> 32.768 kHz
-                250,    // 8-bit counter period --> 131.072 Hz
-                true,   // Interrupt on overflow
-                true,   // Interrupt on match
-                10,     // Match value
-                pwm_overflow_cb, pwm_match_cb,
-                0x2,    // Use generic clock generator 2
-                32.768e3// Reference frequency
-                );
-	pwm.set_duty_cycle(0.075);
+    brake_pwm.init( 0x0,    // prescale by 1 --> 32.768 kHz
+                    250,    // 8-bit counter period --> 131.072 Hz
+                    true,   // Interrupt on overflow
+                    true,   // Interrupt on match
+                    10,     // Match value
+                    pwm_overflow_cb, pwm_match_cb,
+                    0x2,    // Use generic clock generator 2
+                    32.768e3// Reference frequency
+                    );
+	brake_pwm.set_duty_cycle(0.075);
 	
-    striptimer.init(   
-				0x6,    // prescale by 256 --> 128 Hz
-                8,    // 8-bit counter period -->  16 Hz
-                true,   // Interrupt on overflow
-                true,   // Interrupt on match
-                0,     // Match value
-                striptimer_overflow_cb, striptimer_match_cb,
-                0x2,    // Use generic clock generator 2
-                32.768e3// Reference frequency
-                );
-	
-    timer.enable();
-    pwm.enable();
+    striptimer.init(    0x6,    // prescale by 256 --> 128 Hz
+                        8,      // 8-bit counter period -->  16 Hz
+                        true,   // Interrupt on overflow
+                        true,   // Interrupt on match
+                        0,      // Match value
+                        striptimer_overflow_cb, striptimer_match_cb,
+                        0x2,    // Use generic clock generator 2
+                        32.768e3// Reference frequency
+                        );
+
+    turn_signal_timer.enable();
+    brake_pwm.enable();
 	striptimer.enable();
+}
+
+void configure_ext_interrupts(){
+	attachInterrupt(LEFTSW, checkLeftTurn, CHANGE); // creates an interrupt for CHECKING Left turn signal
+	attachInterrupt(RIGHTSW, checkRightTurn, CHANGE); // creates an interrupt for CHECKING Right turn signal
 }
