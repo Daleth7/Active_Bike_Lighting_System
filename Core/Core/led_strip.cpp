@@ -55,9 +55,9 @@ void cycle_strip_white() { // Pulsing white, 3 LED's are on at a time
 void cycle_strip_leds(std::uint8_t red, std::uint8_t green, std::uint8_t blue, std::uint8_t white){
     static int led_position = 1;
 
-    int led_pos_prev = (led_position-1)%strip_led_count,
-        led_pos_curr =  led_position   %strip_led_count,
-        led_pos_next = (led_position+1)%strip_led_count
+    int led_pos_prev = (led_position-1),
+        led_pos_curr =  led_position   ,
+        led_pos_next = (led_position+1)
         ;
 
         // Turn on led at current position and one position on either side
@@ -67,13 +67,12 @@ void cycle_strip_leds(std::uint8_t red, std::uint8_t green, std::uint8_t blue, s
 
     if (led_pos_prev > 0){ // turns off LED two positions back
         strip.setPixelColor( led_pos_prev-1, 0, 0, 0 );
+    } else {
+        strip.setPixelColor( strip_led_count-1, 0, 0, 0 );
+        strip.setPixelColor( strip_led_count-2, 0, 0, 0 );
     }
 
     strip.show();
     led_position++;
-
-    if (led_position > 15000) { // resets LED strip counter
-        led_position = 1;
-        strip.setPixelColor( strip_led_count, 0, 0, 0 );
-    }
+    led_position %= strip_led_count;
 }

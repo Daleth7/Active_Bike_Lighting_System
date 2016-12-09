@@ -40,6 +40,9 @@ void loop() // put your main code here, to run repeatedly:
 
     extern bool led_strip_flag;
     if(led_strip_flag){
+        led_strip_flag = false;
+        cycle_strip_green();
+/*
         if(strip_state == 77){
             cycle_strip_white();
         }
@@ -65,6 +68,7 @@ void loop() // put your main code here, to run repeatedly:
             default: break; // Should never happen
         }
         ++strip_state;
+*/
     }
 }
 
