@@ -41,35 +41,40 @@ void loop() // put your main code here, to run repeatedly:
     extern bool led_strip_flag;
     if(led_strip_flag){
         led_strip_flag = false;
-        cycle_strip_green();
-/*
-        if(strip_state == 77){
-            cycle_strip_white();
+        if(digitalRead(RADARPIN) == LOW){
+            striptimer.set_counter_period(5);
+            cycle_strip_fire();
+        } else {
+            striptimer.set_counter_period(11);
+            cycle_strip_green();
         }
-        switch(strip_state%6){
-            case 0:
-                cycle_strip_red();
-                break;
-            case 1:
-                cycle_strip_yellow();
-                break;
-            case 2:
-                cycle_strip_green();
-                break;
-            case 3:
-                cycle_strip_cyan();
-                break;
-            case 4:
-                cycle_strip_blue();
-                break;
-            case 5:
-                cycle_strip_magenta();
-                break;
-            default: break; // Should never happen
-        }
-        ++strip_state;
-*/
     }
+/*
+    static bool fire_state = false;
+    static int strip_triggered = 0;
+
+    if(strip_triggered >= 100){
+        strip_triggered = 0;
+        fire_state = !fire_state;
+    }
+
+    extern bool led_strip_flag;
+    if(led_strip_flag){
+        ++strip_triggered;
+        led_strip_flag = false;
+
+        if(fire_state){
+            striptimer.set_counter_period(5);
+            cycle_strip_leds(   128, 0, 0, 0,   // red
+                                128, 15, 0, 0,  // orange
+                                128, 47, 0, 0   // yellow
+                                );        
+        } else {
+            striptimer.set_counter_period(11);
+            cycle_strip_green();
+        }
+    }
+*/
 }
 
 
@@ -101,6 +106,8 @@ void configure_pins(){
 	// setup Output pin for driving LED MATRIX (RED: BRAKE/LIGHTS)
 	pinMode(BRAKEPIN, OUTPUT); // PWM signal for driving power MOSFET
 	digitalWrite(BRAKEPIN, LOW); // initialize as OFF
+
+    pinMode(RADARPIN, INPUT_PULLUP);
 }
 
 void configure_timers(){

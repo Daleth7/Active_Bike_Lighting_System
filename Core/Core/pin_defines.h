@@ -16,8 +16,7 @@
 #define LEFTSW 8
 #define RIGHTSW 9
 
-
-// states for LED strip
+#define RADARPIN 2
 
 #define LEDPIN 6 // this is the dedicated data line for the LED strip
 
