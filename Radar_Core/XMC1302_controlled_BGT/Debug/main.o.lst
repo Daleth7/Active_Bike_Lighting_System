@@ -1,0 +1,1477 @@
+   1              	 .cpu cortex-m0
+   2              	 .fpu softvfp
+   3              	 .eabi_attribute 20,1
+   4              	 .eabi_attribute 21,1
+   5              	 .eabi_attribute 23,3
+   6              	 .eabi_attribute 24,1
+   7              	 .eabi_attribute 25,1
+   8              	 .eabi_attribute 26,1
+   9              	 .eabi_attribute 30,2
+  10              	 .eabi_attribute 34,0
+  11              	 .eabi_attribute 18,4
+  12              	 .code 16
+  13              	 .file "main.c"
+  14              	 .text
+  15              	.Ltext0:
+  16              	 .cfi_sections .debug_frame
+  17              	 .section .text.radarsense2go_startacq,"ax",%progbits
+  18              	 .align 2
+  19              	 .global radarsense2go_startacq
+  20              	 .code 16
+  21              	 .thumb_func
+  23              	radarsense2go_startacq:
+  24              	.LFB195:
+  25              	 .file 1 "../main.c"
+   1:../main.c     **** /******************************************************************************
+   2:../main.c     ****  * Software License Agreement
+   3:../main.c     ****  *
+   4:../main.c     ****  * Copyright (c) 2016, Infineon Technologies AG
+   5:../main.c     ****  * All rights reserved.
+   6:../main.c     ****  *
+   7:../main.c     ****  * Redistribution and use in source and binary forms, with or without
+   8:../main.c     ****  * modification, are permitted provided that the following conditions are met:
+   9:../main.c     ****  *
+  10:../main.c     ****  * Redistributions of source code must retain the above copyright notice,
+  11:../main.c     ****  * this list of conditions and the following disclaimer.
+  12:../main.c     ****  *
+  13:../main.c     ****  * Redistributions in binary form must reproduce the above copyright notice,
+  14:../main.c     ****  * this list of conditions and the following disclaimer in the documentation
+  15:../main.c     ****  * and/or other materials provided with the distribution.
+  16:../main.c     ****  *
+  17:../main.c     ****  * Neither the name of the copyright holders nor the names of its contributors
+  18:../main.c     ****  * may be used to endorse or promote products derived from this software
+  19:../main.c     ****  * without specific prior written permission
+  20:../main.c     **** 
+  21:../main.c     ****  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+  22:../main.c     ****  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+  23:../main.c     ****  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+  24:../main.c     ****  * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+  25:../main.c     ****  * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+  26:../main.c     ****  * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+  27:../main.c     ****  * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+  28:../main.c     ****  * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+  29:../main.c     ****  * CONTRACT, STRICT LIABILITY,OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+  30:../main.c     ****  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+  31:../main.c     ****  * POSSIBILITY OF SUCH DAMAGE.
+  32:../main.c     ****  *
+  33:../main.c     ****  * To improve the quality of the software, users are encouraged to share
+  34:../main.c     ****  * modifications, enhancements or bug fixes with Infineon Technologies AG
+  35:../main.c     ****  * (dave@infineon.com).
+  36:../main.c     ****  *
+  37:../main.c     ****  *****************************************************************************/
+  38:../main.c     **** 
+  39:../main.c     **** /****************************************************************
+  40:../main.c     ****  * HEADER FILES
+  41:../main.c     ****  ***************************************************************/
+  42:../main.c     **** #include "Dave.h"
+  43:../main.c     **** #include "radarsense2go_library.h"
+  44:../main.c     **** #include <stdio.h>
+  45:../main.c     **** 
+  46:../main.c     **** XMC_RADARSENSE2GO_TIMING_t radarsense2go_timing =
+  47:../main.c     **** {
+  48:../main.c     **** 		.t_sample_us = 59,          /* 710us -> 1.408kHz */
+  49:../main.c     **** 		.t_cycle_ms = 25,           /* 300 ms */
+  50:../main.c     **** 		.N_exponent_samples = 8     /* 2^8samples * 710us = 182ms BGT24 on-time (settle-time ignored) */
+  51:../main.c     **** };
+  52:../main.c     **** 
+  53:../main.c     **** XMC_RADARSENSE2GO_ALG_t radarsense2go_algorithm =
+  54:../main.c     **** {
+  55:../main.c     **** 		.hold_on_cycles = 1,      /* hold-on cycles to trigger detection */
+  56:../main.c     **** 		.trigger_det_level = 30,  /* trigger detection level */
+  57:../main.c     **** 		.rootcalc_enable = XMC_RADARSENSE2GO_ENABLED /* root calculation for magnitude disabled */
+  58:../main.c     **** };
+  59:../main.c     **** 
+  60:../main.c     **** XMC_RADARSENSE2GO_POWERDOWN_t radarsense2go_powerdown =
+  61:../main.c     **** {
+  62:../main.c     **** 		.sleep_deepsleep_enable   = XMC_RADARSENSE2GO_ENABLED, /* sleep / deepsleep enabled */
+  63:../main.c     **** 		.mainexec_enable          = XMC_RADARSENSE2GO_ENABLED, /* main exec enabled */
+  64:../main.c     **** 		.vadc_clock_gating_enable = XMC_RADARSENSE2GO_ENABLED  /* vadc clock gating enabled */
+  65:../main.c     **** };
+  66:../main.c     **** 
+  67:../main.c     **** uint16_t g_sampling_data_I[256];
+  68:../main.c     **** uint16_t g_sampling_data_Q[256];
+  69:../main.c     **** uint32_t g_fft_data[128];
+  70:../main.c     **** XMC_RADARSENSE2GO_MOTION_t g_motion = XMC_NO_MOTION_DETECT;
+  71:../main.c     **** float g_max_frq_index;
+  72:../main.c     **** bool start = true;
+  73:../main.c     **** 
+  74:../main.c     **** static XMC_RADARSENSE2GO_MOTION_t motion_last=XMC_NO_MOTION_DETECT;
+  75:../main.c     **** void radarsense2go_result( uint32_t *fft_magnitude_array,
+  76:../main.c     **** 		uint16_t size_of_array_mag,
+  77:../main.c     **** 		int16_t *adc_aqc_array_I,
+  78:../main.c     **** 		int16_t *adc_aqc_array_Q,
+  79:../main.c     **** 		uint16_t size_of_array_acq,
+  80:../main.c     **** 		XMC_RADARSENSE2GO_MOTION_t motion,
+  81:../main.c     **** 		uint32_t max_frq_mag,
+  82:../main.c     **** 		uint32_t max_frq_index)
+  83:../main.c     **** {
+  84:../main.c     **** 	/* place your application code for ISR context execution here */
+  85:../main.c     **** 	/* e.g. threshold calibration */
+  86:../main.c     **** 	memcpy(g_sampling_data_I, adc_aqc_array_I, size_of_array_acq * sizeof(uint16_t));
+  87:../main.c     **** 	memcpy(g_sampling_data_Q, adc_aqc_array_Q, size_of_array_acq * sizeof(uint16_t));
+  88:../main.c     **** 	memcpy(g_fft_data, &fft_magnitude_array[1], (size_of_array_mag - 1) * sizeof(uint32_t));
+  89:../main.c     **** 
+  90:../main.c     **** 	g_motion = motion;
+  91:../main.c     **** 
+  92:../main.c     **** 	if (motion == XMC_MOTION_DETECT_APPROACHING || motion == XMC_MOTION_DETECT_DEPARTING)
+  93:../main.c     **** 	{
+  94:../main.c     **** 		g_max_frq_index = max_frq_index * 5.5F; // 1408 Hz/ 2 / 256 (FFT SIZE) / 2
+  95:../main.c     **** 	}
+  96:../main.c     **** 	else
+  97:../main.c     **** 	{
+  98:../main.c     **** 		g_max_frq_index = 0.0F; // Do not show max frequency in case of no motion
+  99:../main.c     **** 	}
+ 100:../main.c     **** 
+ 101:../main.c     **** 	return;
+ 102:../main.c     **** }
+ 103:../main.c     **** 
+ 104:../main.c     **** void radarsense2go_startacq(void)
+ 105:../main.c     **** {
+  26              	 .loc 1 105 0
+  27              	 .cfi_startproc
+  28 0000 074B     	 ldr r3,.L5
+  29 0002 1A68     	 ldr r2,[r3]
+  30              	.LVL0:
+  31              	.LBB64:
+  32              	.LBB65:
+  33              	.LBB66:
+  34              	 .file 2 "C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc/xmc_gpio.h"
+   1:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h **** /**
+   2:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * @file xmc_gpio.h
+   3:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * @date 2015-06-20
+   4:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  *
+   5:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * @cond
+   6:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****   *************************************************************************************************
+   7:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * XMClib v2.1.6 - XMC Peripheral Driver Library 
+   8:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  *
+   9:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * Copyright (c) 2015-2016, Infineon Technologies AG
+  10:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * All rights reserved.                        
+  11:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  *                                             
+  12:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * Redistribution and use in source and binary forms, with or without modification,are permitted pr
+  13:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * following conditions are met:   
+  14:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  *                                                                              
+  15:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * Redistributions of source code must retain the above copyright notice, this list of conditions a
+  16:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * disclaimer.                        
+  17:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * 
+  18:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * Redistributions in binary form must reproduce the above copyright notice, this list of condition
+  19:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * disclaimer in the documentation and/or other materials provided with the distribution.          
+  20:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * 
+  21:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * Neither the name of the copyright holders nor the names of its contributors may be used to endor
+  22:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * products derived from this software without specific prior written permission.                  
+  23:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  *                                                                              
+  24:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR I
+  25:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTI
+  26:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE  FOR ANY DIRECT, IN
+  27:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBS
+  28:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THE
+  29:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * WHETHER IN CONTRACT, STRICT LIABILITY,OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
+  30:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.                            
+  31:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  *                                                                              
+  32:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * To improve the quality of the software, users are encouraged to share modifications, enhancement
+  33:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * Infineon Technologies AG dave@infineon.com).                                                    
+  34:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  **************************************************************************************************
+  35:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  *
+  36:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * Change History
+  37:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * --------------
+  38:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  *
+  39:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * 2015-02-20:
+  40:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  *     - Initial draft<br>
+  41:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  *     - Documentation improved <br>
+  42:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  *      
+  43:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * 2015-06-20:
+  44:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  *     - Removed version macros and declaration of GetDriverVersion API
+  45:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  *
+  46:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * @endcond
+  47:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  *
+  48:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  */
+  49:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h **** 
+  50:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h **** #ifndef XMC_GPIO_H
+  51:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h **** #define XMC_GPIO_H
+  52:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h **** 
+  53:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h **** /**************************************************************************************************
+  54:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * HEADER FILES
+  55:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  **************************************************************************************************
+  56:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h **** 
+  57:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h **** #include "xmc_common.h"
+  58:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h **** 
+  59:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h **** /**
+  60:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * @addtogroup XMClib XMC Peripheral Library
+  61:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * @{
+  62:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  */
+  63:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h **** 
+  64:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h **** /**
+  65:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * @addtogroup GPIO
+  66:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * @brief General Purpose Input Output (GPIO) driver for the XMC microcontroller family.
+  67:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  *
+  68:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * GPIO driver provide a generic and very flexible software interface for all standard digital I/O 
+  69:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * Each port slice has individual interfaces for the operation as General Purpose I/O and it furthe
+  70:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * connectivity to the on-chip periphery and the control for the pad characteristics. 
+  71:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  *
+  72:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * The driver is divided into Input and Output mode.
+  73:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  *
+  74:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * Input mode features:
+  75:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * -# Configuration structure XMC_GPIO_CONFIG_t and initialization function XMC_GPIO_Init()
+  76:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * -# Allows the selection of weak pull-up or pull-down device. Configuration structure XMC_GPIO_MO
+  77:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * \if XMC1
+  78:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * -# Allows the selection of input hysteresis. XMC_GPIO_SetInputHysteresis()
+  79:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * \endif
+  80:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  *
+  81:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * 
+  82:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * Output mode features:
+  83:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * -# Allows the selection of push pull/open drain and Alternate output. Configuration structure XM
+  84:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * \if XMC4
+  85:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * -# Allows the selection of pad driver strength. Configuration structure XMC_GPIO_OUTPUT_STRENGTH
+  86:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * \endif
+  87:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  *
+  88:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * -# Allows the selection of initial output level. Configuration structure XMC_GPIO_OUTPUT_LEVEL_t
+  89:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  *
+  90:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  *@{
+  91:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  */
+  92:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  
+  93:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h **** /**************************************************************************************************
+  94:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * MACROS
+  95:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  **************************************************************************************************
+  96:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h **** 
+  97:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h **** #define PORT_IOCR_PC_Pos PORT0_IOCR0_PC0_Pos
+  98:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h **** #define PORT_IOCR_PC_Msk PORT0_IOCR0_PC0_Msk
+  99:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h **** 
+ 100:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h **** #define PORT_IOCR_PC_Size 				(8U)
+ 101:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h **** 											
+ 102:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h **** 
+ 103:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h **** #define XMC_GPIO_CHECK_OUTPUT_LEVEL(level) ((level == XMC_GPIO_OUTPUT_LEVEL_LOW) || \
+ 104:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****                                             (level == XMC_GPIO_OUTPUT_LEVEL_HIGH))
+ 105:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****                                             
+ 106:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h **** #define XMC_GPIO_CHECK_HWCTRL(hwctrl) ((hwctrl == XMC_GPIO_HWCTRL_DISABLED) || \
+ 107:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****                                        (hwctrl == XMC_GPIO_HWCTRL_PERIPHERAL1) || \
+ 108:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****                                        (hwctrl == XMC_GPIO_HWCTRL_PERIPHERAL2))                    
+ 109:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****                                             
+ 110:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h **** /**************************************************************************************************
+ 111:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * ENUMS
+ 112:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  **************************************************************************************************
+ 113:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h **** 
+ 114:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h **** 
+ 115:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h **** /**
+ 116:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * Defines output level of a pin. Use type \a XMC_GPIO_OUTPUT_LEVEL_t for this enum.
+ 117:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  */
+ 118:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h **** typedef enum XMC_GPIO_OUTPUT_LEVEL
+ 119:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h **** {
+ 120:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****   XMC_GPIO_OUTPUT_LEVEL_LOW  = 0x10000U, /**<  Reset bit */
+ 121:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****   XMC_GPIO_OUTPUT_LEVEL_HIGH = 0x1U, 	/**< Set bit  */
+ 122:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h **** } XMC_GPIO_OUTPUT_LEVEL_t;
+ 123:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h **** 
+ 124:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h **** /**
+ 125:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * Defines direct hardware control characteristics of the pin . Use type \a XMC_GPIO_HWCTRL_t for t
+ 126:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  */
+ 127:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h **** typedef enum XMC_GPIO_HWCTRL
+ 128:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h **** {
+ 129:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****   XMC_GPIO_HWCTRL_DISABLED     = 0x0U, /**<  Software control only */
+ 130:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****   XMC_GPIO_HWCTRL_PERIPHERAL1  = 0x1U, /**<  HWI0/HWO0 control path can override the software confi
+ 131:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****   XMC_GPIO_HWCTRL_PERIPHERAL2  = 0x2U  /**<  HWI1/HWO1 control path can override the software confi
+ 132:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h **** } XMC_GPIO_HWCTRL_t;
+ 133:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h **** 
+ 134:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h **** /**************************************************************************************************
+ 135:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * DEVICE FAMILY EXTENSIONS
+ 136:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  **************************************************************************************************
+ 137:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h **** 
+ 138:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  #if UC_FAMILY == XMC1
+ 139:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h **** #include "xmc1_gpio.h"
+ 140:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h **** #elif UC_FAMILY == XMC4
+ 141:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h **** #include "xmc4_gpio.h"
+ 142:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h **** #else
+ 143:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h **** #error "xmc_gpio.h: family device not supported"
+ 144:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h **** #endif
+ 145:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h **** 
+ 146:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h **** /**************************************************************************************************
+ 147:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * API PROTOTYPES
+ 148:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  **************************************************************************************************
+ 149:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h **** 
+ 150:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h **** #ifdef __cplusplus
+ 151:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h **** extern "C" {
+ 152:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h **** #endif
+ 153:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h **** 
+ 154:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h **** 
+ 155:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h **** /**
+ 156:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * @param  port	  Constant pointer pointing to GPIO port, to access port registers like Pn_OUT,Pn_O
+ 157:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * @param  pin	  Port pin number.
+ 158:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * @param  config GPIO configuration data structure. Refer data structure @ref XMC_GPIO_CONFIG_t fo
+ 159:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  *
+ 160:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * @return None
+ 161:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  *
+ 162:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * \par<b>Description:</b><br>
+ 163:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * \if XMC1
+ 164:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * Initializes input / output mode settings like, pull up / pull down devices,hysteresis, push pull
+ 165:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * Also configures alternate function outputs and clears hardware port control for a selected \a po
+ 166:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * \a config provides selected I/O settings. It configures hardware registers Pn_IOCR,Pn_OUT, Pn_OM
+ 167:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * \endif
+ 168:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * \if XMC4
+ 169:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * Initializes input / output mode settings like, pull up / pull down devices,push pull /open drain
+ 170:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * Also configures alternate function outputs and clears hardware port control for selected \a port
+ 171:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * It configures hardware registers Pn_IOCR,Pn_OUT,Pn_OMR,Pn_PDISC and Pn_PDR.\n
+ 172:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * \endif
+ 173:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  *
+ 174:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * \par<b>Related APIs:</b><BR>
+ 175:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  *  None
+ 176:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  *
+ 177:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * \par<b>Note:</b><br>
+ 178:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * This API is called in definition of DAVE_init by code generation and therefore should not be exp
+ 179:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * for the normal operation. Use other APIs only after DAVE_init is called successfully (returns DA
+ 180:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  *
+ 181:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  *
+ 182:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  */
+ 183:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h **** 
+ 184:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  
+ 185:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h **** void XMC_GPIO_Init(XMC_GPIO_PORT_t *const port, const uint8_t pin, const XMC_GPIO_CONFIG_t *const c
+ 186:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  
+ 187:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h **** /**
+ 188:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  *
+ 189:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * @param  port	Constant pointer pointing to GPIO port, to access hardware register Pn_IOCR.
+ 190:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * @param  pin	Port pin number.
+ 191:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * @param  mode input / output functionality selection. Refer @ref XMC_GPIO_MODE_t for valid values
+ 192:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  *
+ 193:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * @return None
+ 194:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  *
+ 195:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * \par<b>Description:</b><br>
+ 196:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * Sets digital input and output driver functionality and characteristics of a GPIO port pin. It co
+ 197:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * registers Pn_IOCR. \a mode is initially configured during initialization in XMC_GPIO_Init(). Cal
+ 198:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * the port direction functionality as needed later in the program.
+ 199:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  *
+ 200:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * \par<b>Related APIs:</b><BR>
+ 201:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  *  None
+ 202:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  *
+ 203:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  */
+ 204:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h **** 
+ 205:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h **** void XMC_GPIO_SetMode(XMC_GPIO_PORT_t *const port, const uint8_t pin, const XMC_GPIO_MODE_t mode);
+ 206:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h **** 
+ 207:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h **** 
+ 208:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h **** /**
+ 209:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  *
+ 210:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * @param  port	 Constant pointer pointing to GPIO port, to access hardware register Pn_OMR.
+ 211:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * @param  pin	 Port pin number.
+ 212:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * @param  level output level selection. Refer @ref XMC_GPIO_OUTPUT_LEVEL_t for valid values.
+ 213:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  *
+ 214:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * @return None
+ 215:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  *
+ 216:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * \par<b>Description:</b><br>
+ 217:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * Set port pin output level to high or low.It configures hardware registers Pn_OMR.\a level is ini
+ 218:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * configured during initialization in XMC_GPIO_Init(). Call this API to alter output level as need
+ 219:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  *
+ 220:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * \par<b>Related APIs:</b><BR>
+ 221:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  *  XMC_GPIO_SetOutputHigh(), XMC_GPIO_SetOutputLow().
+ 222:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  *
+ 223:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * \par<b>Note:</b><br>
+ 224:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * Prior to this api, user has to configure port pin to output mode using XMC_GPIO_SetMode().
+ 225:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  *
+ 226:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  */
+ 227:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h **** 
+ 228:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h **** 
+ 229:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h **** __STATIC_INLINE void XMC_GPIO_SetOutputLevel(XMC_GPIO_PORT_t *const port, const uint8_t pin, const 
+ 230:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h **** {
+ 231:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****   XMC_ASSERT("XMC_GPIO_SetOutputLevel: Invalid port", XMC_GPIO_CHECK_OUTPUT_PORT(port));
+ 232:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****   XMC_ASSERT("XMC_GPIO_SetOutputLevel: Invalid output level", XMC_GPIO_CHECK_OUTPUT_LEVEL(level));
+ 233:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****   
+ 234:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****   port->OMR = (uint32_t)level << pin;
+ 235:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h **** }
+ 236:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h **** 
+ 237:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h **** 
+ 238:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h **** /**
+ 239:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * @param  port constant pointer pointing to GPIO port, to access hardware register Pn_OMR.
+ 240:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * @param  pin	Port pin number.
+ 241:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  *
+ 242:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * @return None
+ 243:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  *
+ 244:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * \par<b>Description:</b><br>
+ 245:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  *  Sets port pin output to high. It configures hardware registers Pn_OMR.
+ 246:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  *
+ 247:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  *  \par<b>Related APIs:</b><BR>
+ 248:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  *  XMC_GPIO_SetOutputLow()
+ 249:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  *
+ 250:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * \par<b>Note:</b><br>
+ 251:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * Prior to this api, user has to configure port pin to output mode using XMC_GPIO_SetMode().\n
+ 252:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * Register Pn_OMR is virtual and does not contain any flip-flop. A read action delivers the value 
+ 253:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  *
+ 254:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  */
+ 255:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h **** 
+ 256:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h **** __STATIC_INLINE void XMC_GPIO_SetOutputHigh(XMC_GPIO_PORT_t *const port, const uint8_t pin)
+ 257:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h **** {
+ 258:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****   XMC_ASSERT("XMC_GPIO_SetOutputHigh: Invalid port", XMC_GPIO_CHECK_OUTPUT_PORT(port));
+ 259:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h **** 
+ 260:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****   port->OMR = (uint32_t)0x1U << pin;
+ 261:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h **** }
+ 262:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h **** 
+ 263:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h **** /**
+ 264:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  *
+ 265:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * @param  port	constant pointer pointing to GPIO port, to access hardware register Pn_OMR.
+ 266:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * @param  pin	port pin number.
+ 267:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  *
+ 268:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * @return  None
+ 269:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  *
+ 270:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  *\par<b>Description:</b><br>
+ 271:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * Sets port pin output to low. It configures hardware registers Pn_OMR.\n
+ 272:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  *
+ 273:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * \par<b>Related APIs:</b><BR>>
+ 274:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * XMC_GPIO_SetOutputHigh()
+ 275:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  *
+ 276:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  *\par<b>Note:</b><br>
+ 277:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * Prior to this api, user has to configure port pin to output mode using XMC_GPIO_SetMode().
+ 278:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  * Register Pn_OMR is virtual and does not contain any flip-flop. A read action delivers the value 
+ 279:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  *
+ 280:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****  */
+ 281:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h **** 
+ 282:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h **** __STATIC_INLINE void XMC_GPIO_SetOutputLow(XMC_GPIO_PORT_t *const port, const uint8_t pin)
+ 283:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h **** {
+ 284:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****   XMC_ASSERT("XMC_GPIO_SetOutputLow: Invalid port", XMC_GPIO_CHECK_OUTPUT_PORT(port));
+ 285:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h **** 
+ 286:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h ****   port->OMR = 0x10000U << pin;
+  35              	 .loc 2 286 0
+  36 0004 197B     	 ldrb r1,[r3,#12]
+  37 0006 8023     	 mov r3,#128
+  38 0008 5B02     	 lsl r3,r3,#9
+  39 000a 8B40     	 lsl r3,r3,r1
+  40 000c 5360     	 str r3,[r2,#4]
+  41 000e 054B     	 ldr r3,.L5+4
+  42              	.L2:
+  43              	.LBE66:
+  44              	.LBE65:
+  45              	.LBE64:
+  46              	.LBB67:
+  47              	.LBB68:
+  48              	 .file 3 "C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include/cmsis_gcc.h"
+   1:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** /**************************************************************************//**
+   2:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****  * @file     cmsis_gcc.h
+   3:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****  * @brief    CMSIS Cortex-M Core Function/Instruction Header File
+   4:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****  * @version  V4.30
+   5:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****  * @date     20. October 2015
+   6:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****  ******************************************************************************/
+   7:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** /* Copyright (c) 2009 - 2015 ARM LIMITED
+   8:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** 
+   9:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****    All rights reserved.
+  10:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****    Redistribution and use in source and binary forms, with or without
+  11:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****    modification, are permitted provided that the following conditions are met:
+  12:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****    - Redistributions of source code must retain the above copyright
+  13:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****      notice, this list of conditions and the following disclaimer.
+  14:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****    - Redistributions in binary form must reproduce the above copyright
+  15:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****      notice, this list of conditions and the following disclaimer in the
+  16:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****      documentation and/or other materials provided with the distribution.
+  17:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****    - Neither the name of ARM nor the names of its contributors may be used
+  18:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****      to endorse or promote products derived from this software without
+  19:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****      specific prior written permission.
+  20:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****    *
+  21:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+  22:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****    AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+  23:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****    IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+  24:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****    ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDERS AND CONTRIBUTORS BE
+  25:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****    LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+  26:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****    CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+  27:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+  28:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+  29:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+  30:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+  31:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****    POSSIBILITY OF SUCH DAMAGE.
+  32:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****    ---------------------------------------------------------------------------*/
+  33:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** 
+  34:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** 
+  35:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** #ifndef __CMSIS_GCC_H
+  36:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** #define __CMSIS_GCC_H
+  37:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** 
+  38:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** /* ignore some GCC warnings */
+  39:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** #if defined ( __GNUC__ )
+  40:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** #pragma GCC diagnostic push
+  41:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** #pragma GCC diagnostic ignored "-Wsign-conversion"
+  42:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** #pragma GCC diagnostic ignored "-Wconversion"
+  43:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** #pragma GCC diagnostic ignored "-Wunused-parameter"
+  44:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** #endif
+  45:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** 
+  46:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** 
+  47:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** /* ###########################  Core Function Access  ########################### */
+  48:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** /** \ingroup  CMSIS_Core_FunctionInterface
+  49:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****     \defgroup CMSIS_Core_RegAccFunctions CMSIS Core Register Access Functions
+  50:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   @{
+  51:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****  */
+  52:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** 
+  53:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** /**
+  54:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   \brief   Enable IRQ Interrupts
+  55:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   \details Enables IRQ interrupts by clearing the I-bit in the CPSR.
+  56:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****            Can only be executed in Privileged modes.
+  57:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****  */
+  58:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** __attribute__( ( always_inline ) ) __STATIC_INLINE void __enable_irq(void)
+  59:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** {
+  60:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   __ASM volatile ("cpsie i" : : : "memory");
+  61:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** }
+  62:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** 
+  63:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** 
+  64:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** /**
+  65:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   \brief   Disable IRQ Interrupts
+  66:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   \details Disables IRQ interrupts by setting the I-bit in the CPSR.
+  67:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   Can only be executed in Privileged modes.
+  68:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****  */
+  69:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** __attribute__( ( always_inline ) ) __STATIC_INLINE void __disable_irq(void)
+  70:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** {
+  71:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   __ASM volatile ("cpsid i" : : : "memory");
+  72:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** }
+  73:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** 
+  74:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** 
+  75:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** /**
+  76:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   \brief   Get Control Register
+  77:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   \details Returns the content of the Control Register.
+  78:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   \return               Control Register value
+  79:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****  */
+  80:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** __attribute__( ( always_inline ) ) __STATIC_INLINE uint32_t __get_CONTROL(void)
+  81:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** {
+  82:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   uint32_t result;
+  83:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** 
+  84:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   __ASM volatile ("MRS %0, control" : "=r" (result) );
+  85:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   return(result);
+  86:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** }
+  87:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** 
+  88:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** 
+  89:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** /**
+  90:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   \brief   Set Control Register
+  91:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   \details Writes the given value to the Control Register.
+  92:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   \param [in]    control  Control Register value to set
+  93:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****  */
+  94:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** __attribute__( ( always_inline ) ) __STATIC_INLINE void __set_CONTROL(uint32_t control)
+  95:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** {
+  96:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   __ASM volatile ("MSR control, %0" : : "r" (control) : "memory");
+  97:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** }
+  98:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** 
+  99:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** 
+ 100:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** /**
+ 101:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   \brief   Get IPSR Register
+ 102:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   \details Returns the content of the IPSR Register.
+ 103:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   \return               IPSR Register value
+ 104:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****  */
+ 105:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** __attribute__( ( always_inline ) ) __STATIC_INLINE uint32_t __get_IPSR(void)
+ 106:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** {
+ 107:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   uint32_t result;
+ 108:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** 
+ 109:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   __ASM volatile ("MRS %0, ipsr" : "=r" (result) );
+ 110:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   return(result);
+ 111:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** }
+ 112:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** 
+ 113:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** 
+ 114:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** /**
+ 115:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   \brief   Get APSR Register
+ 116:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   \details Returns the content of the APSR Register.
+ 117:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   \return               APSR Register value
+ 118:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****  */
+ 119:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** __attribute__( ( always_inline ) ) __STATIC_INLINE uint32_t __get_APSR(void)
+ 120:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** {
+ 121:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   uint32_t result;
+ 122:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** 
+ 123:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   __ASM volatile ("MRS %0, apsr" : "=r" (result) );
+ 124:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   return(result);
+ 125:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** }
+ 126:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** 
+ 127:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** 
+ 128:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** /**
+ 129:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   \brief   Get xPSR Register
+ 130:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   \details Returns the content of the xPSR Register.
+ 131:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** 
+ 132:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****     \return               xPSR Register value
+ 133:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****  */
+ 134:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** __attribute__( ( always_inline ) ) __STATIC_INLINE uint32_t __get_xPSR(void)
+ 135:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** {
+ 136:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   uint32_t result;
+ 137:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** 
+ 138:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   __ASM volatile ("MRS %0, xpsr" : "=r" (result) );
+ 139:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   return(result);
+ 140:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** }
+ 141:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** 
+ 142:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** 
+ 143:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** /**
+ 144:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   \brief   Get Process Stack Pointer
+ 145:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   \details Returns the current value of the Process Stack Pointer (PSP).
+ 146:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   \return               PSP Register value
+ 147:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****  */
+ 148:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** __attribute__( ( always_inline ) ) __STATIC_INLINE uint32_t __get_PSP(void)
+ 149:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** {
+ 150:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   register uint32_t result;
+ 151:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** 
+ 152:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   __ASM volatile ("MRS %0, psp\n"  : "=r" (result) );
+ 153:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   return(result);
+ 154:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** }
+ 155:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** 
+ 156:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** 
+ 157:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** /**
+ 158:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   \brief   Set Process Stack Pointer
+ 159:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   \details Assigns the given value to the Process Stack Pointer (PSP).
+ 160:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   \param [in]    topOfProcStack  Process Stack Pointer value to set
+ 161:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****  */
+ 162:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** __attribute__( ( always_inline ) ) __STATIC_INLINE void __set_PSP(uint32_t topOfProcStack)
+ 163:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** {
+ 164:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   __ASM volatile ("MSR psp, %0\n" : : "r" (topOfProcStack) : "sp");
+ 165:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** }
+ 166:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** 
+ 167:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** 
+ 168:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** /**
+ 169:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   \brief   Get Main Stack Pointer
+ 170:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   \details Returns the current value of the Main Stack Pointer (MSP).
+ 171:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   \return               MSP Register value
+ 172:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****  */
+ 173:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** __attribute__( ( always_inline ) ) __STATIC_INLINE uint32_t __get_MSP(void)
+ 174:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** {
+ 175:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   register uint32_t result;
+ 176:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** 
+ 177:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   __ASM volatile ("MRS %0, msp\n" : "=r" (result) );
+ 178:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   return(result);
+ 179:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** }
+ 180:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** 
+ 181:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** 
+ 182:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** /**
+ 183:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   \brief   Set Main Stack Pointer
+ 184:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   \details Assigns the given value to the Main Stack Pointer (MSP).
+ 185:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** 
+ 186:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****     \param [in]    topOfMainStack  Main Stack Pointer value to set
+ 187:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****  */
+ 188:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** __attribute__( ( always_inline ) ) __STATIC_INLINE void __set_MSP(uint32_t topOfMainStack)
+ 189:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** {
+ 190:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   __ASM volatile ("MSR msp, %0\n" : : "r" (topOfMainStack) : "sp");
+ 191:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** }
+ 192:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** 
+ 193:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** 
+ 194:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** /**
+ 195:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   \brief   Get Priority Mask
+ 196:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   \details Returns the current state of the priority mask bit from the Priority Mask Register.
+ 197:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   \return               Priority Mask value
+ 198:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****  */
+ 199:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** __attribute__( ( always_inline ) ) __STATIC_INLINE uint32_t __get_PRIMASK(void)
+ 200:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** {
+ 201:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   uint32_t result;
+ 202:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** 
+ 203:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   __ASM volatile ("MRS %0, primask" : "=r" (result) );
+ 204:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   return(result);
+ 205:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** }
+ 206:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** 
+ 207:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** 
+ 208:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** /**
+ 209:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   \brief   Set Priority Mask
+ 210:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   \details Assigns the given value to the Priority Mask Register.
+ 211:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   \param [in]    priMask  Priority Mask
+ 212:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****  */
+ 213:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** __attribute__( ( always_inline ) ) __STATIC_INLINE void __set_PRIMASK(uint32_t priMask)
+ 214:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** {
+ 215:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   __ASM volatile ("MSR primask, %0" : : "r" (priMask) : "memory");
+ 216:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** }
+ 217:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** 
+ 218:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** 
+ 219:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** #if       (__CORTEX_M >= 0x03U)
+ 220:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** 
+ 221:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** /**
+ 222:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   \brief   Enable FIQ
+ 223:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   \details Enables FIQ interrupts by clearing the F-bit in the CPSR.
+ 224:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****            Can only be executed in Privileged modes.
+ 225:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****  */
+ 226:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** __attribute__( ( always_inline ) ) __STATIC_INLINE void __enable_fault_irq(void)
+ 227:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** {
+ 228:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   __ASM volatile ("cpsie f" : : : "memory");
+ 229:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** }
+ 230:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** 
+ 231:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** 
+ 232:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** /**
+ 233:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   \brief   Disable FIQ
+ 234:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   \details Disables FIQ interrupts by setting the F-bit in the CPSR.
+ 235:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****            Can only be executed in Privileged modes.
+ 236:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****  */
+ 237:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** __attribute__( ( always_inline ) ) __STATIC_INLINE void __disable_fault_irq(void)
+ 238:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** {
+ 239:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   __ASM volatile ("cpsid f" : : : "memory");
+ 240:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** }
+ 241:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** 
+ 242:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** 
+ 243:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** /**
+ 244:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   \brief   Get Base Priority
+ 245:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   \details Returns the current value of the Base Priority register.
+ 246:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   \return               Base Priority register value
+ 247:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****  */
+ 248:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** __attribute__( ( always_inline ) ) __STATIC_INLINE uint32_t __get_BASEPRI(void)
+ 249:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** {
+ 250:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   uint32_t result;
+ 251:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** 
+ 252:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   __ASM volatile ("MRS %0, basepri" : "=r" (result) );
+ 253:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   return(result);
+ 254:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** }
+ 255:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** 
+ 256:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** 
+ 257:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** /**
+ 258:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   \brief   Set Base Priority
+ 259:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   \details Assigns the given value to the Base Priority register.
+ 260:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   \param [in]    basePri  Base Priority value to set
+ 261:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****  */
+ 262:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** __attribute__( ( always_inline ) ) __STATIC_INLINE void __set_BASEPRI(uint32_t value)
+ 263:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** {
+ 264:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   __ASM volatile ("MSR basepri, %0" : : "r" (value) : "memory");
+ 265:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** }
+ 266:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** 
+ 267:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** 
+ 268:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** /**
+ 269:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   \brief   Set Base Priority with condition
+ 270:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   \details Assigns the given value to the Base Priority register only if BASEPRI masking is disable
+ 271:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****            or the new value increases the BASEPRI priority level.
+ 272:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   \param [in]    basePri  Base Priority value to set
+ 273:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****  */
+ 274:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** __attribute__( ( always_inline ) ) __STATIC_INLINE void __set_BASEPRI_MAX(uint32_t value)
+ 275:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** {
+ 276:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   __ASM volatile ("MSR basepri_max, %0" : : "r" (value) : "memory");
+ 277:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** }
+ 278:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** 
+ 279:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** 
+ 280:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** /**
+ 281:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   \brief   Get Fault Mask
+ 282:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   \details Returns the current value of the Fault Mask register.
+ 283:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   \return               Fault Mask register value
+ 284:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****  */
+ 285:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** __attribute__( ( always_inline ) ) __STATIC_INLINE uint32_t __get_FAULTMASK(void)
+ 286:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** {
+ 287:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   uint32_t result;
+ 288:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** 
+ 289:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   __ASM volatile ("MRS %0, faultmask" : "=r" (result) );
+ 290:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   return(result);
+ 291:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** }
+ 292:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** 
+ 293:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** 
+ 294:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** /**
+ 295:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   \brief   Set Fault Mask
+ 296:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   \details Assigns the given value to the Fault Mask register.
+ 297:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   \param [in]    faultMask  Fault Mask value to set
+ 298:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****  */
+ 299:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** __attribute__( ( always_inline ) ) __STATIC_INLINE void __set_FAULTMASK(uint32_t faultMask)
+ 300:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** {
+ 301:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   __ASM volatile ("MSR faultmask, %0" : : "r" (faultMask) : "memory");
+ 302:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** }
+ 303:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** 
+ 304:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** #endif /* (__CORTEX_M >= 0x03U) */
+ 305:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** 
+ 306:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** 
+ 307:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** #if       (__CORTEX_M == 0x04U) || (__CORTEX_M == 0x07U)
+ 308:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** 
+ 309:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** /**
+ 310:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   \brief   Get FPSCR
+ 311:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   \details Returns the current value of the Floating Point Status/Control register.
+ 312:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   \return               Floating Point Status/Control register value
+ 313:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****  */
+ 314:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** __attribute__( ( always_inline ) ) __STATIC_INLINE uint32_t __get_FPSCR(void)
+ 315:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** {
+ 316:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** #if (__FPU_PRESENT == 1U) && (__FPU_USED == 1U)
+ 317:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   uint32_t result;
+ 318:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** 
+ 319:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   /* Empty asm statement works as a scheduling barrier */
+ 320:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   __ASM volatile ("");
+ 321:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   __ASM volatile ("VMRS %0, fpscr" : "=r" (result) );
+ 322:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   __ASM volatile ("");
+ 323:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   return(result);
+ 324:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** #else
+ 325:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****    return(0);
+ 326:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** #endif
+ 327:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** }
+ 328:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** 
+ 329:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** 
+ 330:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** /**
+ 331:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   \brief   Set FPSCR
+ 332:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   \details Assigns the given value to the Floating Point Status/Control register.
+ 333:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   \param [in]    fpscr  Floating Point Status/Control value to set
+ 334:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****  */
+ 335:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** __attribute__( ( always_inline ) ) __STATIC_INLINE void __set_FPSCR(uint32_t fpscr)
+ 336:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** {
+ 337:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** #if (__FPU_PRESENT == 1U) && (__FPU_USED == 1U)
+ 338:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   /* Empty asm statement works as a scheduling barrier */
+ 339:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   __ASM volatile ("");
+ 340:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   __ASM volatile ("VMSR fpscr, %0" : : "r" (fpscr) : "vfpcc");
+ 341:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   __ASM volatile ("");
+ 342:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** #endif
+ 343:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** }
+ 344:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** 
+ 345:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** #endif /* (__CORTEX_M == 0x04U) || (__CORTEX_M == 0x07U) */
+ 346:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** 
+ 347:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** 
+ 348:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** 
+ 349:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** /*@} end of CMSIS_Core_RegAccFunctions */
+ 350:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** 
+ 351:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** 
+ 352:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** /* ##########################  Core Instruction Access  ######################### */
+ 353:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** /** \defgroup CMSIS_Core_InstructionInterface CMSIS Core Instruction Interface
+ 354:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   Access to dedicated instructions
+ 355:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   @{
+ 356:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** */
+ 357:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** 
+ 358:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** /* Define macros for porting to both thumb1 and thumb2.
+ 359:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****  * For thumb1, use low register (r0-r7), specified by constraint "l"
+ 360:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****  * Otherwise, use general registers, specified by constraint "r" */
+ 361:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** #if defined (__thumb__) && !defined (__thumb2__)
+ 362:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** #define __CMSIS_GCC_OUT_REG(r) "=l" (r)
+ 363:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** #define __CMSIS_GCC_USE_REG(r) "l" (r)
+ 364:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** #else
+ 365:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** #define __CMSIS_GCC_OUT_REG(r) "=r" (r)
+ 366:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** #define __CMSIS_GCC_USE_REG(r) "r" (r)
+ 367:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** #endif
+ 368:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** 
+ 369:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** /**
+ 370:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   \brief   No Operation
+ 371:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   \details No Operation does nothing. This instruction can be used for code alignment purposes.
+ 372:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****  */
+ 373:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** __attribute__((always_inline)) __STATIC_INLINE void __NOP(void)
+ 374:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h **** {
+ 375:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Include\cmsis_gcc.h ****   __ASM volatile ("nop");
+  49              	 .loc 3 375 0
+  50              	
+  51 0010 C046     	 nop
+  52              	
+  53              	 .code 16
+  54 0012 013B     	 sub r3,r3,#1
+  55              	.LBE68:
+  56              	.LBE67:
+ 106:../main.c     **** 	static uint32_t BGT24_settle;
+ 107:../main.c     **** 	/* Turn BGT24 on */
+ 108:../main.c     **** 	DIGITAL_IO_SetOutputLow(&BGT24);
+ 109:../main.c     **** 	/* delay until BGT24 is settled */
+ 110:../main.c     **** 	BGT24_settle=46875;
+ 111:../main.c     **** 	while(BGT24_settle!=0)
+  57              	 .loc 1 111 0
+  58 0014 002B     	 cmp r3,#0
+  59 0016 FBD1     	 bne .L2
+  60 0018 034A     	 ldr r2,.L5+8
+  61              	.LVL1:
+ 112:../main.c     **** 	{
+ 113:../main.c     **** 		BGT24_settle--;
+ 114:../main.c     **** 		__NOP();
+ 115:../main.c     **** 	}
+ 116:../main.c     **** 	return;
+ 117:../main.c     **** }
+  62              	 .loc 1 117 0
+  63              	 
+  64 001a 1360     	 str r3,[r2]
+  65 001c 7047     	 bx lr
+  66              	.L6:
+  67 001e C046     	 .align 2
+  68              	.L5:
+  69 0020 00000000 	 .word BGT24
+  70 0024 1BB70000 	 .word 46875
+  71 0028 00000000 	 .word .LANCHOR0
+  72              	 .cfi_endproc
+  73              	.LFE195:
+  75              	 .section .text.radarsense2go_endacq,"ax",%progbits
+  76              	 .align 2
+  77              	 .global radarsense2go_endacq
+  78              	 .code 16
+  79              	 .thumb_func
+  81              	radarsense2go_endacq:
+  82              	.LFB196:
+ 118:../main.c     **** 
+ 119:../main.c     **** void radarsense2go_endacq(void)
+ 120:../main.c     **** {
+  83              	 .loc 1 120 0
+  84              	 .cfi_startproc
+  85 0000 034B     	 ldr r3,.L8
+ 121:../main.c     **** 	/* BGT24 off time */
+ 122:../main.c     **** 	DIGITAL_IO_SetOutputLow(&BGT24);
+ 123:../main.c     **** 	return;
+ 124:../main.c     **** }
+  86              	 .loc 1 124 0
+  87              	 
+  88 0002 1A68     	 ldr r2,[r3]
+  89              	.LVL2:
+  90              	.LBB69:
+  91              	.LBB70:
+  92              	.LBB71:
+  93              	 .loc 2 286 0
+  94 0004 197B     	 ldrb r1,[r3,#12]
+  95 0006 8023     	 mov r3,#128
+  96 0008 5B02     	 lsl r3,r3,#9
+  97 000a 8B40     	 lsl r3,r3,r1
+  98 000c 5360     	 str r3,[r2,#4]
+  99              	.LBE71:
+ 100              	.LBE70:
+ 101              	.LBE69:
+ 102              	 .loc 1 124 0
+ 103 000e 7047     	 bx lr
+ 104              	.L9:
+ 105              	 .align 2
+ 106              	.L8:
+ 107 0010 00000000 	 .word BGT24
+ 108              	 .cfi_endproc
+ 109              	.LFE196:
+ 111              	 .global __aeabi_ui2f
+ 112              	 .global __aeabi_fmul
+ 113              	 .section .text.radarsense2go_result,"ax",%progbits
+ 114              	 .align 2
+ 115              	 .global radarsense2go_result
+ 116              	 .code 16
+ 117              	 .thumb_func
+ 119              	radarsense2go_result:
+ 120              	.LFB194:
+  83:../main.c     **** 	/* place your application code for ISR context execution here */
+ 121              	 .loc 1 83 0
+ 122              	 .cfi_startproc
+ 123              	.LVL3:
+ 124 0000 F0B5     	 push {r4,r5,r6,r7,lr}
+ 125              	.LCFI0:
+ 126              	 .cfi_def_cfa_offset 20
+ 127              	 .cfi_offset 4,-20
+ 128              	 .cfi_offset 5,-16
+ 129              	 .cfi_offset 6,-12
+ 130              	 .cfi_offset 7,-8
+ 131              	 .cfi_offset 14,-4
+ 132 0002 4746     	 mov r7,r8
+ 133 0004 9846     	 mov r8,r3
+ 134 0006 0C1C     	 mov r4,r1
+ 135 0008 061C     	 mov r6,r0
+ 136 000a 80B4     	 push {r7}
+ 137              	.LCFI1:
+ 138              	 .cfi_def_cfa_offset 24
+ 139              	 .cfi_offset 8,-24
+  83:../main.c     **** 	/* place your application code for ISR context execution here */
+ 140              	 .loc 1 83 0
+ 141 000c 06AB     	 add r3,sp,#24
+ 142              	.LVL4:
+ 143 000e 1D88     	 ldrh r5,[r3]
+  86:../main.c     **** 	memcpy(g_sampling_data_Q, adc_aqc_array_Q, size_of_array_acq * sizeof(uint16_t));
+ 144              	 .loc 1 86 0
+ 145 0010 111C     	 mov r1,r2
+ 146              	.LVL5:
+ 147 0012 6D00     	 lsl r5,r5,#1
+  83:../main.c     **** 	/* place your application code for ISR context execution here */
+ 148              	 .loc 1 83 0
+ 149 0014 07AB     	 add r3,sp,#28
+ 150              	.LVL6:
+  86:../main.c     **** 	memcpy(g_sampling_data_Q, adc_aqc_array_Q, size_of_array_acq * sizeof(uint16_t));
+ 151              	 .loc 1 86 0
+ 152 0016 2A1C     	 mov r2,r5
+ 153              	.LVL7:
+ 154 0018 1048     	 ldr r0,.L14
+ 155              	.LVL8:
+  83:../main.c     **** 	/* place your application code for ISR context execution here */
+ 156              	 .loc 1 83 0
+ 157 001a 1F78     	 ldrb r7,[r3]
+  86:../main.c     **** 	memcpy(g_sampling_data_Q, adc_aqc_array_Q, size_of_array_acq * sizeof(uint16_t));
+ 158              	 .loc 1 86 0
+ 159 001c FFF7FEFF 	 bl memcpy
+ 160              	.LVL9:
+  87:../main.c     **** 	memcpy(g_fft_data, &fft_magnitude_array[1], (size_of_array_mag - 1) * sizeof(uint32_t));
+ 161              	 .loc 1 87 0
+ 162 0020 4146     	 mov r1,r8
+ 163 0022 2A1C     	 mov r2,r5
+ 164 0024 0E48     	 ldr r0,.L14+4
+ 165 0026 FFF7FEFF 	 bl memcpy
+ 166              	.LVL10:
+  88:../main.c     **** 
+ 167              	 .loc 1 88 0
+ 168 002a 621E     	 sub r2,r4,#1
+ 169 002c 9200     	 lsl r2,r2,#2
+ 170 002e 311D     	 add r1,r6,#4
+ 171 0030 0C48     	 ldr r0,.L14+8
+ 172 0032 FFF7FEFF 	 bl memcpy
+ 173              	.LVL11:
+  90:../main.c     **** 
+ 174              	 .loc 1 90 0
+ 175 0036 0C4B     	 ldr r3,.L14+12
+ 176 0038 1F70     	 strb r7,[r3]
+  92:../main.c     **** 	{
+ 177              	 .loc 1 92 0
+ 178 003a 012F     	 cmp r7,#1
+ 179 003c 05D9     	 bls .L13
+  98:../main.c     **** 	}
+ 180              	 .loc 1 98 0
+ 181 003e 0022     	 mov r2,#0
+ 182 0040 0A4B     	 ldr r3,.L14+16
+ 183 0042 1A60     	 str r2,[r3]
+ 184              	.L10:
+ 102:../main.c     **** 
+ 185              	 .loc 1 102 0
+ 186              	 
+ 187              	.LVL12:
+ 188              	.LVL13:
+ 189 0044 04BC     	 pop {r2}
+ 190 0046 9046     	 mov r8,r2
+ 191 0048 F0BD     	 pop {r4,r5,r6,r7,pc}
+ 192              	.LVL14:
+ 193              	.L13:
+  94:../main.c     **** 	}
+ 194              	 .loc 1 94 0
+ 195 004a 0998     	 ldr r0,[sp,#36]
+ 196 004c FFF7FEFF 	 bl __aeabi_ui2f
+ 197              	.LVL15:
+ 198 0050 0749     	 ldr r1,.L14+20
+ 199 0052 FFF7FEFF 	 bl __aeabi_fmul
+ 200              	.LVL16:
+ 201 0056 054B     	 ldr r3,.L14+16
+ 202 0058 1860     	 str r0,[r3]
+ 203 005a F3E7     	 b .L10
+ 204              	.L15:
+ 205              	 .align 2
+ 206              	.L14:
+ 207 005c 00000000 	 .word g_sampling_data_I
+ 208 0060 00000000 	 .word g_sampling_data_Q
+ 209 0064 00000000 	 .word g_fft_data
+ 210 0068 00000000 	 .word .LANCHOR1
+ 211 006c 00000000 	 .word g_max_frq_index
+ 212 0070 0000B040 	 .word 1085276160
+ 213              	 .cfi_endproc
+ 214              	.LFE194:
+ 216              	 .section .text.radarsense2go_trigger,"ax",%progbits
+ 217              	 .align 2
+ 218              	 .global radarsense2go_trigger
+ 219              	 .code 16
+ 220              	 .thumb_func
+ 222              	radarsense2go_trigger:
+ 223              	.LFB197:
+ 125:../main.c     **** 
+ 126:../main.c     **** void radarsense2go_trigger(XMC_RADARSENSE2GO_MOTION_t detection_state)
+ 127:../main.c     **** {
+ 224              	 .loc 1 127 0
+ 225              	 .cfi_startproc
+ 226              	.LVL17:
+ 128:../main.c     **** 	motion_last=detection_state;
+ 227              	 .loc 1 128 0
+ 228 0000 104B     	 ldr r3,.L21
+ 229 0002 1870     	 strb r0,[r3]
+ 129:../main.c     **** 	if (detection_state == XMC_MOTION_DETECT_APPROACHING) // || detection_state == XMC_MOTION_DETECT_D
+ 230              	 .loc 1 129 0
+ 231 0004 0028     	 cmp r0,#0
+ 232 0006 0FD0     	 beq .L19
+ 130:../main.c     **** 	{
+ 131:../main.c     **** 		DIGITAL_IO_SetOutputLow(&Approaching);
+ 132:../main.c     **** 		DIGITAL_IO_SetOutputHigh(&Receding);
+ 133:../main.c     **** 	}
+ 134:../main.c     **** 	else if (detection_state == XMC_MOTION_DETECT_DEPARTING)
+ 233              	 .loc 1 134 0
+ 234 0008 0128     	 cmp r0,#1
+ 235 000a 00D0     	 beq .L20
+ 236              	.LVL18:
+ 237              	.L16:
+ 135:../main.c     **** 	{
+ 136:../main.c     **** 		DIGITAL_IO_SetOutputLow(&Receding);
+ 137:../main.c     **** 		DIGITAL_IO_SetOutputHigh(&Approaching);
+ 138:../main.c     **** 	}
+ 139:../main.c     **** 
+ 140:../main.c     **** 	/*
+ 141:../main.c     **** 	else
+ 142:../main.c     **** 	{
+ 143:../main.c     **** 		DIGITAL_IO_SetOutputHigh(&Approaching);
+ 144:../main.c     **** 		DIGITAL_IO_SetOutputHigh(&Receding);
+ 145:../main.c     **** 	}
+ 146:../main.c     **** 	*/
+ 147:../main.c     **** 	return;
+ 148:../main.c     **** }
+ 238              	 .loc 1 148 0
+ 239              	 
+ 240 000c 7047     	 bx lr
+ 241              	.LVL19:
+ 242              	.L20:
+ 243 000e 0E4B     	 ldr r3,.L21+4
+ 244 0010 1A68     	 ldr r2,[r3]
+ 245              	.LVL20:
+ 246              	.LBB96:
+ 247              	.LBB97:
+ 248              	.LBB98:
+ 249              	.LBB99:
+ 250              	 .loc 2 286 0
+ 251 0012 197B     	 ldrb r1,[r3,#12]
+ 252 0014 8023     	 mov r3,#128
+ 253 0016 5B02     	 lsl r3,r3,#9
+ 254 0018 8B40     	 lsl r3,r3,r1
+ 255 001a 5360     	 str r3,[r2,#4]
+ 256 001c 0B4B     	 ldr r3,.L21+8
+ 257 001e 1A68     	 ldr r2,[r3]
+ 258              	.LVL21:
+ 259              	.LBE99:
+ 260              	.LBE98:
+ 261              	.LBE97:
+ 262              	.LBB100:
+ 263              	.LBB101:
+ 264              	.LBB102:
+ 260:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h **** }
+ 265              	 .loc 2 260 0
+ 266 0020 1B7B     	 ldrb r3,[r3,#12]
+ 267 0022 9840     	 lsl r0,r0,r3
+ 268              	.LVL22:
+ 269 0024 5060     	 str r0,[r2,#4]
+ 270 0026 F1E7     	 b .L16
+ 271              	.LVL23:
+ 272              	.L19:
+ 273 0028 084B     	 ldr r3,.L21+8
+ 274 002a 1A68     	 ldr r2,[r3]
+ 275              	.LVL24:
+ 276              	.LBE102:
+ 277              	.LBE101:
+ 278              	.LBE100:
+ 279              	.LBE96:
+ 280              	.LBB103:
+ 281              	.LBB104:
+ 282              	.LBB105:
+ 283              	 .loc 2 286 0
+ 284 002c 197B     	 ldrb r1,[r3,#12]
+ 285 002e 8023     	 mov r3,#128
+ 286 0030 5B02     	 lsl r3,r3,#9
+ 287 0032 8B40     	 lsl r3,r3,r1
+ 288 0034 5360     	 str r3,[r2,#4]
+ 289 0036 044B     	 ldr r3,.L21+4
+ 290 0038 1A68     	 ldr r2,[r3]
+ 291              	.LVL25:
+ 292              	.LBE105:
+ 293              	.LBE104:
+ 294              	.LBE103:
+ 295              	.LBB106:
+ 296              	.LBB107:
+ 297              	.LBB108:
+ 260:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h **** }
+ 298              	 .loc 2 260 0
+ 299 003a 197B     	 ldrb r1,[r3,#12]
+ 300 003c 0123     	 mov r3,#1
+ 301 003e 8B40     	 lsl r3,r3,r1
+ 302 0040 5360     	 str r3,[r2,#4]
+ 303 0042 E3E7     	 b .L16
+ 304              	.L22:
+ 305              	 .align 2
+ 306              	.L21:
+ 307 0044 00000000 	 .word .LANCHOR2
+ 308 0048 00000000 	 .word Receding
+ 309 004c 00000000 	 .word Approaching
+ 310              	.LBE108:
+ 311              	.LBE107:
+ 312              	.LBE106:
+ 313              	 .cfi_endproc
+ 314              	.LFE197:
+ 316              	 .section .text.startup.main,"ax",%progbits
+ 317              	 .align 2
+ 318              	 .global main
+ 319              	 .code 16
+ 320              	 .thumb_func
+ 322              	main:
+ 323              	.LFB198:
+ 149:../main.c     **** 
+ 150:../main.c     **** 
+ 151:../main.c     **** int main(void)
+ 152:../main.c     **** {
+ 324              	 .loc 1 152 0
+ 325              	 .cfi_startproc
+ 326              	.LVL26:
+ 327 0000 70B5     	 push {r4,r5,r6,lr}
+ 328              	.LCFI2:
+ 329              	 .cfi_def_cfa_offset 16
+ 330              	 .cfi_offset 4,-16
+ 331              	 .cfi_offset 5,-12
+ 332              	 .cfi_offset 6,-8
+ 333              	 .cfi_offset 14,-4
+ 334 0002 84B0     	 sub sp,sp,#16
+ 335              	.LCFI3:
+ 336              	 .cfi_def_cfa_offset 32
+ 153:../main.c     **** 	bool running = false;
+ 154:../main.c     **** 
+ 155:../main.c     **** 	DAVE_Init(); /* Initialization of DAVE APPs  */
+ 337              	 .loc 1 155 0
+ 338 0004 FFF7FEFF 	 bl DAVE_Init
+ 339              	.LVL27:
+ 340 0008 244B     	 ldr r3,.L33
+ 156:../main.c     **** 	DIGITAL_IO_SetOutputHigh(&Approaching);
+ 157:../main.c     **** 	DIGITAL_IO_SetOutputHigh(&Receding);
+ 158:../main.c     **** 
+ 159:../main.c     **** 	DIGITAL_IO_SetOutputLow(&BGT24);
+ 160:../main.c     **** 
+ 161:../main.c     **** 	radarsense2go_init(
+ 341              	 .loc 1 161 0
+ 342 000a 254E     	 ldr r6,.L33+4
+ 343 000c 1968     	 ldr r1,[r3]
+ 344              	.LVL28:
+ 345              	.LBB109:
+ 346              	.LBB110:
+ 347              	.LBB111:
+ 260:C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc\xmc_gpio.h **** }
+ 348              	 .loc 2 260 0
+ 349 000e 1A7B     	 ldrb r2,[r3,#12]
+ 350 0010 0123     	 mov r3,#1
+ 351 0012 181C     	 mov r0,r3
+ 352 0014 9040     	 lsl r0,r0,r2
+ 353 0016 234A     	 ldr r2,.L33+8
+ 354 0018 4860     	 str r0,[r1,#4]
+ 355 001a 1168     	 ldr r1,[r2]
+ 356              	.LVL29:
+ 357              	.LBE111:
+ 358              	.LBE110:
+ 359              	.LBE109:
+ 360              	.LBB112:
+ 361              	.LBB113:
+ 362              	.LBB114:
+ 363 001c 127B     	 ldrb r2,[r2,#12]
+ 364 001e 9340     	 lsl r3,r3,r2
+ 365 0020 4B60     	 str r3,[r1,#4]
+ 366 0022 214B     	 ldr r3,.L33+12
+ 367 0024 1A68     	 ldr r2,[r3]
+ 368              	.LVL30:
+ 369              	.LBE114:
+ 370              	.LBE113:
+ 371              	.LBE112:
+ 372              	.LBB115:
+ 373              	.LBB116:
+ 374              	.LBB117:
+ 375              	 .loc 2 286 0
+ 376 0026 197B     	 ldrb r1,[r3,#12]
+ 377              	.LVL31:
+ 378 0028 8023     	 mov r3,#128
+ 379 002a 5B02     	 lsl r3,r3,#9
+ 380 002c 8B40     	 lsl r3,r3,r1
+ 381              	.LBE117:
+ 382              	.LBE116:
+ 383              	.LBE115:
+ 384              	 .loc 1 161 0
+ 385 002e 1F49     	 ldr r1,.L33+16
+ 386              	.LBB120:
+ 387              	.LBB119:
+ 388              	.LBB118:
+ 389              	 .loc 2 286 0
+ 390 0030 5360     	 str r3,[r2,#4]
+ 391              	.LBE118:
+ 392              	.LBE119:
+ 393              	.LBE120:
+ 394              	 .loc 1 161 0
+ 395 0032 0888     	 ldrh r0,[r1]
+ 396 0034 02AB     	 add r3,sp,#8
+ 397 0036 1880     	 strh r0,[r3]
+ 398 0038 8978     	 ldrb r1,[r1,#2]
+ 399 003a 1D4A     	 ldr r2,.L33+20
+ 400              	.LVL32:
+ 401 003c 9970     	 strb r1,[r3,#2]
+ 402 003e 6946     	 mov r1,sp
+ 403 0040 1C4B     	 ldr r3,.L33+24
+ 404 0042 0393     	 str r3,[sp,#12]
+ 405 0044 331D     	 add r3,r6,#4
+ 406 0046 11CB     	 ldmia r3!,{r0,r4}
+ 407 0048 11C1     	 stmia r1!,{r0,r4}
+ 153:../main.c     **** 	bool running = false;
+ 408              	 .loc 1 153 0
+ 409 004a 0024     	 mov r4,#0
+ 410              	 .loc 1 161 0
+ 411 004c 5168     	 ldr r1,[r2,#4]
+ 412 004e 3368     	 ldr r3,[r6]
+ 413 0050 1068     	 ldr r0,[r2]
+ 414 0052 9268     	 ldr r2,[r2,#8]
+ 415 0054 FFF7FEFF 	 bl radarsense2go_init
+ 416              	.LVL33:
+ 162:../main.c     **** 			radarsense2go_timing,
+ 163:../main.c     **** 			radarsense2go_algorithm,
+ 164:../main.c     **** 			radarsense2go_powerdown,
+ 165:../main.c     **** 			&TIMER_0
+ 166:../main.c     **** 	);
+ 167:../main.c     **** 
+ 168:../main.c     **** 	radarsense2go_regcb_startacq ( radarsense2go_startacq );
+ 417              	 .loc 1 168 0
+ 418 0058 1748     	 ldr r0,.L33+28
+ 419 005a FFF7FEFF 	 bl radarsense2go_regcb_startacq
+ 420              	.LVL34:
+ 169:../main.c     **** 	radarsense2go_regcb_endacq ( radarsense2go_endacq );
+ 421              	 .loc 1 169 0
+ 422 005e 1748     	 ldr r0,.L33+32
+ 423 0060 FFF7FEFF 	 bl radarsense2go_regcb_endacq
+ 424              	.LVL35:
+ 170:../main.c     **** 	radarsense2go_regcb_result ( radarsense2go_result );
+ 425              	 .loc 1 170 0
+ 426 0064 1648     	 ldr r0,.L33+36
+ 427 0066 FFF7FEFF 	 bl radarsense2go_regcb_result
+ 428              	.LVL36:
+ 171:../main.c     **** 	radarsense2go_regcb_trigger ( radarsense2go_trigger );
+ 429              	 .loc 1 171 0
+ 430 006a 1648     	 ldr r0,.L33+40
+ 431 006c FFF7FEFF 	 bl radarsense2go_regcb_trigger
+ 432              	.LVL37:
+ 433 0070 154D     	 ldr r5,.L33+44
+ 434              	.LVL38:
+ 435              	.L24:
+ 172:../main.c     **** 
+ 173:../main.c     **** 	while (1)
+ 174:../main.c     **** 	{
+ 175:../main.c     **** 		if (running == false)
+ 436              	 .loc 1 175 0
+ 437 0072 002C     	 cmp r4,#0
+ 438 0074 05D1     	 bne .L25
+ 439              	.LVL39:
+ 440              	.L31:
+ 176:../main.c     **** 		{
+ 177:../main.c     **** 			if (start == true)
+ 441              	 .loc 1 177 0
+ 442 0076 2B78     	 ldrb r3,[r5]
+ 443 0078 002B     	 cmp r3,#0
+ 444 007a FCD0     	 beq .L31
+ 445              	.LVL40:
+ 178:../main.c     **** 			{
+ 179:../main.c     **** 				running = true;
+ 180:../main.c     **** 				radarsense2go_start();
+ 446              	 .loc 1 180 0
+ 447 007c FFF7FEFF 	 bl radarsense2go_start
+ 448              	.LVL41:
+ 179:../main.c     **** 				radarsense2go_start();
+ 449              	 .loc 1 179 0
+ 450 0080 0124     	 mov r4,#1
+ 451              	.LVL42:
+ 452              	.L25:
+ 181:../main.c     **** 			}
+ 182:../main.c     **** 		}
+ 183:../main.c     **** 		else
+ 184:../main.c     **** 		{
+ 185:../main.c     **** 			if (start == false)
+ 453              	 .loc 1 185 0
+ 454 0082 2B78     	 ldrb r3,[r5]
+ 455 0084 002B     	 cmp r3,#0
+ 456 0086 05D0     	 beq .L32
+ 457              	.L27:
+ 458              	.LVL43:
+ 186:../main.c     **** 			{
+ 187:../main.c     **** 				running = false;
+ 188:../main.c     **** 				radarsense2go_stop();
+ 189:../main.c     **** 			}
+ 190:../main.c     **** 
+ 191:../main.c     **** 			radarsense2go_set_detection_threshold(radarsense2go_algorithm.trigger_det_level);
+ 459              	 .loc 1 191 0
+ 460 0088 7068     	 ldr r0,[r6,#4]
+ 461 008a FFF7FEFF 	 bl radarsense2go_set_detection_threshold
+ 462              	.LVL44:
+ 192:../main.c     **** 
+ 193:../main.c     **** 			/* place your application code for main execution here */
+ 194:../main.c     **** 			/* e.g. communication on peripherals */
+ 195:../main.c     **** 			radarsense2go_exitmain(); /* only need to be called if
+ 463              	 .loc 1 195 0
+ 464 008e FFF7FEFF 	 bl radarsense2go_exitmain
+ 465              	.LVL45:
+ 466 0092 EEE7     	 b .L24
+ 467              	.LVL46:
+ 468              	.L32:
+ 188:../main.c     **** 			}
+ 469              	 .loc 1 188 0
+ 470 0094 FFF7FEFF 	 bl radarsense2go_stop
+ 471              	.LVL47:
+ 187:../main.c     **** 				radarsense2go_stop();
+ 472              	 .loc 1 187 0
+ 473 0098 0024     	 mov r4,#0
+ 474 009a F5E7     	 b .L27
+ 475              	.L34:
+ 476              	 .align 2
+ 477              	.L33:
+ 478 009c 00000000 	 .word Approaching
+ 479 00a0 00000000 	 .word .LANCHOR4
+ 480 00a4 00000000 	 .word Receding
+ 481 00a8 00000000 	 .word BGT24
+ 482 00ac 00000000 	 .word .LANCHOR5
+ 483 00b0 00000000 	 .word .LANCHOR3
+ 484 00b4 00000000 	 .word TIMER_0
+ 485 00b8 00000000 	 .word radarsense2go_startacq
+ 486 00bc 00000000 	 .word radarsense2go_endacq
+ 487 00c0 00000000 	 .word radarsense2go_result
+ 488 00c4 00000000 	 .word radarsense2go_trigger
+ 489 00c8 00000000 	 .word .LANCHOR6
+ 490              	 .cfi_endproc
+ 491              	.LFE198:
+ 493              	 .global start
+ 494              	 .comm g_max_frq_index,4,4
+ 495              	 .global g_motion
+ 496              	 .comm g_fft_data,512,4
+ 497              	 .comm g_sampling_data_Q,512,4
+ 498              	 .comm g_sampling_data_I,512,4
+ 499              	 .global radarsense2go_powerdown
+ 500              	 .global radarsense2go_algorithm
+ 501              	 .global radarsense2go_timing
+ 502              	 .section .bss.BGT24_settle.8491,"aw",%nobits
+ 503              	 .align 2
+ 504              	 .set .LANCHOR0,.+0
+ 507              	BGT24_settle.8491:
+ 508 0000 00000000 	 .space 4
+ 509              	 .section .data.motion_last,"aw",%progbits
+ 510              	 .set .LANCHOR2,.+0
+ 513              	motion_last:
+ 514 0000 02       	 .byte 2
+ 515              	 .section .data.radarsense2go_algorithm,"aw",%progbits
+ 516              	 .align 2
+ 517              	 .set .LANCHOR4,.+0
+ 520              	radarsense2go_algorithm:
+ 521 0000 01       	 .byte 1
+ 522 0001 000000   	 .space 3
+ 523 0004 1E000000 	 .word 30
+ 524 0008 01       	 .byte 1
+ 525 0009 000000   	 .space 3
+ 526              	 .section .data.radarsense2go_powerdown,"aw",%progbits
+ 527              	 .align 2
+ 528              	 .set .LANCHOR5,.+0
+ 531              	radarsense2go_powerdown:
+ 532 0000 01       	 .byte 1
+ 533 0001 01       	 .byte 1
+ 534 0002 01       	 .byte 1
+ 535 0003 00       	 .section .data.start,"aw",%progbits
+ 536              	 .set .LANCHOR6,.+0
+ 539              	start:
+ 540 0000 01       	 .byte 1
+ 541              	 .section .data.g_motion,"aw",%progbits
+ 542              	 .set .LANCHOR1,.+0
+ 545              	g_motion:
+ 546 0000 02       	 .byte 2
+ 547              	 .section .data.radarsense2go_timing,"aw",%progbits
+ 548              	 .align 2
+ 549              	 .set .LANCHOR3,.+0
+ 552              	radarsense2go_timing:
+ 553 0000 3B000000 	 .word 59
+ 554 0004 19000000 	 .word 25
+ 555 0008 08       	 .byte 8
+ 556 0009 000000   	 .space 3
+ 557              	 .text
+ 558              	.Letext0:
+ 559              	 .file 4 "c:\\davev4-64bit\\dave-4.3.2\\eclipse\\arm-gcc-49\\arm-none-eabi\\include\\machine\\_default_types.h"
+ 560              	 .file 5 "c:\\davev4-64bit\\dave-4.3.2\\eclipse\\arm-gcc-49\\arm-none-eabi\\include\\stdint.h"
+ 561              	 .file 6 "C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Infineon/XMC1300_series/Include/XMC1300.h"
+ 562              	 .file 7 "C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc/xmc1_scu.h"
+ 563              	 .file 8 "C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc/xmc_ccu4.h"
+ 564              	 .file 9 "C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Dave/Generated/GLOBAL_CCU4/global_ccu4.h"
+ 565              	 .file 10 "C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Dave/Generated/TIMER/timer.h"
+ 566              	 .file 11 "C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/XMCLib/inc/xmc1_gpio.h"
+ 567              	 .file 12 "C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Dave/Generated/DIGITAL_IO/digital_io.h"
+ 568              	 .file 13 "C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Dave/Generated/Dave.h"
+ 569              	 .file 14 "C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/RadarSense2Go/inc/radarsense2go_library.h"
+ 570              	 .file 15 "C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Libraries/CMSIS/Infineon/XMC1300_series/Include/system_XMC1300.h"
+ 571              	 .file 16 "C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Dave/Generated/TIMER/timer_extern.h"
+ 572              	 .file 17 "C:/Workspaces/DAVE-4.3-64Bit/WS_2016_09_02/Radar_sense2Go_exe/Dave/Generated/DIGITAL_IO/digital_io_extern.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 main.c
+    {standard input}:18     .text.radarsense2go_startacq:00000000 $t
+    {standard input}:23     .text.radarsense2go_startacq:00000000 radarsense2go_startacq
+    {standard input}:69     .text.radarsense2go_startacq:00000020 $d
+    {standard input}:76     .text.radarsense2go_endacq:00000000 $t
+    {standard input}:81     .text.radarsense2go_endacq:00000000 radarsense2go_endacq
+    {standard input}:107    .text.radarsense2go_endacq:00000010 $d
+    {standard input}:114    .text.radarsense2go_result:00000000 $t
+    {standard input}:119    .text.radarsense2go_result:00000000 radarsense2go_result
+    {standard input}:207    .text.radarsense2go_result:0000005c $d
+                            *COM*:00000200 g_sampling_data_I
+                            *COM*:00000200 g_sampling_data_Q
+                            *COM*:00000200 g_fft_data
+                            *COM*:00000004 g_max_frq_index
+    {standard input}:217    .text.radarsense2go_trigger:00000000 $t
+    {standard input}:222    .text.radarsense2go_trigger:00000000 radarsense2go_trigger
+    {standard input}:307    .text.radarsense2go_trigger:00000044 $d
+    {standard input}:317    .text.startup.main:00000000 $t
+    {standard input}:322    .text.startup.main:00000000 main
+    {standard input}:478    .text.startup.main:0000009c $d
+    {standard input}:539    .data.start:00000000 start
+    {standard input}:545    .data.g_motion:00000000 g_motion
+    {standard input}:531    .data.radarsense2go_powerdown:00000000 radarsense2go_powerdown
+    {standard input}:520    .data.radarsense2go_algorithm:00000000 radarsense2go_algorithm
+    {standard input}:552    .data.radarsense2go_timing:00000000 radarsense2go_timing
+    {standard input}:503    .bss.BGT24_settle.8491:00000000 $d
+    {standard input}:507    .bss.BGT24_settle.8491:00000000 BGT24_settle.8491
+    {standard input}:513    .data.motion_last:00000000 motion_last
+    {standard input}:516    .data.radarsense2go_algorithm:00000000 $d
+    {standard input}:527    .data.radarsense2go_powerdown:00000000 $d
+    {standard input}:548    .data.radarsense2go_timing:00000000 $d
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+BGT24
+__aeabi_ui2f
+__aeabi_fmul
+memcpy
+Receding
+Approaching
+DAVE_Init
+radarsense2go_init
+radarsense2go_regcb_startacq
+radarsense2go_regcb_endacq
+radarsense2go_regcb_result
+radarsense2go_regcb_trigger
+radarsense2go_start
+radarsense2go_set_detection_threshold
+radarsense2go_exitmain
+radarsense2go_stop
+TIMER_0

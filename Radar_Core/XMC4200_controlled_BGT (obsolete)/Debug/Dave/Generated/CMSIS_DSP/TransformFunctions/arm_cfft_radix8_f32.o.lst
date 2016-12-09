@@ -1,0 +1,2156 @@
+   1              	 .syntax unified
+   2              	 .cpu cortex-m4
+   3              	 .fpu softvfp
+   4              	 .eabi_attribute 20,1
+   5              	 .eabi_attribute 21,1
+   6              	 .eabi_attribute 23,3
+   7              	 .eabi_attribute 24,1
+   8              	 .eabi_attribute 25,1
+   9              	 .eabi_attribute 26,1
+  10              	 .eabi_attribute 30,6
+  11              	 .eabi_attribute 34,1
+  12              	 .eabi_attribute 18,4
+  13              	 .thumb
+  14              	 .file "arm_cfft_radix8_f32.c"
+  15              	 .text
+  16              	.Ltext0:
+  17              	 .cfi_sections .debug_frame
+  18              	 .global __aeabi_fadd
+  19              	 .global __aeabi_fsub
+  20              	 .global __aeabi_fmul
+  21              	 .section .text.arm_radix8_butterfly_f32,"ax",%progbits
+  22              	 .align 2
+  23              	 .global arm_radix8_butterfly_f32
+  24              	 .thumb
+  25              	 .thumb_func
+  27              	arm_radix8_butterfly_f32:
+  28              	.LFB139:
+  29              	 .file 1 "../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c"
+   1:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** /* ----------------------------------------------------------------------    
+   2:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * Copyright (C) 2010-2014 ARM Limited. All rights reserved.    
+   3:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** *    
+   4:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * $Date:        31. July 2014 
+   5:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * $Revision: 	V1.4.4  
+   6:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** *    
+   7:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * Project: 	    CMSIS DSP Library    
+   8:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * Title:	    arm_cfft_radix8_f32.c    
+   9:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** *    
+  10:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * Description:	Radix-8 Decimation in Frequency CFFT & CIFFT Floating point processing function     
+  11:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** *    
+  12:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * Target Processor: Cortex-M4/Cortex-M3/Cortex-M0
+  13:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** *  
+  14:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * Redistribution and use in source and binary forms, with or without 
+  15:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * modification, are permitted provided that the following conditions
+  16:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * are met:
+  17:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** *   - Redistributions of source code must retain the above copyright
+  18:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** *     notice, this list of conditions and the following disclaimer.
+  19:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** *   - Redistributions in binary form must reproduce the above copyright
+  20:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** *     notice, this list of conditions and the following disclaimer in
+  21:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** *     the documentation and/or other materials provided with the 
+  22:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** *     distribution.
+  23:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** *   - Neither the name of ARM LIMITED nor the names of its contributors
+  24:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** *     may be used to endorse or promote products derived from this
+  25:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** *     software without specific prior written permission.
+  26:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** *
+  27:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  28:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  29:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+  30:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE 
+  31:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+  32:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+  33:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  34:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+  35:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+  36:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+  37:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+  38:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * POSSIBILITY OF SUCH DAMAGE.      
+  39:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * -------------------------------------------------------------------- */
+  40:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** 
+  41:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** #include "CMSIS_DSP/cmsis_dsp.h"
+  42:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** 
+  43:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** /**    
+  44:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * @ingroup groupTransforms    
+  45:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** */
+  46:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** 
+  47:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** /**    
+  48:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * @defgroup Radix8_CFFT_CIFFT Radix-8 Complex FFT Functions    
+  49:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** *    
+  50:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * \par    
+  51:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * Complex Fast Fourier Transform(CFFT) and Complex Inverse Fast Fourier Transform(CIFFT) is an effi
+  52:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * Computational complexity of CFFT reduces drastically when compared to DFT.    
+  53:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * \par    
+  54:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * This set of functions implements CFFT/CIFFT    
+  55:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * for floating-point data types.  The functions operates on in-place buffer which uses same buffer 
+  56:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * Complex input is stored in input buffer in an interleaved fashion.    
+  57:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** *    
+  58:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * \par    
+  59:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * The functions operate on blocks of input and output data and each call to the function processes 
+  60:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * <code>2*fftLen</code> samples through the transform.  <code>pSrc</code>  points to In-place array
+  61:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * \par   
+  62:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * The <code>pSrc</code> points to the array of in-place buffer of size <code>2*fftLen</code> and in
+  63:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * <pre> {real[0], imag[0], real[1], imag[1],..} </pre>    
+  64:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** *    
+  65:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * \par Lengths supported by the transform:   
+  66:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * \par    
+  67:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * Internally, the function utilize a Radix-8 decimation in frequency(DIF) algorithm    
+  68:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * and the size of the FFT supported are of the lengths [ 64, 512, 4096].   
+  69:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** *     
+  70:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** *    
+  71:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * \par Algorithm:    
+  72:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** *    
+  73:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * <b>Complex Fast Fourier Transform:</b>    
+  74:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * \par     
+  75:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * Input real and imaginary data:    
+  76:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * <pre>    
+  77:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * x(n) = xa + j * ya    
+  78:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * x(n+N/4 ) = xb + j * yb    
+  79:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * x(n+N/2 ) = xc + j * yc    
+  80:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * x(n+3N 4) = xd + j * yd    
+  81:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * </pre>    
+  82:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * where N is length of FFT    
+  83:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * \par    
+  84:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * Output real and imaginary data:    
+  85:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * <pre>    
+  86:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * X(4r) = xa'+ j * ya'    
+  87:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * X(4r+1) = xb'+ j * yb'    
+  88:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * X(4r+2) = xc'+ j * yc'    
+  89:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * X(4r+3) = xd'+ j * yd'    
+  90:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * </pre>    
+  91:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * \par    
+  92:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * Twiddle factors for Radix-8 FFT:    
+  93:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * <pre>    
+  94:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * Wn = co1 + j * (- si1)    
+  95:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * W2n = co2 + j * (- si2)    
+  96:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * W3n = co3 + j * (- si3)    
+  97:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * </pre>    
+  98:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** *    
+  99:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * \par    
+ 100:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * \image html CFFT.gif "Radix-8 Decimation-in Frequency Complex Fast Fourier Transform"    
+ 101:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** *    
+ 102:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * \par    
+ 103:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * Output from Radix-8 CFFT Results in Digit reversal order. Interchange middle two branches of ever
+ 104:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * \par    
+ 105:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * <b> Butterfly CFFT equations:</b>    
+ 106:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * <pre>    
+ 107:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * xa' = xa + xb + xc + xd    
+ 108:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * ya' = ya + yb + yc + yd    
+ 109:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * xc' = (xa+yb-xc-yd)* co1 + (ya-xb-yc+xd)* (si1)    
+ 110:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * yc' = (ya-xb-yc+xd)* co1 - (xa+yb-xc-yd)* (si1)    
+ 111:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * xb' = (xa-xb+xc-xd)* co2 + (ya-yb+yc-yd)* (si2)    
+ 112:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * yb' = (ya-yb+yc-yd)* co2 - (xa-xb+xc-xd)* (si2)    
+ 113:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * xd' = (xa-yb-xc+yd)* co3 + (ya+xb-yc-xd)* (si3)    
+ 114:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * yd' = (ya+xb-yc-xd)* co3 - (xa-yb-xc+yd)* (si3)    
+ 115:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * </pre>    
+ 116:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** *    
+ 117:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * \par    
+ 118:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * where <code>fftLen</code> length of CFFT/CIFFT; <code>ifftFlag</code> Flag for selection of CFFT 
+ 119:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * <code>bitReverseFlag</code> Flag for selection of output order(Set bitReverseFlag to output in no
+ 120:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * <code>pTwiddle</code>points to array of twiddle coefficients; <code>pBitRevTable</code> points to
+ 121:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * <code>twidCoefModifier</code> modifier for twiddle factor table which supports all FFT lengths wi
+ 122:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * <code>pBitRevTable</code> modifier for bit reversal table which supports all FFT lengths with sam
+ 123:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * <code>onebyfftLen</code> value of 1/fftLen to calculate CIFFT;    
+ 124:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** *   
+ 125:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * \par Fixed-Point Behavior    
+ 126:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * Care must be taken when using the fixed-point versions of the CFFT/CIFFT function.    
+ 127:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * Refer to the function specific documentation below for usage guidelines.    
+ 128:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** */
+ 129:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** 
+ 130:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** 
+ 131:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** /*    
+ 132:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * @brief  Core function for the floating-point CFFT butterfly process.   
+ 133:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * @param[in, out] *pSrc            points to the in-place buffer of floating-point data type.   
+ 134:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * @param[in]      fftLen           length of the FFT.   
+ 135:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * @param[in]      *pCoef           points to the twiddle coefficient buffer.   
+ 136:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * @param[in]      twidCoefModifier twiddle coefficient modifier that supports different size FFTs w
+ 137:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** * @return none.   
+ 138:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** */
+ 139:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** 
+ 140:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** void arm_radix8_butterfly_f32(
+ 141:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** float32_t * pSrc,
+ 142:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** uint16_t fftLen,
+ 143:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** const float32_t * pCoef,
+ 144:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** uint16_t twidCoefModifier)
+ 145:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** {
+  30              	 .loc 1 145 0
+  31              	 .cfi_startproc
+  32              	 
+  33              	 
+  34 0000 90B5     	 push {r4,r7,lr}
+  35              	.LCFI0:
+  36              	 .cfi_def_cfa_offset 12
+  37              	 .cfi_offset 4,-12
+  38              	 .cfi_offset 7,-8
+  39              	 .cfi_offset 14,-4
+  40 0002 BDB0     	 sub sp,sp,#244
+  41              	.LCFI1:
+  42              	 .cfi_def_cfa_offset 256
+  43 0004 00AF     	 add r7,sp,#0
+  44              	.LCFI2:
+  45              	 .cfi_def_cfa_register 7
+  46 0006 F860     	 str r0,[r7,#12]
+  47 0008 7A60     	 str r2,[r7,#4]
+  48 000a 1A46     	 mov r2,r3
+  49 000c 0B46     	 mov r3,r1
+  50 000e 7B81     	 strh r3,[r7,#10]
+  51 0010 1346     	 mov r3,r2
+  52 0012 3B81     	 strh r3,[r7,#8]
+ 146:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****    uint32_t ia1, ia2, ia3, ia4, ia5, ia6, ia7;
+ 147:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****    uint32_t i1, i2, i3, i4, i5, i6, i7, i8;
+ 148:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****    uint32_t id;
+ 149:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****    uint32_t n1, n2, j;
+ 150:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****    
+ 151:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****    float32_t r1, r2, r3, r4, r5, r6, r7, r8;
+ 152:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****    float32_t t1, t2;
+ 153:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****    float32_t s1, s2, s3, s4, s5, s6, s7, s8;
+ 154:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****    float32_t p1, p2, p3, p4;
+ 155:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****    float32_t co2, co3, co4, co5, co6, co7, co8;
+ 156:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****    float32_t si2, si3, si4, si5, si6, si7, si8;
+ 157:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****    const float32_t C81 = 0.70710678118f;
+  53              	 .loc 1 157 0
+  54 0014 094B     	 ldr r3,.L8
+  55 0016 C7F8DC30 	 str r3,[r7,#220]
+ 158:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** 
+ 159:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****    n2 = fftLen;
+  56              	 .loc 1 159 0
+  57 001a 7B89     	 ldrh r3,[r7,#10]
+  58 001c C7F8E430 	 str r3,[r7,#228]
+  59              	.L7:
+ 160:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****    
+ 161:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****    do 
+ 162:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****    {
+ 163:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****       n1 = n2;
+  60              	 .loc 1 163 0
+  61 0020 D7F8E430 	 ldr r3,[r7,#228]
+  62 0024 C7F8D830 	 str r3,[r7,#216]
+ 164:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****       n2 = n2 >> 3;
+  63              	 .loc 1 164 0
+  64 0028 D7F8E430 	 ldr r3,[r7,#228]
+  65 002c DB08     	 lsrs r3,r3,#3
+  66 002e C7F8E430 	 str r3,[r7,#228]
+ 165:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****       i1 = 0;
+  67              	 .loc 1 165 0
+  68 0032 0023     	 movs r3,#0
+  69 0034 C7F8E830 	 str r3,[r7,#232]
+  70 0038 02E0     	 b .L9
+  71              	.L10:
+  72 003a 00BF     	 .align 2
+  73              	.L8:
+  74 003c F304353F 	 .word 1060439283
+  75              	.L9:
+  76              	.L2:
+ 166:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****       
+ 167:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****       do
+ 168:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****       {
+ 169:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          i2 = i1 + n2;
+  77              	 .loc 1 169 0 discriminator 1
+  78 0040 D7F8E820 	 ldr r2,[r7,#232]
+  79 0044 D7F8E430 	 ldr r3,[r7,#228]
+  80 0048 1344     	 add r3,r3,r2
+  81 004a C7F8D430 	 str r3,[r7,#212]
+ 170:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          i3 = i2 + n2;
+  82              	 .loc 1 170 0 discriminator 1
+  83 004e D7F8D420 	 ldr r2,[r7,#212]
+  84 0052 D7F8E430 	 ldr r3,[r7,#228]
+  85 0056 1344     	 add r3,r3,r2
+  86 0058 C7F8D030 	 str r3,[r7,#208]
+ 171:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          i4 = i3 + n2;
+  87              	 .loc 1 171 0 discriminator 1
+  88 005c D7F8D020 	 ldr r2,[r7,#208]
+  89 0060 D7F8E430 	 ldr r3,[r7,#228]
+  90 0064 1344     	 add r3,r3,r2
+  91 0066 C7F8CC30 	 str r3,[r7,#204]
+ 172:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          i5 = i4 + n2;
+  92              	 .loc 1 172 0 discriminator 1
+  93 006a D7F8CC20 	 ldr r2,[r7,#204]
+  94 006e D7F8E430 	 ldr r3,[r7,#228]
+  95 0072 1344     	 add r3,r3,r2
+  96 0074 C7F8C830 	 str r3,[r7,#200]
+ 173:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          i6 = i5 + n2;
+  97              	 .loc 1 173 0 discriminator 1
+  98 0078 D7F8C820 	 ldr r2,[r7,#200]
+  99 007c D7F8E430 	 ldr r3,[r7,#228]
+ 100 0080 1344     	 add r3,r3,r2
+ 101 0082 C7F8C430 	 str r3,[r7,#196]
+ 174:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          i7 = i6 + n2;
+ 102              	 .loc 1 174 0 discriminator 1
+ 103 0086 D7F8C420 	 ldr r2,[r7,#196]
+ 104 008a D7F8E430 	 ldr r3,[r7,#228]
+ 105 008e 1344     	 add r3,r3,r2
+ 106 0090 C7F8C030 	 str r3,[r7,#192]
+ 175:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          i8 = i7 + n2;
+ 107              	 .loc 1 175 0 discriminator 1
+ 108 0094 D7F8C020 	 ldr r2,[r7,#192]
+ 109 0098 D7F8E430 	 ldr r3,[r7,#228]
+ 110 009c 1344     	 add r3,r3,r2
+ 111 009e C7F8BC30 	 str r3,[r7,#188]
+ 176:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          r1 = pSrc[2 * i1] + pSrc[2 * i5];
+ 112              	 .loc 1 176 0 discriminator 1
+ 113 00a2 D7F8E830 	 ldr r3,[r7,#232]
+ 114 00a6 DB00     	 lsls r3,r3,#3
+ 115 00a8 FA68     	 ldr r2,[r7,#12]
+ 116 00aa 1344     	 add r3,r3,r2
+ 117 00ac 1968     	 ldr r1,[r3]
+ 118 00ae D7F8C830 	 ldr r3,[r7,#200]
+ 119 00b2 DB00     	 lsls r3,r3,#3
+ 120 00b4 FA68     	 ldr r2,[r7,#12]
+ 121 00b6 1344     	 add r3,r3,r2
+ 122 00b8 1B68     	 ldr r3,[r3]
+ 123 00ba 0846     	 mov r0,r1
+ 124 00bc 1946     	 mov r1,r3
+ 125 00be FFF7FEFF 	 bl __aeabi_fadd
+ 126 00c2 0346     	 mov r3,r0
+ 127 00c4 C7F8B830 	 str r3,[r7,#184]
+ 177:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          r5 = pSrc[2 * i1] - pSrc[2 * i5];
+ 128              	 .loc 1 177 0 discriminator 1
+ 129 00c8 D7F8E830 	 ldr r3,[r7,#232]
+ 130 00cc DB00     	 lsls r3,r3,#3
+ 131 00ce FA68     	 ldr r2,[r7,#12]
+ 132 00d0 1344     	 add r3,r3,r2
+ 133 00d2 1968     	 ldr r1,[r3]
+ 134 00d4 D7F8C830 	 ldr r3,[r7,#200]
+ 135 00d8 DB00     	 lsls r3,r3,#3
+ 136 00da FA68     	 ldr r2,[r7,#12]
+ 137 00dc 1344     	 add r3,r3,r2
+ 138 00de 1B68     	 ldr r3,[r3]
+ 139 00e0 0846     	 mov r0,r1
+ 140 00e2 1946     	 mov r1,r3
+ 141 00e4 FFF7FEFF 	 bl __aeabi_fsub
+ 142 00e8 0346     	 mov r3,r0
+ 143 00ea C7F8B430 	 str r3,[r7,#180]
+ 178:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          r2 = pSrc[2 * i2] + pSrc[2 * i6];
+ 144              	 .loc 1 178 0 discriminator 1
+ 145 00ee D7F8D430 	 ldr r3,[r7,#212]
+ 146 00f2 DB00     	 lsls r3,r3,#3
+ 147 00f4 FA68     	 ldr r2,[r7,#12]
+ 148 00f6 1344     	 add r3,r3,r2
+ 149 00f8 1968     	 ldr r1,[r3]
+ 150 00fa D7F8C430 	 ldr r3,[r7,#196]
+ 151 00fe DB00     	 lsls r3,r3,#3
+ 152 0100 FA68     	 ldr r2,[r7,#12]
+ 153 0102 1344     	 add r3,r3,r2
+ 154 0104 1B68     	 ldr r3,[r3]
+ 155 0106 0846     	 mov r0,r1
+ 156 0108 1946     	 mov r1,r3
+ 157 010a FFF7FEFF 	 bl __aeabi_fadd
+ 158 010e 0346     	 mov r3,r0
+ 159 0110 C7F8B030 	 str r3,[r7,#176]
+ 179:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          r6 = pSrc[2 * i2] - pSrc[2 * i6];
+ 160              	 .loc 1 179 0 discriminator 1
+ 161 0114 D7F8D430 	 ldr r3,[r7,#212]
+ 162 0118 DB00     	 lsls r3,r3,#3
+ 163 011a FA68     	 ldr r2,[r7,#12]
+ 164 011c 1344     	 add r3,r3,r2
+ 165 011e 1968     	 ldr r1,[r3]
+ 166 0120 D7F8C430 	 ldr r3,[r7,#196]
+ 167 0124 DB00     	 lsls r3,r3,#3
+ 168 0126 FA68     	 ldr r2,[r7,#12]
+ 169 0128 1344     	 add r3,r3,r2
+ 170 012a 1B68     	 ldr r3,[r3]
+ 171 012c 0846     	 mov r0,r1
+ 172 012e 1946     	 mov r1,r3
+ 173 0130 FFF7FEFF 	 bl __aeabi_fsub
+ 174 0134 0346     	 mov r3,r0
+ 175 0136 C7F8AC30 	 str r3,[r7,#172]
+ 180:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          r3 = pSrc[2 * i3] + pSrc[2 * i7];
+ 176              	 .loc 1 180 0 discriminator 1
+ 177 013a D7F8D030 	 ldr r3,[r7,#208]
+ 178 013e DB00     	 lsls r3,r3,#3
+ 179 0140 FA68     	 ldr r2,[r7,#12]
+ 180 0142 1344     	 add r3,r3,r2
+ 181 0144 1968     	 ldr r1,[r3]
+ 182 0146 D7F8C030 	 ldr r3,[r7,#192]
+ 183 014a DB00     	 lsls r3,r3,#3
+ 184 014c FA68     	 ldr r2,[r7,#12]
+ 185 014e 1344     	 add r3,r3,r2
+ 186 0150 1B68     	 ldr r3,[r3]
+ 187 0152 0846     	 mov r0,r1
+ 188 0154 1946     	 mov r1,r3
+ 189 0156 FFF7FEFF 	 bl __aeabi_fadd
+ 190 015a 0346     	 mov r3,r0
+ 191 015c C7F8A830 	 str r3,[r7,#168]
+ 181:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          r7 = pSrc[2 * i3] - pSrc[2 * i7];
+ 192              	 .loc 1 181 0 discriminator 1
+ 193 0160 D7F8D030 	 ldr r3,[r7,#208]
+ 194 0164 DB00     	 lsls r3,r3,#3
+ 195 0166 FA68     	 ldr r2,[r7,#12]
+ 196 0168 1344     	 add r3,r3,r2
+ 197 016a 1968     	 ldr r1,[r3]
+ 198 016c D7F8C030 	 ldr r3,[r7,#192]
+ 199 0170 DB00     	 lsls r3,r3,#3
+ 200 0172 FA68     	 ldr r2,[r7,#12]
+ 201 0174 1344     	 add r3,r3,r2
+ 202 0176 1B68     	 ldr r3,[r3]
+ 203 0178 0846     	 mov r0,r1
+ 204 017a 1946     	 mov r1,r3
+ 205 017c FFF7FEFF 	 bl __aeabi_fsub
+ 206 0180 0346     	 mov r3,r0
+ 207 0182 C7F8A430 	 str r3,[r7,#164]
+ 182:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          r4 = pSrc[2 * i4] + pSrc[2 * i8];
+ 208              	 .loc 1 182 0 discriminator 1
+ 209 0186 D7F8CC30 	 ldr r3,[r7,#204]
+ 210 018a DB00     	 lsls r3,r3,#3
+ 211 018c FA68     	 ldr r2,[r7,#12]
+ 212 018e 1344     	 add r3,r3,r2
+ 213 0190 1968     	 ldr r1,[r3]
+ 214 0192 D7F8BC30 	 ldr r3,[r7,#188]
+ 215 0196 DB00     	 lsls r3,r3,#3
+ 216 0198 FA68     	 ldr r2,[r7,#12]
+ 217 019a 1344     	 add r3,r3,r2
+ 218 019c 1B68     	 ldr r3,[r3]
+ 219 019e 0846     	 mov r0,r1
+ 220 01a0 1946     	 mov r1,r3
+ 221 01a2 FFF7FEFF 	 bl __aeabi_fadd
+ 222 01a6 0346     	 mov r3,r0
+ 223 01a8 C7F8A030 	 str r3,[r7,#160]
+ 183:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          r8 = pSrc[2 * i4] - pSrc[2 * i8];
+ 224              	 .loc 1 183 0 discriminator 1
+ 225 01ac D7F8CC30 	 ldr r3,[r7,#204]
+ 226 01b0 DB00     	 lsls r3,r3,#3
+ 227 01b2 FA68     	 ldr r2,[r7,#12]
+ 228 01b4 1344     	 add r3,r3,r2
+ 229 01b6 1968     	 ldr r1,[r3]
+ 230 01b8 D7F8BC30 	 ldr r3,[r7,#188]
+ 231 01bc DB00     	 lsls r3,r3,#3
+ 232 01be FA68     	 ldr r2,[r7,#12]
+ 233 01c0 1344     	 add r3,r3,r2
+ 234 01c2 1B68     	 ldr r3,[r3]
+ 235 01c4 0846     	 mov r0,r1
+ 236 01c6 1946     	 mov r1,r3
+ 237 01c8 FFF7FEFF 	 bl __aeabi_fsub
+ 238 01cc 0346     	 mov r3,r0
+ 239 01ce C7F89C30 	 str r3,[r7,#156]
+ 184:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          t1 = r1 - r3;
+ 240              	 .loc 1 184 0 discriminator 1
+ 241 01d2 D7F8B800 	 ldr r0,[r7,#184]
+ 242 01d6 D7F8A810 	 ldr r1,[r7,#168]
+ 243 01da FFF7FEFF 	 bl __aeabi_fsub
+ 244 01de 0346     	 mov r3,r0
+ 245 01e0 C7F89830 	 str r3,[r7,#152]
+ 185:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          r1 = r1 + r3;
+ 246              	 .loc 1 185 0 discriminator 1
+ 247 01e4 D7F8B800 	 ldr r0,[r7,#184]
+ 248 01e8 D7F8A810 	 ldr r1,[r7,#168]
+ 249 01ec FFF7FEFF 	 bl __aeabi_fadd
+ 250 01f0 0346     	 mov r3,r0
+ 251 01f2 C7F8B830 	 str r3,[r7,#184]
+ 186:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          r3 = r2 - r4;
+ 252              	 .loc 1 186 0 discriminator 1
+ 253 01f6 D7F8B000 	 ldr r0,[r7,#176]
+ 254 01fa D7F8A010 	 ldr r1,[r7,#160]
+ 255 01fe FFF7FEFF 	 bl __aeabi_fsub
+ 256 0202 0346     	 mov r3,r0
+ 257 0204 C7F8A830 	 str r3,[r7,#168]
+ 187:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          r2 = r2 + r4;
+ 258              	 .loc 1 187 0 discriminator 1
+ 259 0208 D7F8B000 	 ldr r0,[r7,#176]
+ 260 020c D7F8A010 	 ldr r1,[r7,#160]
+ 261 0210 FFF7FEFF 	 bl __aeabi_fadd
+ 262 0214 0346     	 mov r3,r0
+ 263 0216 C7F8B030 	 str r3,[r7,#176]
+ 188:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          pSrc[2 * i1] = r1 + r2;   
+ 264              	 .loc 1 188 0 discriminator 1
+ 265 021a D7F8E830 	 ldr r3,[r7,#232]
+ 266 021e DB00     	 lsls r3,r3,#3
+ 267 0220 FA68     	 ldr r2,[r7,#12]
+ 268 0222 D418     	 adds r4,r2,r3
+ 269 0224 D7F8B800 	 ldr r0,[r7,#184]
+ 270 0228 D7F8B010 	 ldr r1,[r7,#176]
+ 271 022c FFF7FEFF 	 bl __aeabi_fadd
+ 272 0230 0346     	 mov r3,r0
+ 273 0232 2360     	 str r3,[r4]
+ 189:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          pSrc[2 * i5] = r1 - r2;
+ 274              	 .loc 1 189 0 discriminator 1
+ 275 0234 D7F8C830 	 ldr r3,[r7,#200]
+ 276 0238 DB00     	 lsls r3,r3,#3
+ 277 023a FA68     	 ldr r2,[r7,#12]
+ 278 023c D418     	 adds r4,r2,r3
+ 279 023e D7F8B800 	 ldr r0,[r7,#184]
+ 280 0242 D7F8B010 	 ldr r1,[r7,#176]
+ 281 0246 FFF7FEFF 	 bl __aeabi_fsub
+ 282 024a 0346     	 mov r3,r0
+ 283 024c 2360     	 str r3,[r4]
+ 190:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          r1 = pSrc[2 * i1 + 1] + pSrc[2 * i5 + 1];
+ 284              	 .loc 1 190 0 discriminator 1
+ 285 024e D7F8E830 	 ldr r3,[r7,#232]
+ 286 0252 DB00     	 lsls r3,r3,#3
+ 287 0254 0433     	 adds r3,r3,#4
+ 288 0256 FA68     	 ldr r2,[r7,#12]
+ 289 0258 1344     	 add r3,r3,r2
+ 290 025a 1968     	 ldr r1,[r3]
+ 291 025c D7F8C830 	 ldr r3,[r7,#200]
+ 292 0260 DB00     	 lsls r3,r3,#3
+ 293 0262 0433     	 adds r3,r3,#4
+ 294 0264 FA68     	 ldr r2,[r7,#12]
+ 295 0266 1344     	 add r3,r3,r2
+ 296 0268 1B68     	 ldr r3,[r3]
+ 297 026a 0846     	 mov r0,r1
+ 298 026c 1946     	 mov r1,r3
+ 299 026e FFF7FEFF 	 bl __aeabi_fadd
+ 300 0272 0346     	 mov r3,r0
+ 301 0274 C7F8B830 	 str r3,[r7,#184]
+ 191:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          s5 = pSrc[2 * i1 + 1] - pSrc[2 * i5 + 1];
+ 302              	 .loc 1 191 0 discriminator 1
+ 303 0278 D7F8E830 	 ldr r3,[r7,#232]
+ 304 027c DB00     	 lsls r3,r3,#3
+ 305 027e 0433     	 adds r3,r3,#4
+ 306 0280 FA68     	 ldr r2,[r7,#12]
+ 307 0282 1344     	 add r3,r3,r2
+ 308 0284 1968     	 ldr r1,[r3]
+ 309 0286 D7F8C830 	 ldr r3,[r7,#200]
+ 310 028a DB00     	 lsls r3,r3,#3
+ 311 028c 0433     	 adds r3,r3,#4
+ 312 028e FA68     	 ldr r2,[r7,#12]
+ 313 0290 1344     	 add r3,r3,r2
+ 314 0292 1B68     	 ldr r3,[r3]
+ 315 0294 0846     	 mov r0,r1
+ 316 0296 1946     	 mov r1,r3
+ 317 0298 FFF7FEFF 	 bl __aeabi_fsub
+ 318 029c 0346     	 mov r3,r0
+ 319 029e C7F89430 	 str r3,[r7,#148]
+ 192:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          r2 = pSrc[2 * i2 + 1] + pSrc[2 * i6 + 1];
+ 320              	 .loc 1 192 0 discriminator 1
+ 321 02a2 D7F8D430 	 ldr r3,[r7,#212]
+ 322 02a6 DB00     	 lsls r3,r3,#3
+ 323 02a8 0433     	 adds r3,r3,#4
+ 324 02aa FA68     	 ldr r2,[r7,#12]
+ 325 02ac 1344     	 add r3,r3,r2
+ 326 02ae 1968     	 ldr r1,[r3]
+ 327 02b0 D7F8C430 	 ldr r3,[r7,#196]
+ 328 02b4 DB00     	 lsls r3,r3,#3
+ 329 02b6 0433     	 adds r3,r3,#4
+ 330 02b8 FA68     	 ldr r2,[r7,#12]
+ 331 02ba 1344     	 add r3,r3,r2
+ 332 02bc 1B68     	 ldr r3,[r3]
+ 333 02be 0846     	 mov r0,r1
+ 334 02c0 1946     	 mov r1,r3
+ 335 02c2 FFF7FEFF 	 bl __aeabi_fadd
+ 336 02c6 0346     	 mov r3,r0
+ 337 02c8 C7F8B030 	 str r3,[r7,#176]
+ 193:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          s6 = pSrc[2 * i2 + 1] - pSrc[2 * i6 + 1];
+ 338              	 .loc 1 193 0 discriminator 1
+ 339 02cc D7F8D430 	 ldr r3,[r7,#212]
+ 340 02d0 DB00     	 lsls r3,r3,#3
+ 341 02d2 0433     	 adds r3,r3,#4
+ 342 02d4 FA68     	 ldr r2,[r7,#12]
+ 343 02d6 1344     	 add r3,r3,r2
+ 344 02d8 1968     	 ldr r1,[r3]
+ 345 02da D7F8C430 	 ldr r3,[r7,#196]
+ 346 02de DB00     	 lsls r3,r3,#3
+ 347 02e0 0433     	 adds r3,r3,#4
+ 348 02e2 FA68     	 ldr r2,[r7,#12]
+ 349 02e4 1344     	 add r3,r3,r2
+ 350 02e6 1B68     	 ldr r3,[r3]
+ 351 02e8 0846     	 mov r0,r1
+ 352 02ea 1946     	 mov r1,r3
+ 353 02ec FFF7FEFF 	 bl __aeabi_fsub
+ 354 02f0 0346     	 mov r3,r0
+ 355 02f2 C7F89030 	 str r3,[r7,#144]
+ 194:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          s3 = pSrc[2 * i3 + 1] + pSrc[2 * i7 + 1];
+ 356              	 .loc 1 194 0 discriminator 1
+ 357 02f6 D7F8D030 	 ldr r3,[r7,#208]
+ 358 02fa DB00     	 lsls r3,r3,#3
+ 359 02fc 0433     	 adds r3,r3,#4
+ 360 02fe FA68     	 ldr r2,[r7,#12]
+ 361 0300 1344     	 add r3,r3,r2
+ 362 0302 1968     	 ldr r1,[r3]
+ 363 0304 D7F8C030 	 ldr r3,[r7,#192]
+ 364 0308 DB00     	 lsls r3,r3,#3
+ 365 030a 0433     	 adds r3,r3,#4
+ 366 030c FA68     	 ldr r2,[r7,#12]
+ 367 030e 1344     	 add r3,r3,r2
+ 368 0310 1B68     	 ldr r3,[r3]
+ 369 0312 0846     	 mov r0,r1
+ 370 0314 1946     	 mov r1,r3
+ 371 0316 FFF7FEFF 	 bl __aeabi_fadd
+ 372 031a 0346     	 mov r3,r0
+ 373 031c C7F88C30 	 str r3,[r7,#140]
+ 195:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          s7 = pSrc[2 * i3 + 1] - pSrc[2 * i7 + 1];
+ 374              	 .loc 1 195 0 discriminator 1
+ 375 0320 D7F8D030 	 ldr r3,[r7,#208]
+ 376 0324 DB00     	 lsls r3,r3,#3
+ 377 0326 0433     	 adds r3,r3,#4
+ 378 0328 FA68     	 ldr r2,[r7,#12]
+ 379 032a 1344     	 add r3,r3,r2
+ 380 032c 1968     	 ldr r1,[r3]
+ 381 032e D7F8C030 	 ldr r3,[r7,#192]
+ 382 0332 DB00     	 lsls r3,r3,#3
+ 383 0334 0433     	 adds r3,r3,#4
+ 384 0336 FA68     	 ldr r2,[r7,#12]
+ 385 0338 1344     	 add r3,r3,r2
+ 386 033a 1B68     	 ldr r3,[r3]
+ 387 033c 0846     	 mov r0,r1
+ 388 033e 1946     	 mov r1,r3
+ 389 0340 FFF7FEFF 	 bl __aeabi_fsub
+ 390 0344 0346     	 mov r3,r0
+ 391 0346 C7F88830 	 str r3,[r7,#136]
+ 196:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          r4 = pSrc[2 * i4 + 1] + pSrc[2 * i8 + 1];
+ 392              	 .loc 1 196 0 discriminator 1
+ 393 034a D7F8CC30 	 ldr r3,[r7,#204]
+ 394 034e DB00     	 lsls r3,r3,#3
+ 395 0350 0433     	 adds r3,r3,#4
+ 396 0352 FA68     	 ldr r2,[r7,#12]
+ 397 0354 1344     	 add r3,r3,r2
+ 398 0356 1968     	 ldr r1,[r3]
+ 399 0358 D7F8BC30 	 ldr r3,[r7,#188]
+ 400 035c DB00     	 lsls r3,r3,#3
+ 401 035e 0433     	 adds r3,r3,#4
+ 402 0360 FA68     	 ldr r2,[r7,#12]
+ 403 0362 1344     	 add r3,r3,r2
+ 404 0364 1B68     	 ldr r3,[r3]
+ 405 0366 0846     	 mov r0,r1
+ 406 0368 1946     	 mov r1,r3
+ 407 036a FFF7FEFF 	 bl __aeabi_fadd
+ 408 036e 0346     	 mov r3,r0
+ 409 0370 C7F8A030 	 str r3,[r7,#160]
+ 197:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          s8 = pSrc[2 * i4 + 1] - pSrc[2 * i8 + 1];
+ 410              	 .loc 1 197 0 discriminator 1
+ 411 0374 D7F8CC30 	 ldr r3,[r7,#204]
+ 412 0378 DB00     	 lsls r3,r3,#3
+ 413 037a 0433     	 adds r3,r3,#4
+ 414 037c FA68     	 ldr r2,[r7,#12]
+ 415 037e 1344     	 add r3,r3,r2
+ 416 0380 1968     	 ldr r1,[r3]
+ 417 0382 D7F8BC30 	 ldr r3,[r7,#188]
+ 418 0386 DB00     	 lsls r3,r3,#3
+ 419 0388 0433     	 adds r3,r3,#4
+ 420 038a FA68     	 ldr r2,[r7,#12]
+ 421 038c 1344     	 add r3,r3,r2
+ 422 038e 1B68     	 ldr r3,[r3]
+ 423 0390 0846     	 mov r0,r1
+ 424 0392 1946     	 mov r1,r3
+ 425 0394 FFF7FEFF 	 bl __aeabi_fsub
+ 426 0398 0346     	 mov r3,r0
+ 427 039a C7F88430 	 str r3,[r7,#132]
+ 198:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          t2 = r1 - s3;
+ 428              	 .loc 1 198 0 discriminator 1
+ 429 039e D7F8B800 	 ldr r0,[r7,#184]
+ 430 03a2 D7F88C10 	 ldr r1,[r7,#140]
+ 431 03a6 FFF7FEFF 	 bl __aeabi_fsub
+ 432 03aa 0346     	 mov r3,r0
+ 433 03ac C7F88030 	 str r3,[r7,#128]
+ 199:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          r1 = r1 + s3;
+ 434              	 .loc 1 199 0 discriminator 1
+ 435 03b0 D7F8B800 	 ldr r0,[r7,#184]
+ 436 03b4 D7F88C10 	 ldr r1,[r7,#140]
+ 437 03b8 FFF7FEFF 	 bl __aeabi_fadd
+ 438 03bc 0346     	 mov r3,r0
+ 439 03be C7F8B830 	 str r3,[r7,#184]
+ 200:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          s3 = r2 - r4;
+ 440              	 .loc 1 200 0 discriminator 1
+ 441 03c2 D7F8B000 	 ldr r0,[r7,#176]
+ 442 03c6 D7F8A010 	 ldr r1,[r7,#160]
+ 443 03ca FFF7FEFF 	 bl __aeabi_fsub
+ 444 03ce 0346     	 mov r3,r0
+ 445 03d0 C7F88C30 	 str r3,[r7,#140]
+ 201:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          r2 = r2 + r4;
+ 446              	 .loc 1 201 0 discriminator 1
+ 447 03d4 D7F8B000 	 ldr r0,[r7,#176]
+ 448 03d8 D7F8A010 	 ldr r1,[r7,#160]
+ 449 03dc FFF7FEFF 	 bl __aeabi_fadd
+ 450 03e0 0346     	 mov r3,r0
+ 451 03e2 C7F8B030 	 str r3,[r7,#176]
+ 202:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          pSrc[2 * i1 + 1] = r1 + r2;
+ 452              	 .loc 1 202 0 discriminator 1
+ 453 03e6 D7F8E830 	 ldr r3,[r7,#232]
+ 454 03ea DB00     	 lsls r3,r3,#3
+ 455 03ec 0433     	 adds r3,r3,#4
+ 456 03ee FA68     	 ldr r2,[r7,#12]
+ 457 03f0 D418     	 adds r4,r2,r3
+ 458 03f2 D7F8B800 	 ldr r0,[r7,#184]
+ 459 03f6 D7F8B010 	 ldr r1,[r7,#176]
+ 460 03fa FFF7FEFF 	 bl __aeabi_fadd
+ 461 03fe 0346     	 mov r3,r0
+ 462 0400 2360     	 str r3,[r4]
+ 203:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          pSrc[2 * i5 + 1] = r1 - r2;
+ 463              	 .loc 1 203 0 discriminator 1
+ 464 0402 D7F8C830 	 ldr r3,[r7,#200]
+ 465 0406 DB00     	 lsls r3,r3,#3
+ 466 0408 0433     	 adds r3,r3,#4
+ 467 040a FA68     	 ldr r2,[r7,#12]
+ 468 040c D418     	 adds r4,r2,r3
+ 469 040e D7F8B800 	 ldr r0,[r7,#184]
+ 470 0412 D7F8B010 	 ldr r1,[r7,#176]
+ 471 0416 FFF7FEFF 	 bl __aeabi_fsub
+ 472 041a 0346     	 mov r3,r0
+ 473 041c 2360     	 str r3,[r4]
+ 204:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          pSrc[2 * i3]     = t1 + s3;
+ 474              	 .loc 1 204 0 discriminator 1
+ 475 041e D7F8D030 	 ldr r3,[r7,#208]
+ 476 0422 DB00     	 lsls r3,r3,#3
+ 477 0424 FA68     	 ldr r2,[r7,#12]
+ 478 0426 D418     	 adds r4,r2,r3
+ 479 0428 D7F89800 	 ldr r0,[r7,#152]
+ 480 042c D7F88C10 	 ldr r1,[r7,#140]
+ 481 0430 FFF7FEFF 	 bl __aeabi_fadd
+ 482 0434 0346     	 mov r3,r0
+ 483 0436 2360     	 str r3,[r4]
+ 205:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          pSrc[2 * i7]     = t1 - s3;
+ 484              	 .loc 1 205 0 discriminator 1
+ 485 0438 D7F8C030 	 ldr r3,[r7,#192]
+ 486 043c DB00     	 lsls r3,r3,#3
+ 487 043e FA68     	 ldr r2,[r7,#12]
+ 488 0440 D418     	 adds r4,r2,r3
+ 489 0442 D7F89800 	 ldr r0,[r7,#152]
+ 490 0446 D7F88C10 	 ldr r1,[r7,#140]
+ 491 044a FFF7FEFF 	 bl __aeabi_fsub
+ 492 044e 0346     	 mov r3,r0
+ 493 0450 2360     	 str r3,[r4]
+ 206:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          pSrc[2 * i3 + 1] = t2 - r3;
+ 494              	 .loc 1 206 0 discriminator 1
+ 495 0452 D7F8D030 	 ldr r3,[r7,#208]
+ 496 0456 DB00     	 lsls r3,r3,#3
+ 497 0458 0433     	 adds r3,r3,#4
+ 498 045a FA68     	 ldr r2,[r7,#12]
+ 499 045c D418     	 adds r4,r2,r3
+ 500 045e D7F88000 	 ldr r0,[r7,#128]
+ 501 0462 D7F8A810 	 ldr r1,[r7,#168]
+ 502 0466 FFF7FEFF 	 bl __aeabi_fsub
+ 503 046a 0346     	 mov r3,r0
+ 504 046c 2360     	 str r3,[r4]
+ 207:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          pSrc[2 * i7 + 1] = t2 + r3;
+ 505              	 .loc 1 207 0 discriminator 1
+ 506 046e D7F8C030 	 ldr r3,[r7,#192]
+ 507 0472 DB00     	 lsls r3,r3,#3
+ 508 0474 0433     	 adds r3,r3,#4
+ 509 0476 FA68     	 ldr r2,[r7,#12]
+ 510 0478 D418     	 adds r4,r2,r3
+ 511 047a D7F88000 	 ldr r0,[r7,#128]
+ 512 047e D7F8A810 	 ldr r1,[r7,#168]
+ 513 0482 FFF7FEFF 	 bl __aeabi_fadd
+ 514 0486 0346     	 mov r3,r0
+ 515 0488 2360     	 str r3,[r4]
+ 208:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          r1 = (r6 - r8) * C81;
+ 516              	 .loc 1 208 0 discriminator 1
+ 517 048a D7F8AC00 	 ldr r0,[r7,#172]
+ 518 048e D7F89C10 	 ldr r1,[r7,#156]
+ 519 0492 FFF7FEFF 	 bl __aeabi_fsub
+ 520 0496 0346     	 mov r3,r0
+ 521 0498 1846     	 mov r0,r3
+ 522 049a D7F8DC10 	 ldr r1,[r7,#220]
+ 523 049e FFF7FEFF 	 bl __aeabi_fmul
+ 524 04a2 0346     	 mov r3,r0
+ 525 04a4 C7F8B830 	 str r3,[r7,#184]
+ 209:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          r6 = (r6 + r8) * C81;
+ 526              	 .loc 1 209 0 discriminator 1
+ 527 04a8 D7F8AC00 	 ldr r0,[r7,#172]
+ 528 04ac D7F89C10 	 ldr r1,[r7,#156]
+ 529 04b0 FFF7FEFF 	 bl __aeabi_fadd
+ 530 04b4 0346     	 mov r3,r0
+ 531 04b6 1846     	 mov r0,r3
+ 532 04b8 D7F8DC10 	 ldr r1,[r7,#220]
+ 533 04bc FFF7FEFF 	 bl __aeabi_fmul
+ 534 04c0 0346     	 mov r3,r0
+ 535 04c2 C7F8AC30 	 str r3,[r7,#172]
+ 210:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          r2 = (s6 - s8) * C81;
+ 536              	 .loc 1 210 0 discriminator 1
+ 537 04c6 D7F89000 	 ldr r0,[r7,#144]
+ 538 04ca D7F88410 	 ldr r1,[r7,#132]
+ 539 04ce FFF7FEFF 	 bl __aeabi_fsub
+ 540 04d2 0346     	 mov r3,r0
+ 541 04d4 1846     	 mov r0,r3
+ 542 04d6 D7F8DC10 	 ldr r1,[r7,#220]
+ 543 04da FFF7FEFF 	 bl __aeabi_fmul
+ 544 04de 0346     	 mov r3,r0
+ 545 04e0 C7F8B030 	 str r3,[r7,#176]
+ 211:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          s6 = (s6 + s8) * C81;
+ 546              	 .loc 1 211 0 discriminator 1
+ 547 04e4 D7F89000 	 ldr r0,[r7,#144]
+ 548 04e8 D7F88410 	 ldr r1,[r7,#132]
+ 549 04ec FFF7FEFF 	 bl __aeabi_fadd
+ 550 04f0 0346     	 mov r3,r0
+ 551 04f2 1846     	 mov r0,r3
+ 552 04f4 D7F8DC10 	 ldr r1,[r7,#220]
+ 553 04f8 FFF7FEFF 	 bl __aeabi_fmul
+ 554 04fc 0346     	 mov r3,r0
+ 555 04fe C7F89030 	 str r3,[r7,#144]
+ 212:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          t1 = r5 - r1;
+ 556              	 .loc 1 212 0 discriminator 1
+ 557 0502 D7F8B400 	 ldr r0,[r7,#180]
+ 558 0506 D7F8B810 	 ldr r1,[r7,#184]
+ 559 050a FFF7FEFF 	 bl __aeabi_fsub
+ 560 050e 0346     	 mov r3,r0
+ 561 0510 C7F89830 	 str r3,[r7,#152]
+ 213:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          r5 = r5 + r1;
+ 562              	 .loc 1 213 0 discriminator 1
+ 563 0514 D7F8B400 	 ldr r0,[r7,#180]
+ 564 0518 D7F8B810 	 ldr r1,[r7,#184]
+ 565 051c FFF7FEFF 	 bl __aeabi_fadd
+ 566 0520 0346     	 mov r3,r0
+ 567 0522 C7F8B430 	 str r3,[r7,#180]
+ 214:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          r8 = r7 - r6;
+ 568              	 .loc 1 214 0 discriminator 1
+ 569 0526 D7F8A400 	 ldr r0,[r7,#164]
+ 570 052a D7F8AC10 	 ldr r1,[r7,#172]
+ 571 052e FFF7FEFF 	 bl __aeabi_fsub
+ 572 0532 0346     	 mov r3,r0
+ 573 0534 C7F89C30 	 str r3,[r7,#156]
+ 215:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          r7 = r7 + r6;
+ 574              	 .loc 1 215 0 discriminator 1
+ 575 0538 D7F8A400 	 ldr r0,[r7,#164]
+ 576 053c D7F8AC10 	 ldr r1,[r7,#172]
+ 577 0540 FFF7FEFF 	 bl __aeabi_fadd
+ 578 0544 0346     	 mov r3,r0
+ 579 0546 C7F8A430 	 str r3,[r7,#164]
+ 216:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          t2 = s5 - r2;
+ 580              	 .loc 1 216 0 discriminator 1
+ 581 054a D7F89400 	 ldr r0,[r7,#148]
+ 582 054e D7F8B010 	 ldr r1,[r7,#176]
+ 583 0552 FFF7FEFF 	 bl __aeabi_fsub
+ 584 0556 0346     	 mov r3,r0
+ 585 0558 C7F88030 	 str r3,[r7,#128]
+ 217:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          s5 = s5 + r2;
+ 586              	 .loc 1 217 0 discriminator 1
+ 587 055c D7F89400 	 ldr r0,[r7,#148]
+ 588 0560 D7F8B010 	 ldr r1,[r7,#176]
+ 589 0564 FFF7FEFF 	 bl __aeabi_fadd
+ 590 0568 0346     	 mov r3,r0
+ 591 056a C7F89430 	 str r3,[r7,#148]
+ 218:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          s8 = s7 - s6;
+ 592              	 .loc 1 218 0 discriminator 1
+ 593 056e D7F88800 	 ldr r0,[r7,#136]
+ 594 0572 D7F89010 	 ldr r1,[r7,#144]
+ 595 0576 FFF7FEFF 	 bl __aeabi_fsub
+ 596 057a 0346     	 mov r3,r0
+ 597 057c C7F88430 	 str r3,[r7,#132]
+ 219:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          s7 = s7 + s6;
+ 598              	 .loc 1 219 0 discriminator 1
+ 599 0580 D7F88800 	 ldr r0,[r7,#136]
+ 600 0584 D7F89010 	 ldr r1,[r7,#144]
+ 601 0588 FFF7FEFF 	 bl __aeabi_fadd
+ 602 058c 0346     	 mov r3,r0
+ 603 058e C7F88830 	 str r3,[r7,#136]
+ 220:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          pSrc[2 * i2]     = r5 + s7;
+ 604              	 .loc 1 220 0 discriminator 1
+ 605 0592 D7F8D430 	 ldr r3,[r7,#212]
+ 606 0596 DB00     	 lsls r3,r3,#3
+ 607 0598 FA68     	 ldr r2,[r7,#12]
+ 608 059a D418     	 adds r4,r2,r3
+ 609 059c D7F8B400 	 ldr r0,[r7,#180]
+ 610 05a0 D7F88810 	 ldr r1,[r7,#136]
+ 611 05a4 FFF7FEFF 	 bl __aeabi_fadd
+ 612 05a8 0346     	 mov r3,r0
+ 613 05aa 2360     	 str r3,[r4]
+ 221:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          pSrc[2 * i8]     = r5 - s7;
+ 614              	 .loc 1 221 0 discriminator 1
+ 615 05ac D7F8BC30 	 ldr r3,[r7,#188]
+ 616 05b0 DB00     	 lsls r3,r3,#3
+ 617 05b2 FA68     	 ldr r2,[r7,#12]
+ 618 05b4 D418     	 adds r4,r2,r3
+ 619 05b6 D7F8B400 	 ldr r0,[r7,#180]
+ 620 05ba D7F88810 	 ldr r1,[r7,#136]
+ 621 05be FFF7FEFF 	 bl __aeabi_fsub
+ 622 05c2 0346     	 mov r3,r0
+ 623 05c4 2360     	 str r3,[r4]
+ 222:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          pSrc[2 * i6]     = t1 + s8;
+ 624              	 .loc 1 222 0 discriminator 1
+ 625 05c6 D7F8C430 	 ldr r3,[r7,#196]
+ 626 05ca DB00     	 lsls r3,r3,#3
+ 627 05cc FA68     	 ldr r2,[r7,#12]
+ 628 05ce D418     	 adds r4,r2,r3
+ 629 05d0 D7F89800 	 ldr r0,[r7,#152]
+ 630 05d4 D7F88410 	 ldr r1,[r7,#132]
+ 631 05d8 FFF7FEFF 	 bl __aeabi_fadd
+ 632 05dc 0346     	 mov r3,r0
+ 633 05de 2360     	 str r3,[r4]
+ 223:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          pSrc[2 * i4]     = t1 - s8;
+ 634              	 .loc 1 223 0 discriminator 1
+ 635 05e0 D7F8CC30 	 ldr r3,[r7,#204]
+ 636 05e4 DB00     	 lsls r3,r3,#3
+ 637 05e6 FA68     	 ldr r2,[r7,#12]
+ 638 05e8 D418     	 adds r4,r2,r3
+ 639 05ea D7F89800 	 ldr r0,[r7,#152]
+ 640 05ee D7F88410 	 ldr r1,[r7,#132]
+ 641 05f2 FFF7FEFF 	 bl __aeabi_fsub
+ 642 05f6 0346     	 mov r3,r0
+ 643 05f8 2360     	 str r3,[r4]
+ 224:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          pSrc[2 * i2 + 1] = s5 - r7;
+ 644              	 .loc 1 224 0 discriminator 1
+ 645 05fa D7F8D430 	 ldr r3,[r7,#212]
+ 646 05fe DB00     	 lsls r3,r3,#3
+ 647 0600 0433     	 adds r3,r3,#4
+ 648 0602 FA68     	 ldr r2,[r7,#12]
+ 649 0604 D418     	 adds r4,r2,r3
+ 650 0606 D7F89400 	 ldr r0,[r7,#148]
+ 651 060a D7F8A410 	 ldr r1,[r7,#164]
+ 652 060e FFF7FEFF 	 bl __aeabi_fsub
+ 653 0612 0346     	 mov r3,r0
+ 654 0614 2360     	 str r3,[r4]
+ 225:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          pSrc[2 * i8 + 1] = s5 + r7;
+ 655              	 .loc 1 225 0 discriminator 1
+ 656 0616 D7F8BC30 	 ldr r3,[r7,#188]
+ 657 061a DB00     	 lsls r3,r3,#3
+ 658 061c 0433     	 adds r3,r3,#4
+ 659 061e FA68     	 ldr r2,[r7,#12]
+ 660 0620 D418     	 adds r4,r2,r3
+ 661 0622 D7F89400 	 ldr r0,[r7,#148]
+ 662 0626 D7F8A410 	 ldr r1,[r7,#164]
+ 663 062a FFF7FEFF 	 bl __aeabi_fadd
+ 664 062e 0346     	 mov r3,r0
+ 665 0630 2360     	 str r3,[r4]
+ 226:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          pSrc[2 * i6 + 1] = t2 - r8;
+ 666              	 .loc 1 226 0 discriminator 1
+ 667 0632 D7F8C430 	 ldr r3,[r7,#196]
+ 668 0636 DB00     	 lsls r3,r3,#3
+ 669 0638 0433     	 adds r3,r3,#4
+ 670 063a FA68     	 ldr r2,[r7,#12]
+ 671 063c D418     	 adds r4,r2,r3
+ 672 063e D7F88000 	 ldr r0,[r7,#128]
+ 673 0642 D7F89C10 	 ldr r1,[r7,#156]
+ 674 0646 FFF7FEFF 	 bl __aeabi_fsub
+ 675 064a 0346     	 mov r3,r0
+ 676 064c 2360     	 str r3,[r4]
+ 227:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          pSrc[2 * i4 + 1] = t2 + r8;
+ 677              	 .loc 1 227 0 discriminator 1
+ 678 064e D7F8CC30 	 ldr r3,[r7,#204]
+ 679 0652 DB00     	 lsls r3,r3,#3
+ 680 0654 0433     	 adds r3,r3,#4
+ 681 0656 FA68     	 ldr r2,[r7,#12]
+ 682 0658 D418     	 adds r4,r2,r3
+ 683 065a D7F88000 	 ldr r0,[r7,#128]
+ 684 065e D7F89C10 	 ldr r1,[r7,#156]
+ 685 0662 FFF7FEFF 	 bl __aeabi_fadd
+ 686 0666 0346     	 mov r3,r0
+ 687 0668 2360     	 str r3,[r4]
+ 228:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          
+ 229:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          i1 += n1;
+ 688              	 .loc 1 229 0 discriminator 1
+ 689 066a D7F8E820 	 ldr r2,[r7,#232]
+ 690 066e D7F8D830 	 ldr r3,[r7,#216]
+ 691 0672 1344     	 add r3,r3,r2
+ 692 0674 C7F8E830 	 str r3,[r7,#232]
+ 230:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****       } while(i1 < fftLen);
+ 693              	 .loc 1 230 0 discriminator 1
+ 694 0678 7A89     	 ldrh r2,[r7,#10]
+ 695 067a D7F8E830 	 ldr r3,[r7,#232]
+ 696 067e 9A42     	 cmp r2,r3
+ 697 0680 3FF6DEAC 	 bhi .L2
+ 231:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****       
+ 232:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****       if(n2 < 8)
+ 698              	 .loc 1 232 0
+ 699 0684 D7F8E430 	 ldr r3,[r7,#228]
+ 700 0688 072B     	 cmp r3,#7
+ 701 068a 01D8     	 bhi .L3
+ 233:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          break;
+ 702              	 .loc 1 233 0
+ 703 068c 00F0C9BC 	 b .L1
+ 704              	.L3:
+ 234:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****       
+ 235:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****       ia1 = 0;
+ 705              	 .loc 1 235 0
+ 706 0690 0023     	 movs r3,#0
+ 707 0692 C7F8EC30 	 str r3,[r7,#236]
+ 236:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****       j = 1;
+ 708              	 .loc 1 236 0
+ 709 0696 0123     	 movs r3,#1
+ 710 0698 C7F8E030 	 str r3,[r7,#224]
+ 711              	.L6:
+ 237:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****       
+ 238:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****       do
+ 239:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****       {      
+ 240:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          /*  index calculation for the coefficients */
+ 241:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          id  = ia1 + twidCoefModifier;
+ 712              	 .loc 1 241 0
+ 713 069c 3A89     	 ldrh r2,[r7,#8]
+ 714 069e D7F8EC30 	 ldr r3,[r7,#236]
+ 715 06a2 1344     	 add r3,r3,r2
+ 716 06a4 FB67     	 str r3,[r7,#124]
+ 242:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          ia1 = id;
+ 717              	 .loc 1 242 0
+ 718 06a6 FB6F     	 ldr r3,[r7,#124]
+ 719 06a8 C7F8EC30 	 str r3,[r7,#236]
+ 243:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          ia2 = ia1 + id;
+ 720              	 .loc 1 243 0
+ 721 06ac D7F8EC20 	 ldr r2,[r7,#236]
+ 722 06b0 FB6F     	 ldr r3,[r7,#124]
+ 723 06b2 1344     	 add r3,r3,r2
+ 724 06b4 BB67     	 str r3,[r7,#120]
+ 244:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          ia3 = ia2 + id;
+ 725              	 .loc 1 244 0
+ 726 06b6 BA6F     	 ldr r2,[r7,#120]
+ 727 06b8 FB6F     	 ldr r3,[r7,#124]
+ 728 06ba 1344     	 add r3,r3,r2
+ 729 06bc 7B67     	 str r3,[r7,#116]
+ 245:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          ia4 = ia3 + id;
+ 730              	 .loc 1 245 0
+ 731 06be 7A6F     	 ldr r2,[r7,#116]
+ 732 06c0 FB6F     	 ldr r3,[r7,#124]
+ 733 06c2 1344     	 add r3,r3,r2
+ 734 06c4 3B67     	 str r3,[r7,#112]
+ 246:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          ia5 = ia4 + id;
+ 735              	 .loc 1 246 0
+ 736 06c6 3A6F     	 ldr r2,[r7,#112]
+ 737 06c8 FB6F     	 ldr r3,[r7,#124]
+ 738 06ca 1344     	 add r3,r3,r2
+ 739 06cc FB66     	 str r3,[r7,#108]
+ 247:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          ia6 = ia5 + id;
+ 740              	 .loc 1 247 0
+ 741 06ce FA6E     	 ldr r2,[r7,#108]
+ 742 06d0 FB6F     	 ldr r3,[r7,#124]
+ 743 06d2 1344     	 add r3,r3,r2
+ 744 06d4 BB66     	 str r3,[r7,#104]
+ 248:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          ia7 = ia6 + id;
+ 745              	 .loc 1 248 0
+ 746 06d6 BA6E     	 ldr r2,[r7,#104]
+ 747 06d8 FB6F     	 ldr r3,[r7,#124]
+ 748 06da 1344     	 add r3,r3,r2
+ 749 06dc 7B66     	 str r3,[r7,#100]
+ 249:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****                   
+ 250:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          co2 = pCoef[2 * ia1];
+ 750              	 .loc 1 250 0
+ 751 06de D7F8EC30 	 ldr r3,[r7,#236]
+ 752 06e2 DB00     	 lsls r3,r3,#3
+ 753 06e4 7A68     	 ldr r2,[r7,#4]
+ 754 06e6 1344     	 add r3,r3,r2
+ 755 06e8 1B68     	 ldr r3,[r3]
+ 756 06ea 3B66     	 str r3,[r7,#96]
+ 251:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          co3 = pCoef[2 * ia2];
+ 757              	 .loc 1 251 0
+ 758 06ec BB6F     	 ldr r3,[r7,#120]
+ 759 06ee DB00     	 lsls r3,r3,#3
+ 760 06f0 7A68     	 ldr r2,[r7,#4]
+ 761 06f2 1344     	 add r3,r3,r2
+ 762 06f4 1B68     	 ldr r3,[r3]
+ 763 06f6 FB65     	 str r3,[r7,#92]
+ 252:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          co4 = pCoef[2 * ia3];
+ 764              	 .loc 1 252 0
+ 765 06f8 7B6F     	 ldr r3,[r7,#116]
+ 766 06fa DB00     	 lsls r3,r3,#3
+ 767 06fc 7A68     	 ldr r2,[r7,#4]
+ 768 06fe 1344     	 add r3,r3,r2
+ 769 0700 1B68     	 ldr r3,[r3]
+ 770 0702 BB65     	 str r3,[r7,#88]
+ 253:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          co5 = pCoef[2 * ia4];
+ 771              	 .loc 1 253 0
+ 772 0704 3B6F     	 ldr r3,[r7,#112]
+ 773 0706 DB00     	 lsls r3,r3,#3
+ 774 0708 7A68     	 ldr r2,[r7,#4]
+ 775 070a 1344     	 add r3,r3,r2
+ 776 070c 1B68     	 ldr r3,[r3]
+ 777 070e 7B65     	 str r3,[r7,#84]
+ 254:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          co6 = pCoef[2 * ia5];
+ 778              	 .loc 1 254 0
+ 779 0710 FB6E     	 ldr r3,[r7,#108]
+ 780 0712 DB00     	 lsls r3,r3,#3
+ 781 0714 7A68     	 ldr r2,[r7,#4]
+ 782 0716 1344     	 add r3,r3,r2
+ 783 0718 1B68     	 ldr r3,[r3]
+ 784 071a 3B65     	 str r3,[r7,#80]
+ 255:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          co7 = pCoef[2 * ia6];
+ 785              	 .loc 1 255 0
+ 786 071c BB6E     	 ldr r3,[r7,#104]
+ 787 071e DB00     	 lsls r3,r3,#3
+ 788 0720 7A68     	 ldr r2,[r7,#4]
+ 789 0722 1344     	 add r3,r3,r2
+ 790 0724 1B68     	 ldr r3,[r3]
+ 791 0726 FB64     	 str r3,[r7,#76]
+ 256:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          co8 = pCoef[2 * ia7];
+ 792              	 .loc 1 256 0
+ 793 0728 7B6E     	 ldr r3,[r7,#100]
+ 794 072a DB00     	 lsls r3,r3,#3
+ 795 072c 7A68     	 ldr r2,[r7,#4]
+ 796 072e 1344     	 add r3,r3,r2
+ 797 0730 1B68     	 ldr r3,[r3]
+ 798 0732 BB64     	 str r3,[r7,#72]
+ 257:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          si2 = pCoef[2 * ia1 + 1];
+ 799              	 .loc 1 257 0
+ 800 0734 D7F8EC30 	 ldr r3,[r7,#236]
+ 801 0738 DB00     	 lsls r3,r3,#3
+ 802 073a 0433     	 adds r3,r3,#4
+ 803 073c 7A68     	 ldr r2,[r7,#4]
+ 804 073e 1344     	 add r3,r3,r2
+ 805 0740 1B68     	 ldr r3,[r3]
+ 806 0742 7B64     	 str r3,[r7,#68]
+ 258:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          si3 = pCoef[2 * ia2 + 1];
+ 807              	 .loc 1 258 0
+ 808 0744 BB6F     	 ldr r3,[r7,#120]
+ 809 0746 DB00     	 lsls r3,r3,#3
+ 810 0748 0433     	 adds r3,r3,#4
+ 811 074a 7A68     	 ldr r2,[r7,#4]
+ 812 074c 1344     	 add r3,r3,r2
+ 813 074e 1B68     	 ldr r3,[r3]
+ 814 0750 3B64     	 str r3,[r7,#64]
+ 259:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          si4 = pCoef[2 * ia3 + 1];
+ 815              	 .loc 1 259 0
+ 816 0752 7B6F     	 ldr r3,[r7,#116]
+ 817 0754 DB00     	 lsls r3,r3,#3
+ 818 0756 0433     	 adds r3,r3,#4
+ 819 0758 7A68     	 ldr r2,[r7,#4]
+ 820 075a 1344     	 add r3,r3,r2
+ 821 075c 1B68     	 ldr r3,[r3]
+ 822 075e FB63     	 str r3,[r7,#60]
+ 260:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          si5 = pCoef[2 * ia4 + 1];
+ 823              	 .loc 1 260 0
+ 824 0760 3B6F     	 ldr r3,[r7,#112]
+ 825 0762 DB00     	 lsls r3,r3,#3
+ 826 0764 0433     	 adds r3,r3,#4
+ 827 0766 7A68     	 ldr r2,[r7,#4]
+ 828 0768 1344     	 add r3,r3,r2
+ 829 076a 1B68     	 ldr r3,[r3]
+ 830 076c BB63     	 str r3,[r7,#56]
+ 261:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          si6 = pCoef[2 * ia5 + 1];
+ 831              	 .loc 1 261 0
+ 832 076e FB6E     	 ldr r3,[r7,#108]
+ 833 0770 DB00     	 lsls r3,r3,#3
+ 834 0772 0433     	 adds r3,r3,#4
+ 835 0774 7A68     	 ldr r2,[r7,#4]
+ 836 0776 1344     	 add r3,r3,r2
+ 837 0778 1B68     	 ldr r3,[r3]
+ 838 077a 7B63     	 str r3,[r7,#52]
+ 262:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          si7 = pCoef[2 * ia6 + 1];
+ 839              	 .loc 1 262 0
+ 840 077c BB6E     	 ldr r3,[r7,#104]
+ 841 077e DB00     	 lsls r3,r3,#3
+ 842 0780 0433     	 adds r3,r3,#4
+ 843 0782 7A68     	 ldr r2,[r7,#4]
+ 844 0784 1344     	 add r3,r3,r2
+ 845 0786 1B68     	 ldr r3,[r3]
+ 846 0788 3B63     	 str r3,[r7,#48]
+ 263:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          si8 = pCoef[2 * ia7 + 1];         
+ 847              	 .loc 1 263 0
+ 848 078a 7B6E     	 ldr r3,[r7,#100]
+ 849 078c DB00     	 lsls r3,r3,#3
+ 850 078e 0433     	 adds r3,r3,#4
+ 851 0790 7A68     	 ldr r2,[r7,#4]
+ 852 0792 1344     	 add r3,r3,r2
+ 853 0794 1B68     	 ldr r3,[r3]
+ 854 0796 FB62     	 str r3,[r7,#44]
+ 264:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          
+ 265:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          i1 = j;
+ 855              	 .loc 1 265 0
+ 856 0798 D7F8E030 	 ldr r3,[r7,#224]
+ 857 079c C7F8E830 	 str r3,[r7,#232]
+ 858              	.L5:
+ 266:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          
+ 267:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          do
+ 268:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          {
+ 269:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             /*  index calculation for the input */
+ 270:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             i2 = i1 + n2;
+ 859              	 .loc 1 270 0 discriminator 1
+ 860 07a0 D7F8E820 	 ldr r2,[r7,#232]
+ 861 07a4 D7F8E430 	 ldr r3,[r7,#228]
+ 862 07a8 1344     	 add r3,r3,r2
+ 863 07aa C7F8D430 	 str r3,[r7,#212]
+ 271:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             i3 = i2 + n2;
+ 864              	 .loc 1 271 0 discriminator 1
+ 865 07ae D7F8D420 	 ldr r2,[r7,#212]
+ 866 07b2 D7F8E430 	 ldr r3,[r7,#228]
+ 867 07b6 1344     	 add r3,r3,r2
+ 868 07b8 C7F8D030 	 str r3,[r7,#208]
+ 272:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             i4 = i3 + n2;
+ 869              	 .loc 1 272 0 discriminator 1
+ 870 07bc D7F8D020 	 ldr r2,[r7,#208]
+ 871 07c0 D7F8E430 	 ldr r3,[r7,#228]
+ 872 07c4 1344     	 add r3,r3,r2
+ 873 07c6 C7F8CC30 	 str r3,[r7,#204]
+ 273:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             i5 = i4 + n2;
+ 874              	 .loc 1 273 0 discriminator 1
+ 875 07ca D7F8CC20 	 ldr r2,[r7,#204]
+ 876 07ce D7F8E430 	 ldr r3,[r7,#228]
+ 877 07d2 1344     	 add r3,r3,r2
+ 878 07d4 C7F8C830 	 str r3,[r7,#200]
+ 274:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             i6 = i5 + n2;
+ 879              	 .loc 1 274 0 discriminator 1
+ 880 07d8 D7F8C820 	 ldr r2,[r7,#200]
+ 881 07dc D7F8E430 	 ldr r3,[r7,#228]
+ 882 07e0 1344     	 add r3,r3,r2
+ 883 07e2 C7F8C430 	 str r3,[r7,#196]
+ 275:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             i7 = i6 + n2;
+ 884              	 .loc 1 275 0 discriminator 1
+ 885 07e6 D7F8C420 	 ldr r2,[r7,#196]
+ 886 07ea D7F8E430 	 ldr r3,[r7,#228]
+ 887 07ee 1344     	 add r3,r3,r2
+ 888 07f0 C7F8C030 	 str r3,[r7,#192]
+ 276:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             i8 = i7 + n2;
+ 889              	 .loc 1 276 0 discriminator 1
+ 890 07f4 D7F8C020 	 ldr r2,[r7,#192]
+ 891 07f8 D7F8E430 	 ldr r3,[r7,#228]
+ 892 07fc 1344     	 add r3,r3,r2
+ 893 07fe C7F8BC30 	 str r3,[r7,#188]
+ 277:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             r1 = pSrc[2 * i1] + pSrc[2 * i5];
+ 894              	 .loc 1 277 0 discriminator 1
+ 895 0802 D7F8E830 	 ldr r3,[r7,#232]
+ 896 0806 DB00     	 lsls r3,r3,#3
+ 897 0808 FA68     	 ldr r2,[r7,#12]
+ 898 080a 1344     	 add r3,r3,r2
+ 899 080c 1968     	 ldr r1,[r3]
+ 900 080e D7F8C830 	 ldr r3,[r7,#200]
+ 901 0812 DB00     	 lsls r3,r3,#3
+ 902 0814 FA68     	 ldr r2,[r7,#12]
+ 903 0816 1344     	 add r3,r3,r2
+ 904 0818 1B68     	 ldr r3,[r3]
+ 905 081a 0846     	 mov r0,r1
+ 906 081c 1946     	 mov r1,r3
+ 907 081e FFF7FEFF 	 bl __aeabi_fadd
+ 908 0822 0346     	 mov r3,r0
+ 909 0824 C7F8B830 	 str r3,[r7,#184]
+ 278:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             r5 = pSrc[2 * i1] - pSrc[2 * i5];
+ 910              	 .loc 1 278 0 discriminator 1
+ 911 0828 D7F8E830 	 ldr r3,[r7,#232]
+ 912 082c DB00     	 lsls r3,r3,#3
+ 913 082e FA68     	 ldr r2,[r7,#12]
+ 914 0830 1344     	 add r3,r3,r2
+ 915 0832 1968     	 ldr r1,[r3]
+ 916 0834 D7F8C830 	 ldr r3,[r7,#200]
+ 917 0838 DB00     	 lsls r3,r3,#3
+ 918 083a FA68     	 ldr r2,[r7,#12]
+ 919 083c 1344     	 add r3,r3,r2
+ 920 083e 1B68     	 ldr r3,[r3]
+ 921 0840 0846     	 mov r0,r1
+ 922 0842 1946     	 mov r1,r3
+ 923 0844 FFF7FEFF 	 bl __aeabi_fsub
+ 924 0848 0346     	 mov r3,r0
+ 925 084a C7F8B430 	 str r3,[r7,#180]
+ 279:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             r2 = pSrc[2 * i2] + pSrc[2 * i6];
+ 926              	 .loc 1 279 0 discriminator 1
+ 927 084e D7F8D430 	 ldr r3,[r7,#212]
+ 928 0852 DB00     	 lsls r3,r3,#3
+ 929 0854 FA68     	 ldr r2,[r7,#12]
+ 930 0856 1344     	 add r3,r3,r2
+ 931 0858 1968     	 ldr r1,[r3]
+ 932 085a D7F8C430 	 ldr r3,[r7,#196]
+ 933 085e DB00     	 lsls r3,r3,#3
+ 934 0860 FA68     	 ldr r2,[r7,#12]
+ 935 0862 1344     	 add r3,r3,r2
+ 936 0864 1B68     	 ldr r3,[r3]
+ 937 0866 0846     	 mov r0,r1
+ 938 0868 1946     	 mov r1,r3
+ 939 086a FFF7FEFF 	 bl __aeabi_fadd
+ 940 086e 0346     	 mov r3,r0
+ 941 0870 C7F8B030 	 str r3,[r7,#176]
+ 280:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             r6 = pSrc[2 * i2] - pSrc[2 * i6];
+ 942              	 .loc 1 280 0 discriminator 1
+ 943 0874 D7F8D430 	 ldr r3,[r7,#212]
+ 944 0878 DB00     	 lsls r3,r3,#3
+ 945 087a FA68     	 ldr r2,[r7,#12]
+ 946 087c 1344     	 add r3,r3,r2
+ 947 087e 1968     	 ldr r1,[r3]
+ 948 0880 D7F8C430 	 ldr r3,[r7,#196]
+ 949 0884 DB00     	 lsls r3,r3,#3
+ 950 0886 FA68     	 ldr r2,[r7,#12]
+ 951 0888 1344     	 add r3,r3,r2
+ 952 088a 1B68     	 ldr r3,[r3]
+ 953 088c 0846     	 mov r0,r1
+ 954 088e 1946     	 mov r1,r3
+ 955 0890 FFF7FEFF 	 bl __aeabi_fsub
+ 956 0894 0346     	 mov r3,r0
+ 957 0896 C7F8AC30 	 str r3,[r7,#172]
+ 281:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             r3 = pSrc[2 * i3] + pSrc[2 * i7];
+ 958              	 .loc 1 281 0 discriminator 1
+ 959 089a D7F8D030 	 ldr r3,[r7,#208]
+ 960 089e DB00     	 lsls r3,r3,#3
+ 961 08a0 FA68     	 ldr r2,[r7,#12]
+ 962 08a2 1344     	 add r3,r3,r2
+ 963 08a4 1968     	 ldr r1,[r3]
+ 964 08a6 D7F8C030 	 ldr r3,[r7,#192]
+ 965 08aa DB00     	 lsls r3,r3,#3
+ 966 08ac FA68     	 ldr r2,[r7,#12]
+ 967 08ae 1344     	 add r3,r3,r2
+ 968 08b0 1B68     	 ldr r3,[r3]
+ 969 08b2 0846     	 mov r0,r1
+ 970 08b4 1946     	 mov r1,r3
+ 971 08b6 FFF7FEFF 	 bl __aeabi_fadd
+ 972 08ba 0346     	 mov r3,r0
+ 973 08bc C7F8A830 	 str r3,[r7,#168]
+ 282:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             r7 = pSrc[2 * i3] - pSrc[2 * i7];
+ 974              	 .loc 1 282 0 discriminator 1
+ 975 08c0 D7F8D030 	 ldr r3,[r7,#208]
+ 976 08c4 DB00     	 lsls r3,r3,#3
+ 977 08c6 FA68     	 ldr r2,[r7,#12]
+ 978 08c8 1344     	 add r3,r3,r2
+ 979 08ca 1968     	 ldr r1,[r3]
+ 980 08cc D7F8C030 	 ldr r3,[r7,#192]
+ 981 08d0 DB00     	 lsls r3,r3,#3
+ 982 08d2 FA68     	 ldr r2,[r7,#12]
+ 983 08d4 1344     	 add r3,r3,r2
+ 984 08d6 1B68     	 ldr r3,[r3]
+ 985 08d8 0846     	 mov r0,r1
+ 986 08da 1946     	 mov r1,r3
+ 987 08dc FFF7FEFF 	 bl __aeabi_fsub
+ 988 08e0 0346     	 mov r3,r0
+ 989 08e2 C7F8A430 	 str r3,[r7,#164]
+ 283:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             r4 = pSrc[2 * i4] + pSrc[2 * i8];
+ 990              	 .loc 1 283 0 discriminator 1
+ 991 08e6 D7F8CC30 	 ldr r3,[r7,#204]
+ 992 08ea DB00     	 lsls r3,r3,#3
+ 993 08ec FA68     	 ldr r2,[r7,#12]
+ 994 08ee 1344     	 add r3,r3,r2
+ 995 08f0 1968     	 ldr r1,[r3]
+ 996 08f2 D7F8BC30 	 ldr r3,[r7,#188]
+ 997 08f6 DB00     	 lsls r3,r3,#3
+ 998 08f8 FA68     	 ldr r2,[r7,#12]
+ 999 08fa 1344     	 add r3,r3,r2
+ 1000 08fc 1B68     	 ldr r3,[r3]
+ 1001 08fe 0846     	 mov r0,r1
+ 1002 0900 1946     	 mov r1,r3
+ 1003 0902 FFF7FEFF 	 bl __aeabi_fadd
+ 1004 0906 0346     	 mov r3,r0
+ 1005 0908 C7F8A030 	 str r3,[r7,#160]
+ 284:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             r8 = pSrc[2 * i4] - pSrc[2 * i8];
+ 1006              	 .loc 1 284 0 discriminator 1
+ 1007 090c D7F8CC30 	 ldr r3,[r7,#204]
+ 1008 0910 DB00     	 lsls r3,r3,#3
+ 1009 0912 FA68     	 ldr r2,[r7,#12]
+ 1010 0914 1344     	 add r3,r3,r2
+ 1011 0916 1968     	 ldr r1,[r3]
+ 1012 0918 D7F8BC30 	 ldr r3,[r7,#188]
+ 1013 091c DB00     	 lsls r3,r3,#3
+ 1014 091e FA68     	 ldr r2,[r7,#12]
+ 1015 0920 1344     	 add r3,r3,r2
+ 1016 0922 1B68     	 ldr r3,[r3]
+ 1017 0924 0846     	 mov r0,r1
+ 1018 0926 1946     	 mov r1,r3
+ 1019 0928 FFF7FEFF 	 bl __aeabi_fsub
+ 1020 092c 0346     	 mov r3,r0
+ 1021 092e C7F89C30 	 str r3,[r7,#156]
+ 285:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             t1 = r1 - r3;
+ 1022              	 .loc 1 285 0 discriminator 1
+ 1023 0932 D7F8B800 	 ldr r0,[r7,#184]
+ 1024 0936 D7F8A810 	 ldr r1,[r7,#168]
+ 1025 093a FFF7FEFF 	 bl __aeabi_fsub
+ 1026 093e 0346     	 mov r3,r0
+ 1027 0940 C7F89830 	 str r3,[r7,#152]
+ 286:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             r1 = r1 + r3;
+ 1028              	 .loc 1 286 0 discriminator 1
+ 1029 0944 D7F8B800 	 ldr r0,[r7,#184]
+ 1030 0948 D7F8A810 	 ldr r1,[r7,#168]
+ 1031 094c FFF7FEFF 	 bl __aeabi_fadd
+ 1032 0950 0346     	 mov r3,r0
+ 1033 0952 C7F8B830 	 str r3,[r7,#184]
+ 287:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             r3 = r2 - r4;
+ 1034              	 .loc 1 287 0 discriminator 1
+ 1035 0956 D7F8B000 	 ldr r0,[r7,#176]
+ 1036 095a D7F8A010 	 ldr r1,[r7,#160]
+ 1037 095e FFF7FEFF 	 bl __aeabi_fsub
+ 1038 0962 0346     	 mov r3,r0
+ 1039 0964 C7F8A830 	 str r3,[r7,#168]
+ 288:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             r2 = r2 + r4;
+ 1040              	 .loc 1 288 0 discriminator 1
+ 1041 0968 D7F8B000 	 ldr r0,[r7,#176]
+ 1042 096c D7F8A010 	 ldr r1,[r7,#160]
+ 1043 0970 FFF7FEFF 	 bl __aeabi_fadd
+ 1044 0974 0346     	 mov r3,r0
+ 1045 0976 C7F8B030 	 str r3,[r7,#176]
+ 289:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             pSrc[2 * i1] = r1 + r2;
+ 1046              	 .loc 1 289 0 discriminator 1
+ 1047 097a D7F8E830 	 ldr r3,[r7,#232]
+ 1048 097e DB00     	 lsls r3,r3,#3
+ 1049 0980 FA68     	 ldr r2,[r7,#12]
+ 1050 0982 D418     	 adds r4,r2,r3
+ 1051 0984 D7F8B800 	 ldr r0,[r7,#184]
+ 1052 0988 D7F8B010 	 ldr r1,[r7,#176]
+ 1053 098c FFF7FEFF 	 bl __aeabi_fadd
+ 1054 0990 0346     	 mov r3,r0
+ 1055 0992 2360     	 str r3,[r4]
+ 290:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             r2 = r1 - r2;
+ 1056              	 .loc 1 290 0 discriminator 1
+ 1057 0994 D7F8B800 	 ldr r0,[r7,#184]
+ 1058 0998 D7F8B010 	 ldr r1,[r7,#176]
+ 1059 099c FFF7FEFF 	 bl __aeabi_fsub
+ 1060 09a0 0346     	 mov r3,r0
+ 1061 09a2 C7F8B030 	 str r3,[r7,#176]
+ 291:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             s1 = pSrc[2 * i1 + 1] + pSrc[2 * i5 + 1];
+ 1062              	 .loc 1 291 0 discriminator 1
+ 1063 09a6 D7F8E830 	 ldr r3,[r7,#232]
+ 1064 09aa DB00     	 lsls r3,r3,#3
+ 1065 09ac 0433     	 adds r3,r3,#4
+ 1066 09ae FA68     	 ldr r2,[r7,#12]
+ 1067 09b0 1344     	 add r3,r3,r2
+ 1068 09b2 1968     	 ldr r1,[r3]
+ 1069 09b4 D7F8C830 	 ldr r3,[r7,#200]
+ 1070 09b8 DB00     	 lsls r3,r3,#3
+ 1071 09ba 0433     	 adds r3,r3,#4
+ 1072 09bc FA68     	 ldr r2,[r7,#12]
+ 1073 09be 1344     	 add r3,r3,r2
+ 1074 09c0 1B68     	 ldr r3,[r3]
+ 1075 09c2 0846     	 mov r0,r1
+ 1076 09c4 1946     	 mov r1,r3
+ 1077 09c6 FFF7FEFF 	 bl __aeabi_fadd
+ 1078 09ca 0346     	 mov r3,r0
+ 1079 09cc BB62     	 str r3,[r7,#40]
+ 292:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             s5 = pSrc[2 * i1 + 1] - pSrc[2 * i5 + 1];
+ 1080              	 .loc 1 292 0 discriminator 1
+ 1081 09ce D7F8E830 	 ldr r3,[r7,#232]
+ 1082 09d2 DB00     	 lsls r3,r3,#3
+ 1083 09d4 0433     	 adds r3,r3,#4
+ 1084 09d6 FA68     	 ldr r2,[r7,#12]
+ 1085 09d8 1344     	 add r3,r3,r2
+ 1086 09da 1968     	 ldr r1,[r3]
+ 1087 09dc D7F8C830 	 ldr r3,[r7,#200]
+ 1088 09e0 DB00     	 lsls r3,r3,#3
+ 1089 09e2 0433     	 adds r3,r3,#4
+ 1090 09e4 FA68     	 ldr r2,[r7,#12]
+ 1091 09e6 1344     	 add r3,r3,r2
+ 1092 09e8 1B68     	 ldr r3,[r3]
+ 1093 09ea 0846     	 mov r0,r1
+ 1094 09ec 1946     	 mov r1,r3
+ 1095 09ee FFF7FEFF 	 bl __aeabi_fsub
+ 1096 09f2 0346     	 mov r3,r0
+ 1097 09f4 C7F89430 	 str r3,[r7,#148]
+ 293:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             s2 = pSrc[2 * i2 + 1] + pSrc[2 * i6 + 1];
+ 1098              	 .loc 1 293 0 discriminator 1
+ 1099 09f8 D7F8D430 	 ldr r3,[r7,#212]
+ 1100 09fc DB00     	 lsls r3,r3,#3
+ 1101 09fe 0433     	 adds r3,r3,#4
+ 1102 0a00 FA68     	 ldr r2,[r7,#12]
+ 1103 0a02 1344     	 add r3,r3,r2
+ 1104 0a04 1968     	 ldr r1,[r3]
+ 1105 0a06 D7F8C430 	 ldr r3,[r7,#196]
+ 1106 0a0a DB00     	 lsls r3,r3,#3
+ 1107 0a0c 0433     	 adds r3,r3,#4
+ 1108 0a0e FA68     	 ldr r2,[r7,#12]
+ 1109 0a10 1344     	 add r3,r3,r2
+ 1110 0a12 1B68     	 ldr r3,[r3]
+ 1111 0a14 0846     	 mov r0,r1
+ 1112 0a16 1946     	 mov r1,r3
+ 1113 0a18 FFF7FEFF 	 bl __aeabi_fadd
+ 1114 0a1c 0346     	 mov r3,r0
+ 1115 0a1e 7B62     	 str r3,[r7,#36]
+ 294:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             s6 = pSrc[2 * i2 + 1] - pSrc[2 * i6 + 1];
+ 1116              	 .loc 1 294 0 discriminator 1
+ 1117 0a20 D7F8D430 	 ldr r3,[r7,#212]
+ 1118 0a24 DB00     	 lsls r3,r3,#3
+ 1119 0a26 0433     	 adds r3,r3,#4
+ 1120 0a28 FA68     	 ldr r2,[r7,#12]
+ 1121 0a2a 1344     	 add r3,r3,r2
+ 1122 0a2c 1968     	 ldr r1,[r3]
+ 1123 0a2e D7F8C430 	 ldr r3,[r7,#196]
+ 1124 0a32 DB00     	 lsls r3,r3,#3
+ 1125 0a34 0433     	 adds r3,r3,#4
+ 1126 0a36 FA68     	 ldr r2,[r7,#12]
+ 1127 0a38 1344     	 add r3,r3,r2
+ 1128 0a3a 1B68     	 ldr r3,[r3]
+ 1129 0a3c 0846     	 mov r0,r1
+ 1130 0a3e 1946     	 mov r1,r3
+ 1131 0a40 FFF7FEFF 	 bl __aeabi_fsub
+ 1132 0a44 0346     	 mov r3,r0
+ 1133 0a46 C7F89030 	 str r3,[r7,#144]
+ 295:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             s3 = pSrc[2 * i3 + 1] + pSrc[2 * i7 + 1];
+ 1134              	 .loc 1 295 0 discriminator 1
+ 1135 0a4a D7F8D030 	 ldr r3,[r7,#208]
+ 1136 0a4e DB00     	 lsls r3,r3,#3
+ 1137 0a50 0433     	 adds r3,r3,#4
+ 1138 0a52 FA68     	 ldr r2,[r7,#12]
+ 1139 0a54 1344     	 add r3,r3,r2
+ 1140 0a56 1968     	 ldr r1,[r3]
+ 1141 0a58 D7F8C030 	 ldr r3,[r7,#192]
+ 1142 0a5c DB00     	 lsls r3,r3,#3
+ 1143 0a5e 0433     	 adds r3,r3,#4
+ 1144 0a60 FA68     	 ldr r2,[r7,#12]
+ 1145 0a62 1344     	 add r3,r3,r2
+ 1146 0a64 1B68     	 ldr r3,[r3]
+ 1147 0a66 0846     	 mov r0,r1
+ 1148 0a68 1946     	 mov r1,r3
+ 1149 0a6a FFF7FEFF 	 bl __aeabi_fadd
+ 1150 0a6e 0346     	 mov r3,r0
+ 1151 0a70 C7F88C30 	 str r3,[r7,#140]
+ 296:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             s7 = pSrc[2 * i3 + 1] - pSrc[2 * i7 + 1];
+ 1152              	 .loc 1 296 0 discriminator 1
+ 1153 0a74 D7F8D030 	 ldr r3,[r7,#208]
+ 1154 0a78 DB00     	 lsls r3,r3,#3
+ 1155 0a7a 0433     	 adds r3,r3,#4
+ 1156 0a7c FA68     	 ldr r2,[r7,#12]
+ 1157 0a7e 1344     	 add r3,r3,r2
+ 1158 0a80 1968     	 ldr r1,[r3]
+ 1159 0a82 D7F8C030 	 ldr r3,[r7,#192]
+ 1160 0a86 DB00     	 lsls r3,r3,#3
+ 1161 0a88 0433     	 adds r3,r3,#4
+ 1162 0a8a FA68     	 ldr r2,[r7,#12]
+ 1163 0a8c 1344     	 add r3,r3,r2
+ 1164 0a8e 1B68     	 ldr r3,[r3]
+ 1165 0a90 0846     	 mov r0,r1
+ 1166 0a92 1946     	 mov r1,r3
+ 1167 0a94 FFF7FEFF 	 bl __aeabi_fsub
+ 1168 0a98 0346     	 mov r3,r0
+ 1169 0a9a C7F88830 	 str r3,[r7,#136]
+ 297:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             s4 = pSrc[2 * i4 + 1] + pSrc[2 * i8 + 1];
+ 1170              	 .loc 1 297 0 discriminator 1
+ 1171 0a9e D7F8CC30 	 ldr r3,[r7,#204]
+ 1172 0aa2 DB00     	 lsls r3,r3,#3
+ 1173 0aa4 0433     	 adds r3,r3,#4
+ 1174 0aa6 FA68     	 ldr r2,[r7,#12]
+ 1175 0aa8 1344     	 add r3,r3,r2
+ 1176 0aaa 1968     	 ldr r1,[r3]
+ 1177 0aac D7F8BC30 	 ldr r3,[r7,#188]
+ 1178 0ab0 DB00     	 lsls r3,r3,#3
+ 1179 0ab2 0433     	 adds r3,r3,#4
+ 1180 0ab4 FA68     	 ldr r2,[r7,#12]
+ 1181 0ab6 1344     	 add r3,r3,r2
+ 1182 0ab8 1B68     	 ldr r3,[r3]
+ 1183 0aba 0846     	 mov r0,r1
+ 1184 0abc 1946     	 mov r1,r3
+ 1185 0abe FFF7FEFF 	 bl __aeabi_fadd
+ 1186 0ac2 0346     	 mov r3,r0
+ 1187 0ac4 3B62     	 str r3,[r7,#32]
+ 298:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             s8 = pSrc[2 * i4 + 1] - pSrc[2 * i8 + 1];
+ 1188              	 .loc 1 298 0 discriminator 1
+ 1189 0ac6 D7F8CC30 	 ldr r3,[r7,#204]
+ 1190 0aca DB00     	 lsls r3,r3,#3
+ 1191 0acc 0433     	 adds r3,r3,#4
+ 1192 0ace FA68     	 ldr r2,[r7,#12]
+ 1193 0ad0 1344     	 add r3,r3,r2
+ 1194 0ad2 1968     	 ldr r1,[r3]
+ 1195 0ad4 D7F8BC30 	 ldr r3,[r7,#188]
+ 1196 0ad8 DB00     	 lsls r3,r3,#3
+ 1197 0ada 0433     	 adds r3,r3,#4
+ 1198 0adc FA68     	 ldr r2,[r7,#12]
+ 1199 0ade 1344     	 add r3,r3,r2
+ 1200 0ae0 1B68     	 ldr r3,[r3]
+ 1201 0ae2 0846     	 mov r0,r1
+ 1202 0ae4 1946     	 mov r1,r3
+ 1203 0ae6 FFF7FEFF 	 bl __aeabi_fsub
+ 1204 0aea 0346     	 mov r3,r0
+ 1205 0aec C7F88430 	 str r3,[r7,#132]
+ 299:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             t2 = s1 - s3;
+ 1206              	 .loc 1 299 0 discriminator 1
+ 1207 0af0 B86A     	 ldr r0,[r7,#40]
+ 1208 0af2 D7F88C10 	 ldr r1,[r7,#140]
+ 1209 0af6 FFF7FEFF 	 bl __aeabi_fsub
+ 1210 0afa 0346     	 mov r3,r0
+ 1211 0afc C7F88030 	 str r3,[r7,#128]
+ 300:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             s1 = s1 + s3;
+ 1212              	 .loc 1 300 0 discriminator 1
+ 1213 0b00 B86A     	 ldr r0,[r7,#40]
+ 1214 0b02 D7F88C10 	 ldr r1,[r7,#140]
+ 1215 0b06 FFF7FEFF 	 bl __aeabi_fadd
+ 1216 0b0a 0346     	 mov r3,r0
+ 1217 0b0c BB62     	 str r3,[r7,#40]
+ 301:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             s3 = s2 - s4;
+ 1218              	 .loc 1 301 0 discriminator 1
+ 1219 0b0e 786A     	 ldr r0,[r7,#36]
+ 1220 0b10 396A     	 ldr r1,[r7,#32]
+ 1221 0b12 FFF7FEFF 	 bl __aeabi_fsub
+ 1222 0b16 0346     	 mov r3,r0
+ 1223 0b18 C7F88C30 	 str r3,[r7,#140]
+ 302:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             s2 = s2 + s4;
+ 1224              	 .loc 1 302 0 discriminator 1
+ 1225 0b1c 786A     	 ldr r0,[r7,#36]
+ 1226 0b1e 396A     	 ldr r1,[r7,#32]
+ 1227 0b20 FFF7FEFF 	 bl __aeabi_fadd
+ 1228 0b24 0346     	 mov r3,r0
+ 1229 0b26 7B62     	 str r3,[r7,#36]
+ 303:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             r1 = t1 + s3;
+ 1230              	 .loc 1 303 0 discriminator 1
+ 1231 0b28 D7F89800 	 ldr r0,[r7,#152]
+ 1232 0b2c D7F88C10 	 ldr r1,[r7,#140]
+ 1233 0b30 FFF7FEFF 	 bl __aeabi_fadd
+ 1234 0b34 0346     	 mov r3,r0
+ 1235 0b36 C7F8B830 	 str r3,[r7,#184]
+ 304:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             t1 = t1 - s3;
+ 1236              	 .loc 1 304 0 discriminator 1
+ 1237 0b3a D7F89800 	 ldr r0,[r7,#152]
+ 1238 0b3e D7F88C10 	 ldr r1,[r7,#140]
+ 1239 0b42 FFF7FEFF 	 bl __aeabi_fsub
+ 1240 0b46 0346     	 mov r3,r0
+ 1241 0b48 C7F89830 	 str r3,[r7,#152]
+ 305:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             pSrc[2 * i1 + 1] = s1 + s2;
+ 1242              	 .loc 1 305 0 discriminator 1
+ 1243 0b4c D7F8E830 	 ldr r3,[r7,#232]
+ 1244 0b50 DB00     	 lsls r3,r3,#3
+ 1245 0b52 0433     	 adds r3,r3,#4
+ 1246 0b54 FA68     	 ldr r2,[r7,#12]
+ 1247 0b56 D418     	 adds r4,r2,r3
+ 1248 0b58 B86A     	 ldr r0,[r7,#40]
+ 1249 0b5a 796A     	 ldr r1,[r7,#36]
+ 1250 0b5c FFF7FEFF 	 bl __aeabi_fadd
+ 1251 0b60 0346     	 mov r3,r0
+ 1252 0b62 2360     	 str r3,[r4]
+ 306:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             s2 = s1 - s2;
+ 1253              	 .loc 1 306 0 discriminator 1
+ 1254 0b64 B86A     	 ldr r0,[r7,#40]
+ 1255 0b66 796A     	 ldr r1,[r7,#36]
+ 1256 0b68 FFF7FEFF 	 bl __aeabi_fsub
+ 1257 0b6c 0346     	 mov r3,r0
+ 1258 0b6e 7B62     	 str r3,[r7,#36]
+ 307:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             s1 = t2 - r3;
+ 1259              	 .loc 1 307 0 discriminator 1
+ 1260 0b70 D7F88000 	 ldr r0,[r7,#128]
+ 1261 0b74 D7F8A810 	 ldr r1,[r7,#168]
+ 1262 0b78 FFF7FEFF 	 bl __aeabi_fsub
+ 1263 0b7c 0346     	 mov r3,r0
+ 1264 0b7e BB62     	 str r3,[r7,#40]
+ 308:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             t2 = t2 + r3;
+ 1265              	 .loc 1 308 0 discriminator 1
+ 1266 0b80 D7F88000 	 ldr r0,[r7,#128]
+ 1267 0b84 D7F8A810 	 ldr r1,[r7,#168]
+ 1268 0b88 FFF7FEFF 	 bl __aeabi_fadd
+ 1269 0b8c 0346     	 mov r3,r0
+ 1270 0b8e C7F88030 	 str r3,[r7,#128]
+ 309:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             p1 = co5 * r2;
+ 1271              	 .loc 1 309 0 discriminator 1
+ 1272 0b92 786D     	 ldr r0,[r7,#84]
+ 1273 0b94 D7F8B010 	 ldr r1,[r7,#176]
+ 1274 0b98 FFF7FEFF 	 bl __aeabi_fmul
+ 1275 0b9c 0346     	 mov r3,r0
+ 1276 0b9e FB61     	 str r3,[r7,#28]
+ 310:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             p2 = si5 * s2;
+ 1277              	 .loc 1 310 0 discriminator 1
+ 1278 0ba0 B86B     	 ldr r0,[r7,#56]
+ 1279 0ba2 796A     	 ldr r1,[r7,#36]
+ 1280 0ba4 FFF7FEFF 	 bl __aeabi_fmul
+ 1281 0ba8 0346     	 mov r3,r0
+ 1282 0baa BB61     	 str r3,[r7,#24]
+ 311:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             p3 = co5 * s2;
+ 1283              	 .loc 1 311 0 discriminator 1
+ 1284 0bac 786D     	 ldr r0,[r7,#84]
+ 1285 0bae 796A     	 ldr r1,[r7,#36]
+ 1286 0bb0 FFF7FEFF 	 bl __aeabi_fmul
+ 1287 0bb4 0346     	 mov r3,r0
+ 1288 0bb6 7B61     	 str r3,[r7,#20]
+ 312:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             p4 = si5 * r2;
+ 1289              	 .loc 1 312 0 discriminator 1
+ 1290 0bb8 B86B     	 ldr r0,[r7,#56]
+ 1291 0bba D7F8B010 	 ldr r1,[r7,#176]
+ 1292 0bbe FFF7FEFF 	 bl __aeabi_fmul
+ 1293 0bc2 0346     	 mov r3,r0
+ 1294 0bc4 3B61     	 str r3,[r7,#16]
+ 313:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             pSrc[2 * i5]     = p1 + p2;
+ 1295              	 .loc 1 313 0 discriminator 1
+ 1296 0bc6 D7F8C830 	 ldr r3,[r7,#200]
+ 1297 0bca DB00     	 lsls r3,r3,#3
+ 1298 0bcc FA68     	 ldr r2,[r7,#12]
+ 1299 0bce D418     	 adds r4,r2,r3
+ 1300 0bd0 F869     	 ldr r0,[r7,#28]
+ 1301 0bd2 B969     	 ldr r1,[r7,#24]
+ 1302 0bd4 FFF7FEFF 	 bl __aeabi_fadd
+ 1303 0bd8 0346     	 mov r3,r0
+ 1304 0bda 2360     	 str r3,[r4]
+ 314:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             pSrc[2 * i5 + 1] = p3 - p4;
+ 1305              	 .loc 1 314 0 discriminator 1
+ 1306 0bdc D7F8C830 	 ldr r3,[r7,#200]
+ 1307 0be0 DB00     	 lsls r3,r3,#3
+ 1308 0be2 0433     	 adds r3,r3,#4
+ 1309 0be4 FA68     	 ldr r2,[r7,#12]
+ 1310 0be6 D418     	 adds r4,r2,r3
+ 1311 0be8 7869     	 ldr r0,[r7,#20]
+ 1312 0bea 3969     	 ldr r1,[r7,#16]
+ 1313 0bec FFF7FEFF 	 bl __aeabi_fsub
+ 1314 0bf0 0346     	 mov r3,r0
+ 1315 0bf2 2360     	 str r3,[r4]
+ 315:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             p1 = co3 * r1;
+ 1316              	 .loc 1 315 0 discriminator 1
+ 1317 0bf4 F86D     	 ldr r0,[r7,#92]
+ 1318 0bf6 D7F8B810 	 ldr r1,[r7,#184]
+ 1319 0bfa FFF7FEFF 	 bl __aeabi_fmul
+ 1320 0bfe 0346     	 mov r3,r0
+ 1321 0c00 FB61     	 str r3,[r7,#28]
+ 316:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             p2 = si3 * s1;
+ 1322              	 .loc 1 316 0 discriminator 1
+ 1323 0c02 386C     	 ldr r0,[r7,#64]
+ 1324 0c04 B96A     	 ldr r1,[r7,#40]
+ 1325 0c06 FFF7FEFF 	 bl __aeabi_fmul
+ 1326 0c0a 0346     	 mov r3,r0
+ 1327 0c0c BB61     	 str r3,[r7,#24]
+ 317:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             p3 = co3 * s1;
+ 1328              	 .loc 1 317 0 discriminator 1
+ 1329 0c0e F86D     	 ldr r0,[r7,#92]
+ 1330 0c10 B96A     	 ldr r1,[r7,#40]
+ 1331 0c12 FFF7FEFF 	 bl __aeabi_fmul
+ 1332 0c16 0346     	 mov r3,r0
+ 1333 0c18 7B61     	 str r3,[r7,#20]
+ 318:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             p4 = si3 * r1;
+ 1334              	 .loc 1 318 0 discriminator 1
+ 1335 0c1a 386C     	 ldr r0,[r7,#64]
+ 1336 0c1c D7F8B810 	 ldr r1,[r7,#184]
+ 1337 0c20 FFF7FEFF 	 bl __aeabi_fmul
+ 1338 0c24 0346     	 mov r3,r0
+ 1339 0c26 3B61     	 str r3,[r7,#16]
+ 319:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             pSrc[2 * i3]     = p1 + p2;
+ 1340              	 .loc 1 319 0 discriminator 1
+ 1341 0c28 D7F8D030 	 ldr r3,[r7,#208]
+ 1342 0c2c DB00     	 lsls r3,r3,#3
+ 1343 0c2e FA68     	 ldr r2,[r7,#12]
+ 1344 0c30 D418     	 adds r4,r2,r3
+ 1345 0c32 F869     	 ldr r0,[r7,#28]
+ 1346 0c34 B969     	 ldr r1,[r7,#24]
+ 1347 0c36 FFF7FEFF 	 bl __aeabi_fadd
+ 1348 0c3a 0346     	 mov r3,r0
+ 1349 0c3c 2360     	 str r3,[r4]
+ 320:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             pSrc[2 * i3 + 1] = p3 - p4;
+ 1350              	 .loc 1 320 0 discriminator 1
+ 1351 0c3e D7F8D030 	 ldr r3,[r7,#208]
+ 1352 0c42 DB00     	 lsls r3,r3,#3
+ 1353 0c44 0433     	 adds r3,r3,#4
+ 1354 0c46 FA68     	 ldr r2,[r7,#12]
+ 1355 0c48 D418     	 adds r4,r2,r3
+ 1356 0c4a 7869     	 ldr r0,[r7,#20]
+ 1357 0c4c 3969     	 ldr r1,[r7,#16]
+ 1358 0c4e FFF7FEFF 	 bl __aeabi_fsub
+ 1359 0c52 0346     	 mov r3,r0
+ 1360 0c54 2360     	 str r3,[r4]
+ 321:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             p1 = co7 * t1;
+ 1361              	 .loc 1 321 0 discriminator 1
+ 1362 0c56 F86C     	 ldr r0,[r7,#76]
+ 1363 0c58 D7F89810 	 ldr r1,[r7,#152]
+ 1364 0c5c FFF7FEFF 	 bl __aeabi_fmul
+ 1365 0c60 0346     	 mov r3,r0
+ 1366 0c62 FB61     	 str r3,[r7,#28]
+ 322:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             p2 = si7 * t2;
+ 1367              	 .loc 1 322 0 discriminator 1
+ 1368 0c64 386B     	 ldr r0,[r7,#48]
+ 1369 0c66 D7F88010 	 ldr r1,[r7,#128]
+ 1370 0c6a FFF7FEFF 	 bl __aeabi_fmul
+ 1371 0c6e 0346     	 mov r3,r0
+ 1372 0c70 BB61     	 str r3,[r7,#24]
+ 323:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             p3 = co7 * t2;
+ 1373              	 .loc 1 323 0 discriminator 1
+ 1374 0c72 F86C     	 ldr r0,[r7,#76]
+ 1375 0c74 D7F88010 	 ldr r1,[r7,#128]
+ 1376 0c78 FFF7FEFF 	 bl __aeabi_fmul
+ 1377 0c7c 0346     	 mov r3,r0
+ 1378 0c7e 7B61     	 str r3,[r7,#20]
+ 324:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             p4 = si7 * t1;
+ 1379              	 .loc 1 324 0 discriminator 1
+ 1380 0c80 386B     	 ldr r0,[r7,#48]
+ 1381 0c82 D7F89810 	 ldr r1,[r7,#152]
+ 1382 0c86 FFF7FEFF 	 bl __aeabi_fmul
+ 1383 0c8a 0346     	 mov r3,r0
+ 1384 0c8c 3B61     	 str r3,[r7,#16]
+ 325:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             pSrc[2 * i7]     = p1 + p2;
+ 1385              	 .loc 1 325 0 discriminator 1
+ 1386 0c8e D7F8C030 	 ldr r3,[r7,#192]
+ 1387 0c92 DB00     	 lsls r3,r3,#3
+ 1388 0c94 FA68     	 ldr r2,[r7,#12]
+ 1389 0c96 D418     	 adds r4,r2,r3
+ 1390 0c98 F869     	 ldr r0,[r7,#28]
+ 1391 0c9a B969     	 ldr r1,[r7,#24]
+ 1392 0c9c FFF7FEFF 	 bl __aeabi_fadd
+ 1393 0ca0 0346     	 mov r3,r0
+ 1394 0ca2 2360     	 str r3,[r4]
+ 326:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             pSrc[2 * i7 + 1] = p3 - p4;
+ 1395              	 .loc 1 326 0 discriminator 1
+ 1396 0ca4 D7F8C030 	 ldr r3,[r7,#192]
+ 1397 0ca8 DB00     	 lsls r3,r3,#3
+ 1398 0caa 0433     	 adds r3,r3,#4
+ 1399 0cac FA68     	 ldr r2,[r7,#12]
+ 1400 0cae D418     	 adds r4,r2,r3
+ 1401 0cb0 7869     	 ldr r0,[r7,#20]
+ 1402 0cb2 3969     	 ldr r1,[r7,#16]
+ 1403 0cb4 FFF7FEFF 	 bl __aeabi_fsub
+ 1404 0cb8 0346     	 mov r3,r0
+ 1405 0cba 2360     	 str r3,[r4]
+ 327:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             r1 = (r6 - r8) * C81;
+ 1406              	 .loc 1 327 0 discriminator 1
+ 1407 0cbc D7F8AC00 	 ldr r0,[r7,#172]
+ 1408 0cc0 D7F89C10 	 ldr r1,[r7,#156]
+ 1409 0cc4 FFF7FEFF 	 bl __aeabi_fsub
+ 1410 0cc8 0346     	 mov r3,r0
+ 1411 0cca 1846     	 mov r0,r3
+ 1412 0ccc D7F8DC10 	 ldr r1,[r7,#220]
+ 1413 0cd0 FFF7FEFF 	 bl __aeabi_fmul
+ 1414 0cd4 0346     	 mov r3,r0
+ 1415 0cd6 C7F8B830 	 str r3,[r7,#184]
+ 328:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             r6 = (r6 + r8) * C81;
+ 1416              	 .loc 1 328 0 discriminator 1
+ 1417 0cda D7F8AC00 	 ldr r0,[r7,#172]
+ 1418 0cde D7F89C10 	 ldr r1,[r7,#156]
+ 1419 0ce2 FFF7FEFF 	 bl __aeabi_fadd
+ 1420 0ce6 0346     	 mov r3,r0
+ 1421 0ce8 1846     	 mov r0,r3
+ 1422 0cea D7F8DC10 	 ldr r1,[r7,#220]
+ 1423 0cee FFF7FEFF 	 bl __aeabi_fmul
+ 1424 0cf2 0346     	 mov r3,r0
+ 1425 0cf4 C7F8AC30 	 str r3,[r7,#172]
+ 329:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             s1 = (s6 - s8) * C81;
+ 1426              	 .loc 1 329 0 discriminator 1
+ 1427 0cf8 D7F89000 	 ldr r0,[r7,#144]
+ 1428 0cfc D7F88410 	 ldr r1,[r7,#132]
+ 1429 0d00 FFF7FEFF 	 bl __aeabi_fsub
+ 1430 0d04 0346     	 mov r3,r0
+ 1431 0d06 1846     	 mov r0,r3
+ 1432 0d08 D7F8DC10 	 ldr r1,[r7,#220]
+ 1433 0d0c FFF7FEFF 	 bl __aeabi_fmul
+ 1434 0d10 0346     	 mov r3,r0
+ 1435 0d12 BB62     	 str r3,[r7,#40]
+ 330:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             s6 = (s6 + s8) * C81;
+ 1436              	 .loc 1 330 0 discriminator 1
+ 1437 0d14 D7F89000 	 ldr r0,[r7,#144]
+ 1438 0d18 D7F88410 	 ldr r1,[r7,#132]
+ 1439 0d1c FFF7FEFF 	 bl __aeabi_fadd
+ 1440 0d20 0346     	 mov r3,r0
+ 1441 0d22 1846     	 mov r0,r3
+ 1442 0d24 D7F8DC10 	 ldr r1,[r7,#220]
+ 1443 0d28 FFF7FEFF 	 bl __aeabi_fmul
+ 1444 0d2c 0346     	 mov r3,r0
+ 1445 0d2e C7F89030 	 str r3,[r7,#144]
+ 331:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             t1 = r5 - r1;
+ 1446              	 .loc 1 331 0 discriminator 1
+ 1447 0d32 D7F8B400 	 ldr r0,[r7,#180]
+ 1448 0d36 D7F8B810 	 ldr r1,[r7,#184]
+ 1449 0d3a FFF7FEFF 	 bl __aeabi_fsub
+ 1450 0d3e 0346     	 mov r3,r0
+ 1451 0d40 C7F89830 	 str r3,[r7,#152]
+ 332:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             r5 = r5 + r1;
+ 1452              	 .loc 1 332 0 discriminator 1
+ 1453 0d44 D7F8B400 	 ldr r0,[r7,#180]
+ 1454 0d48 D7F8B810 	 ldr r1,[r7,#184]
+ 1455 0d4c FFF7FEFF 	 bl __aeabi_fadd
+ 1456 0d50 0346     	 mov r3,r0
+ 1457 0d52 C7F8B430 	 str r3,[r7,#180]
+ 333:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             r8 = r7 - r6;
+ 1458              	 .loc 1 333 0 discriminator 1
+ 1459 0d56 D7F8A400 	 ldr r0,[r7,#164]
+ 1460 0d5a D7F8AC10 	 ldr r1,[r7,#172]
+ 1461 0d5e FFF7FEFF 	 bl __aeabi_fsub
+ 1462 0d62 0346     	 mov r3,r0
+ 1463 0d64 C7F89C30 	 str r3,[r7,#156]
+ 334:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             r7 = r7 + r6;
+ 1464              	 .loc 1 334 0 discriminator 1
+ 1465 0d68 D7F8A400 	 ldr r0,[r7,#164]
+ 1466 0d6c D7F8AC10 	 ldr r1,[r7,#172]
+ 1467 0d70 FFF7FEFF 	 bl __aeabi_fadd
+ 1468 0d74 0346     	 mov r3,r0
+ 1469 0d76 C7F8A430 	 str r3,[r7,#164]
+ 335:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             t2 = s5 - s1;
+ 1470              	 .loc 1 335 0 discriminator 1
+ 1471 0d7a D7F89400 	 ldr r0,[r7,#148]
+ 1472 0d7e B96A     	 ldr r1,[r7,#40]
+ 1473 0d80 FFF7FEFF 	 bl __aeabi_fsub
+ 1474 0d84 0346     	 mov r3,r0
+ 1475 0d86 C7F88030 	 str r3,[r7,#128]
+ 336:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             s5 = s5 + s1;
+ 1476              	 .loc 1 336 0 discriminator 1
+ 1477 0d8a D7F89400 	 ldr r0,[r7,#148]
+ 1478 0d8e B96A     	 ldr r1,[r7,#40]
+ 1479 0d90 FFF7FEFF 	 bl __aeabi_fadd
+ 1480 0d94 0346     	 mov r3,r0
+ 1481 0d96 C7F89430 	 str r3,[r7,#148]
+ 337:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             s8 = s7 - s6;
+ 1482              	 .loc 1 337 0 discriminator 1
+ 1483 0d9a D7F88800 	 ldr r0,[r7,#136]
+ 1484 0d9e D7F89010 	 ldr r1,[r7,#144]
+ 1485 0da2 FFF7FEFF 	 bl __aeabi_fsub
+ 1486 0da6 0346     	 mov r3,r0
+ 1487 0da8 C7F88430 	 str r3,[r7,#132]
+ 338:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             s7 = s7 + s6;
+ 1488              	 .loc 1 338 0 discriminator 1
+ 1489 0dac D7F88800 	 ldr r0,[r7,#136]
+ 1490 0db0 D7F89010 	 ldr r1,[r7,#144]
+ 1491 0db4 FFF7FEFF 	 bl __aeabi_fadd
+ 1492 0db8 0346     	 mov r3,r0
+ 1493 0dba C7F88830 	 str r3,[r7,#136]
+ 339:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             r1 = r5 + s7;
+ 1494              	 .loc 1 339 0 discriminator 1
+ 1495 0dbe D7F8B400 	 ldr r0,[r7,#180]
+ 1496 0dc2 D7F88810 	 ldr r1,[r7,#136]
+ 1497 0dc6 FFF7FEFF 	 bl __aeabi_fadd
+ 1498 0dca 0346     	 mov r3,r0
+ 1499 0dcc C7F8B830 	 str r3,[r7,#184]
+ 340:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             r5 = r5 - s7;
+ 1500              	 .loc 1 340 0 discriminator 1
+ 1501 0dd0 D7F8B400 	 ldr r0,[r7,#180]
+ 1502 0dd4 D7F88810 	 ldr r1,[r7,#136]
+ 1503 0dd8 FFF7FEFF 	 bl __aeabi_fsub
+ 1504 0ddc 0346     	 mov r3,r0
+ 1505 0dde C7F8B430 	 str r3,[r7,#180]
+ 341:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             r6 = t1 + s8;
+ 1506              	 .loc 1 341 0 discriminator 1
+ 1507 0de2 D7F89800 	 ldr r0,[r7,#152]
+ 1508 0de6 D7F88410 	 ldr r1,[r7,#132]
+ 1509 0dea FFF7FEFF 	 bl __aeabi_fadd
+ 1510 0dee 0346     	 mov r3,r0
+ 1511 0df0 C7F8AC30 	 str r3,[r7,#172]
+ 342:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             t1 = t1 - s8;
+ 1512              	 .loc 1 342 0 discriminator 1
+ 1513 0df4 D7F89800 	 ldr r0,[r7,#152]
+ 1514 0df8 D7F88410 	 ldr r1,[r7,#132]
+ 1515 0dfc FFF7FEFF 	 bl __aeabi_fsub
+ 1516 0e00 0346     	 mov r3,r0
+ 1517 0e02 C7F89830 	 str r3,[r7,#152]
+ 343:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             s1 = s5 - r7;
+ 1518              	 .loc 1 343 0 discriminator 1
+ 1519 0e06 D7F89400 	 ldr r0,[r7,#148]
+ 1520 0e0a D7F8A410 	 ldr r1,[r7,#164]
+ 1521 0e0e FFF7FEFF 	 bl __aeabi_fsub
+ 1522 0e12 0346     	 mov r3,r0
+ 1523 0e14 BB62     	 str r3,[r7,#40]
+ 344:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             s5 = s5 + r7;
+ 1524              	 .loc 1 344 0 discriminator 1
+ 1525 0e16 D7F89400 	 ldr r0,[r7,#148]
+ 1526 0e1a D7F8A410 	 ldr r1,[r7,#164]
+ 1527 0e1e FFF7FEFF 	 bl __aeabi_fadd
+ 1528 0e22 0346     	 mov r3,r0
+ 1529 0e24 C7F89430 	 str r3,[r7,#148]
+ 345:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             s6 = t2 - r8;
+ 1530              	 .loc 1 345 0 discriminator 1
+ 1531 0e28 D7F88000 	 ldr r0,[r7,#128]
+ 1532 0e2c D7F89C10 	 ldr r1,[r7,#156]
+ 1533 0e30 FFF7FEFF 	 bl __aeabi_fsub
+ 1534 0e34 0346     	 mov r3,r0
+ 1535 0e36 C7F89030 	 str r3,[r7,#144]
+ 346:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             t2 = t2 + r8;
+ 1536              	 .loc 1 346 0 discriminator 1
+ 1537 0e3a D7F88000 	 ldr r0,[r7,#128]
+ 1538 0e3e D7F89C10 	 ldr r1,[r7,#156]
+ 1539 0e42 FFF7FEFF 	 bl __aeabi_fadd
+ 1540 0e46 0346     	 mov r3,r0
+ 1541 0e48 C7F88030 	 str r3,[r7,#128]
+ 347:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             p1 = co2 * r1;
+ 1542              	 .loc 1 347 0 discriminator 1
+ 1543 0e4c 386E     	 ldr r0,[r7,#96]
+ 1544 0e4e D7F8B810 	 ldr r1,[r7,#184]
+ 1545 0e52 FFF7FEFF 	 bl __aeabi_fmul
+ 1546 0e56 0346     	 mov r3,r0
+ 1547 0e58 FB61     	 str r3,[r7,#28]
+ 348:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             p2 = si2 * s1;
+ 1548              	 .loc 1 348 0 discriminator 1
+ 1549 0e5a 786C     	 ldr r0,[r7,#68]
+ 1550 0e5c B96A     	 ldr r1,[r7,#40]
+ 1551 0e5e FFF7FEFF 	 bl __aeabi_fmul
+ 1552 0e62 0346     	 mov r3,r0
+ 1553 0e64 BB61     	 str r3,[r7,#24]
+ 349:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             p3 = co2 * s1;
+ 1554              	 .loc 1 349 0 discriminator 1
+ 1555 0e66 386E     	 ldr r0,[r7,#96]
+ 1556 0e68 B96A     	 ldr r1,[r7,#40]
+ 1557 0e6a FFF7FEFF 	 bl __aeabi_fmul
+ 1558 0e6e 0346     	 mov r3,r0
+ 1559 0e70 7B61     	 str r3,[r7,#20]
+ 350:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             p4 = si2 * r1;
+ 1560              	 .loc 1 350 0 discriminator 1
+ 1561 0e72 786C     	 ldr r0,[r7,#68]
+ 1562 0e74 D7F8B810 	 ldr r1,[r7,#184]
+ 1563 0e78 FFF7FEFF 	 bl __aeabi_fmul
+ 1564 0e7c 0346     	 mov r3,r0
+ 1565 0e7e 3B61     	 str r3,[r7,#16]
+ 351:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             pSrc[2 * i2]     = p1 + p2;
+ 1566              	 .loc 1 351 0 discriminator 1
+ 1567 0e80 D7F8D430 	 ldr r3,[r7,#212]
+ 1568 0e84 DB00     	 lsls r3,r3,#3
+ 1569 0e86 FA68     	 ldr r2,[r7,#12]
+ 1570 0e88 D418     	 adds r4,r2,r3
+ 1571 0e8a F869     	 ldr r0,[r7,#28]
+ 1572 0e8c B969     	 ldr r1,[r7,#24]
+ 1573 0e8e FFF7FEFF 	 bl __aeabi_fadd
+ 1574 0e92 0346     	 mov r3,r0
+ 1575 0e94 2360     	 str r3,[r4]
+ 352:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             pSrc[2 * i2 + 1] = p3 - p4;
+ 1576              	 .loc 1 352 0 discriminator 1
+ 1577 0e96 D7F8D430 	 ldr r3,[r7,#212]
+ 1578 0e9a DB00     	 lsls r3,r3,#3
+ 1579 0e9c 0433     	 adds r3,r3,#4
+ 1580 0e9e FA68     	 ldr r2,[r7,#12]
+ 1581 0ea0 D418     	 adds r4,r2,r3
+ 1582 0ea2 7869     	 ldr r0,[r7,#20]
+ 1583 0ea4 3969     	 ldr r1,[r7,#16]
+ 1584 0ea6 FFF7FEFF 	 bl __aeabi_fsub
+ 1585 0eaa 0346     	 mov r3,r0
+ 1586 0eac 2360     	 str r3,[r4]
+ 353:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             p1 = co8 * r5;
+ 1587              	 .loc 1 353 0 discriminator 1
+ 1588 0eae B86C     	 ldr r0,[r7,#72]
+ 1589 0eb0 D7F8B410 	 ldr r1,[r7,#180]
+ 1590 0eb4 FFF7FEFF 	 bl __aeabi_fmul
+ 1591 0eb8 0346     	 mov r3,r0
+ 1592 0eba FB61     	 str r3,[r7,#28]
+ 354:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             p2 = si8 * s5;
+ 1593              	 .loc 1 354 0 discriminator 1
+ 1594 0ebc F86A     	 ldr r0,[r7,#44]
+ 1595 0ebe D7F89410 	 ldr r1,[r7,#148]
+ 1596 0ec2 FFF7FEFF 	 bl __aeabi_fmul
+ 1597 0ec6 0346     	 mov r3,r0
+ 1598 0ec8 BB61     	 str r3,[r7,#24]
+ 355:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             p3 = co8 * s5;
+ 1599              	 .loc 1 355 0 discriminator 1
+ 1600 0eca B86C     	 ldr r0,[r7,#72]
+ 1601 0ecc D7F89410 	 ldr r1,[r7,#148]
+ 1602 0ed0 FFF7FEFF 	 bl __aeabi_fmul
+ 1603 0ed4 0346     	 mov r3,r0
+ 1604 0ed6 7B61     	 str r3,[r7,#20]
+ 356:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             p4 = si8 * r5;
+ 1605              	 .loc 1 356 0 discriminator 1
+ 1606 0ed8 F86A     	 ldr r0,[r7,#44]
+ 1607 0eda D7F8B410 	 ldr r1,[r7,#180]
+ 1608 0ede FFF7FEFF 	 bl __aeabi_fmul
+ 1609 0ee2 0346     	 mov r3,r0
+ 1610 0ee4 3B61     	 str r3,[r7,#16]
+ 357:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             pSrc[2 * i8]     = p1 + p2;
+ 1611              	 .loc 1 357 0 discriminator 1
+ 1612 0ee6 D7F8BC30 	 ldr r3,[r7,#188]
+ 1613 0eea DB00     	 lsls r3,r3,#3
+ 1614 0eec FA68     	 ldr r2,[r7,#12]
+ 1615 0eee D418     	 adds r4,r2,r3
+ 1616 0ef0 F869     	 ldr r0,[r7,#28]
+ 1617 0ef2 B969     	 ldr r1,[r7,#24]
+ 1618 0ef4 FFF7FEFF 	 bl __aeabi_fadd
+ 1619 0ef8 0346     	 mov r3,r0
+ 1620 0efa 2360     	 str r3,[r4]
+ 358:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             pSrc[2 * i8 + 1] = p3 - p4;
+ 1621              	 .loc 1 358 0 discriminator 1
+ 1622 0efc D7F8BC30 	 ldr r3,[r7,#188]
+ 1623 0f00 DB00     	 lsls r3,r3,#3
+ 1624 0f02 0433     	 adds r3,r3,#4
+ 1625 0f04 FA68     	 ldr r2,[r7,#12]
+ 1626 0f06 D418     	 adds r4,r2,r3
+ 1627 0f08 7869     	 ldr r0,[r7,#20]
+ 1628 0f0a 3969     	 ldr r1,[r7,#16]
+ 1629 0f0c FFF7FEFF 	 bl __aeabi_fsub
+ 1630 0f10 0346     	 mov r3,r0
+ 1631 0f12 2360     	 str r3,[r4]
+ 359:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             p1 = co6 * r6;
+ 1632              	 .loc 1 359 0 discriminator 1
+ 1633 0f14 386D     	 ldr r0,[r7,#80]
+ 1634 0f16 D7F8AC10 	 ldr r1,[r7,#172]
+ 1635 0f1a FFF7FEFF 	 bl __aeabi_fmul
+ 1636 0f1e 0346     	 mov r3,r0
+ 1637 0f20 FB61     	 str r3,[r7,#28]
+ 360:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             p2 = si6 * s6;
+ 1638              	 .loc 1 360 0 discriminator 1
+ 1639 0f22 786B     	 ldr r0,[r7,#52]
+ 1640 0f24 D7F89010 	 ldr r1,[r7,#144]
+ 1641 0f28 FFF7FEFF 	 bl __aeabi_fmul
+ 1642 0f2c 0346     	 mov r3,r0
+ 1643 0f2e BB61     	 str r3,[r7,#24]
+ 361:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             p3 = co6 * s6;
+ 1644              	 .loc 1 361 0 discriminator 1
+ 1645 0f30 386D     	 ldr r0,[r7,#80]
+ 1646 0f32 D7F89010 	 ldr r1,[r7,#144]
+ 1647 0f36 FFF7FEFF 	 bl __aeabi_fmul
+ 1648 0f3a 0346     	 mov r3,r0
+ 1649 0f3c 7B61     	 str r3,[r7,#20]
+ 362:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             p4 = si6 * r6;
+ 1650              	 .loc 1 362 0 discriminator 1
+ 1651 0f3e 786B     	 ldr r0,[r7,#52]
+ 1652 0f40 D7F8AC10 	 ldr r1,[r7,#172]
+ 1653 0f44 FFF7FEFF 	 bl __aeabi_fmul
+ 1654 0f48 0346     	 mov r3,r0
+ 1655 0f4a 3B61     	 str r3,[r7,#16]
+ 363:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             pSrc[2 * i6]     = p1 + p2;
+ 1656              	 .loc 1 363 0 discriminator 1
+ 1657 0f4c D7F8C430 	 ldr r3,[r7,#196]
+ 1658 0f50 DB00     	 lsls r3,r3,#3
+ 1659 0f52 FA68     	 ldr r2,[r7,#12]
+ 1660 0f54 D418     	 adds r4,r2,r3
+ 1661 0f56 F869     	 ldr r0,[r7,#28]
+ 1662 0f58 B969     	 ldr r1,[r7,#24]
+ 1663 0f5a FFF7FEFF 	 bl __aeabi_fadd
+ 1664 0f5e 0346     	 mov r3,r0
+ 1665 0f60 2360     	 str r3,[r4]
+ 364:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             pSrc[2 * i6 + 1] = p3 - p4;
+ 1666              	 .loc 1 364 0 discriminator 1
+ 1667 0f62 D7F8C430 	 ldr r3,[r7,#196]
+ 1668 0f66 DB00     	 lsls r3,r3,#3
+ 1669 0f68 0433     	 adds r3,r3,#4
+ 1670 0f6a FA68     	 ldr r2,[r7,#12]
+ 1671 0f6c D418     	 adds r4,r2,r3
+ 1672 0f6e 7869     	 ldr r0,[r7,#20]
+ 1673 0f70 3969     	 ldr r1,[r7,#16]
+ 1674 0f72 FFF7FEFF 	 bl __aeabi_fsub
+ 1675 0f76 0346     	 mov r3,r0
+ 1676 0f78 2360     	 str r3,[r4]
+ 365:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             p1 = co4 * t1;
+ 1677              	 .loc 1 365 0 discriminator 1
+ 1678 0f7a B86D     	 ldr r0,[r7,#88]
+ 1679 0f7c D7F89810 	 ldr r1,[r7,#152]
+ 1680 0f80 FFF7FEFF 	 bl __aeabi_fmul
+ 1681 0f84 0346     	 mov r3,r0
+ 1682 0f86 FB61     	 str r3,[r7,#28]
+ 366:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             p2 = si4 * t2;
+ 1683              	 .loc 1 366 0 discriminator 1
+ 1684 0f88 F86B     	 ldr r0,[r7,#60]
+ 1685 0f8a D7F88010 	 ldr r1,[r7,#128]
+ 1686 0f8e FFF7FEFF 	 bl __aeabi_fmul
+ 1687 0f92 0346     	 mov r3,r0
+ 1688 0f94 BB61     	 str r3,[r7,#24]
+ 367:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             p3 = co4 * t2;
+ 1689              	 .loc 1 367 0 discriminator 1
+ 1690 0f96 B86D     	 ldr r0,[r7,#88]
+ 1691 0f98 D7F88010 	 ldr r1,[r7,#128]
+ 1692 0f9c FFF7FEFF 	 bl __aeabi_fmul
+ 1693 0fa0 0346     	 mov r3,r0
+ 1694 0fa2 7B61     	 str r3,[r7,#20]
+ 368:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             p4 = si4 * t1;
+ 1695              	 .loc 1 368 0 discriminator 1
+ 1696 0fa4 F86B     	 ldr r0,[r7,#60]
+ 1697 0fa6 D7F89810 	 ldr r1,[r7,#152]
+ 1698 0faa FFF7FEFF 	 bl __aeabi_fmul
+ 1699 0fae 0346     	 mov r3,r0
+ 1700 0fb0 3B61     	 str r3,[r7,#16]
+ 369:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             pSrc[2 * i4]     = p1 + p2;
+ 1701              	 .loc 1 369 0 discriminator 1
+ 1702 0fb2 D7F8CC30 	 ldr r3,[r7,#204]
+ 1703 0fb6 DB00     	 lsls r3,r3,#3
+ 1704 0fb8 FA68     	 ldr r2,[r7,#12]
+ 1705 0fba D418     	 adds r4,r2,r3
+ 1706 0fbc F869     	 ldr r0,[r7,#28]
+ 1707 0fbe B969     	 ldr r1,[r7,#24]
+ 1708 0fc0 FFF7FEFF 	 bl __aeabi_fadd
+ 1709 0fc4 0346     	 mov r3,r0
+ 1710 0fc6 2360     	 str r3,[r4]
+ 370:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             pSrc[2 * i4 + 1] = p3 - p4;
+ 1711              	 .loc 1 370 0 discriminator 1
+ 1712 0fc8 D7F8CC30 	 ldr r3,[r7,#204]
+ 1713 0fcc DB00     	 lsls r3,r3,#3
+ 1714 0fce 0433     	 adds r3,r3,#4
+ 1715 0fd0 FA68     	 ldr r2,[r7,#12]
+ 1716 0fd2 D418     	 adds r4,r2,r3
+ 1717 0fd4 7869     	 ldr r0,[r7,#20]
+ 1718 0fd6 3969     	 ldr r1,[r7,#16]
+ 1719 0fd8 FFF7FEFF 	 bl __aeabi_fsub
+ 1720 0fdc 0346     	 mov r3,r0
+ 1721 0fde 2360     	 str r3,[r4]
+ 371:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             
+ 372:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****             i1 += n1;
+ 1722              	 .loc 1 372 0 discriminator 1
+ 1723 0fe0 D7F8E820 	 ldr r2,[r7,#232]
+ 1724 0fe4 D7F8D830 	 ldr r3,[r7,#216]
+ 1725 0fe8 1344     	 add r3,r3,r2
+ 1726 0fea C7F8E830 	 str r3,[r7,#232]
+ 373:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          } while(i1 < fftLen);
+ 1727              	 .loc 1 373 0 discriminator 1
+ 1728 0fee 7A89     	 ldrh r2,[r7,#10]
+ 1729 0ff0 D7F8E830 	 ldr r3,[r7,#232]
+ 1730 0ff4 9A42     	 cmp r2,r3
+ 1731 0ff6 3FF6D3AB 	 bhi .L5
+ 374:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          
+ 375:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****          j++;
+ 1732              	 .loc 1 375 0
+ 1733 0ffa D7F8E030 	 ldr r3,[r7,#224]
+ 1734 0ffe 0133     	 adds r3,r3,#1
+ 1735 1000 C7F8E030 	 str r3,[r7,#224]
+ 376:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****       } while(j < n2);
+ 1736              	 .loc 1 376 0
+ 1737 1004 D7F8E020 	 ldr r2,[r7,#224]
+ 1738 1008 D7F8E430 	 ldr r3,[r7,#228]
+ 1739 100c 9A42     	 cmp r2,r3
+ 1740 100e FFF445AB 	 bcc .L6
+ 377:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****       
+ 378:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****       twidCoefModifier <<= 3;
+ 1741              	 .loc 1 378 0
+ 1742 1012 3B89     	 ldrh r3,[r7,#8]
+ 1743 1014 DB00     	 lsls r3,r3,#3
+ 1744 1016 3B81     	 strh r3,[r7,#8]
+ 379:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c ****    } while(n2 > 7);   
+ 1745              	 .loc 1 379 0
+ 1746 1018 D7F8E430 	 ldr r3,[r7,#228]
+ 1747 101c 072B     	 cmp r3,#7
+ 1748 101e 3EF6FFAF 	 bhi .L7
+ 1749              	.L1:
+ 380:../Dave/Generated/CMSIS_DSP/TransformFunctions/arm_cfft_radix8_f32.c **** }
+ 1750              	 .loc 1 380 0
+ 1751 1022 F437     	 adds r7,r7,#244
+ 1752              	.LCFI3:
+ 1753              	 .cfi_def_cfa_offset 12
+ 1754 1024 BD46     	 mov sp,r7
+ 1755              	.LCFI4:
+ 1756              	 .cfi_def_cfa_register 13
+ 1757              	 
+ 1758 1026 90BD     	 pop {r4,r7,pc}
+ 1759              	 .cfi_endproc
+ 1760              	.LFE139:
+ 1762              	 .text
+ 1763              	.Letext0:
+ 1764              	 .file 2 "c:\\davev4-64bit\\dave-4.2.6\\eclipse\\arm-gcc-49\\arm-none-eabi\\include\\machine\\_default_types.h"
+ 1765              	 .file 3 "c:\\davev4-64bit\\dave-4.2.6\\eclipse\\arm-gcc-49\\arm-none-eabi\\include\\stdint.h"
+ 1766              	 .file 4 "C:\\Users\\Depes Crystalline\\Desktop\\school\\Active_Bike_Lighting_System\\Radar_Core\\Dave\\Generated/CMSIS_DSP/arm_math.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 arm_cfft_radix8_f32.c
+    {standard input}:22     .text.arm_radix8_butterfly_f32:00000000 $t
+    {standard input}:27     .text.arm_radix8_butterfly_f32:00000000 arm_radix8_butterfly_f32
+    {standard input}:74     .text.arm_radix8_butterfly_f32:0000003c $d
+    {standard input}:78     .text.arm_radix8_butterfly_f32:00000040 $t
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+__aeabi_fadd
+__aeabi_fsub
+__aeabi_fmul

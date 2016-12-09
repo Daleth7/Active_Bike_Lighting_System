@@ -1,0 +1,535 @@
+   1              	 .syntax unified
+   2              	 .cpu cortex-m4
+   3              	 .fpu softvfp
+   4              	 .eabi_attribute 20,1
+   5              	 .eabi_attribute 21,1
+   6              	 .eabi_attribute 23,3
+   7              	 .eabi_attribute 24,1
+   8              	 .eabi_attribute 25,1
+   9              	 .eabi_attribute 26,1
+  10              	 .eabi_attribute 30,6
+  11              	 .eabi_attribute 34,1
+  12              	 .eabi_attribute 18,4
+  13              	 .thumb
+  14              	 .file "BGT24MTR11.c"
+  15              	 .text
+  16              	.Ltext0:
+  17              	 .cfi_sections .debug_frame
+  18              	 .section .text.BGTSetTxPower,"ax",%progbits
+  19              	 .align 2
+  20              	 .global BGTSetTxPower
+  21              	 .thumb
+  22              	 .thumb_func
+  24              	BGTSetTxPower:
+  25              	.LFB443:
+  26              	 .file 1 "../BGT24MTR11.c"
+   1:../BGT24MTR11.c **** /*
+   2:../BGT24MTR11.c ****  * BGT24MTR11.c
+   3:../BGT24MTR11.c ****  *
+   4:../BGT24MTR11.c ****  * Driver for BGT24MTR11 24GHz Radar transceiver.
+   5:../BGT24MTR11.c ****  *
+   6:../BGT24MTR11.c ****  *
+   7:../BGT24MTR11.c ****  *  Created on: Sep 2, 2015
+   8:../BGT24MTR11.c ****  *      Author: nardone
+   9:../BGT24MTR11.c ****  */
+  10:../BGT24MTR11.c **** #include <DAVE.h>
+  11:../BGT24MTR11.c **** #include "BGT24MTR11.h"
+  12:../BGT24MTR11.c **** 
+  13:../BGT24MTR11.c **** #define BGT_TX_MAX_POWER
+  14:../BGT24MTR11.c **** //#define BGT_TX_MIN_POWER
+  15:../BGT24MTR11.c **** 
+  16:../BGT24MTR11.c **** //static void delayCycles(uint32_t cyc);
+  17:../BGT24MTR11.c **** 
+  18:../BGT24MTR11.c **** //***********************************************
+  19:../BGT24MTR11.c **** //  Set the transmitter power on the BGT24MTR11
+  20:../BGT24MTR11.c **** //
+  21:../BGT24MTR11.c **** void BGTSetTxPower(BGT_Power_t PwrLvl)
+  22:../BGT24MTR11.c **** {
+  27              	 .loc 1 22 0
+  28              	 .cfi_startproc
+  29              	 
+  30              	 
+  31 0000 80B5     	 push {r7,lr}
+  32              	.LCFI0:
+  33              	 .cfi_def_cfa_offset 8
+  34              	 .cfi_offset 7,-8
+  35              	 .cfi_offset 14,-4
+  36 0002 84B0     	 sub sp,sp,#16
+  37              	.LCFI1:
+  38              	 .cfi_def_cfa_offset 24
+  39 0004 00AF     	 add r7,sp,#0
+  40              	.LCFI2:
+  41              	 .cfi_def_cfa_register 7
+  42 0006 0346     	 mov r3,r0
+  43 0008 FB71     	 strb r3,[r7,#7]
+  23:../BGT24MTR11.c **** 	uint16_t SPI_data;
+  24:../BGT24MTR11.c **** 
+  25:../BGT24MTR11.c **** 	switch (PwrLvl)
+  44              	 .loc 1 25 0
+  45 000a FB79     	 ldrb r3,[r7,#7]
+  46 000c 032B     	 cmp r3,#3
+  47 000e 19D8     	 bhi .L2
+  48 0010 01A2     	 adr r2,.L4
+  49 0012 52F823F0 	 ldr pc,[r2,r3,lsl#2]
+  50 0016 00BF     	 .p2align 2
+  51              	.L4:
+  52 0018 29000000 	 .word .L3+1
+  53 001c 31000000 	 .word .L5+1
+  54 0020 39000000 	 .word .L6+1
+  55 0024 3F000000 	 .word .L7+1
+  56              	 .p2align 1
+  57              	.L3:
+  26:../BGT24MTR11.c **** 	{
+  27:../BGT24MTR11.c **** 	case TX_OFF:
+  28:../BGT24MTR11.c **** 		SPI_data = BGT24_GS_MASK | BGT24_DIS_PA_MASK | BGT24_PC_PA_7;
+  58              	 .loc 1 28 0
+  59 0028 49F20703 	 movw r3,#36871
+  60 002c FB81     	 strh r3,[r7,#14]
+  29:../BGT24MTR11.c **** 		break;
+  61              	 .loc 1 29 0
+  62 002e 0BE0     	 b .L8
+  63              	.L5:
+  30:../BGT24MTR11.c **** 
+  31:../BGT24MTR11.c **** 	case TX_MIN:
+  32:../BGT24MTR11.c **** 		SPI_data = BGT24_GS_MASK | BGT24_PC_PA_7;  // TX on with minimum power
+  64              	 .loc 1 32 0
+  65 0030 48F20703 	 movw r3,#32775
+  66 0034 FB81     	 strh r3,[r7,#14]
+  33:../BGT24MTR11.c **** 		break;
+  67              	 .loc 1 33 0
+  68 0036 07E0     	 b .L8
+  69              	.L6:
+  34:../BGT24MTR11.c **** 
+  35:../BGT24MTR11.c **** 	case TX_MID:
+  36:../BGT24MTR11.c **** 		SPI_data =  BGT24_PC1_BUF_MASK | BGT24_PC_PA_3;  // TX on with medium power
+  70              	 .loc 1 36 0
+  71 0038 0B23     	 movs r3,#11
+  72 003a FB81     	 strh r3,[r7,#14]
+  37:../BGT24MTR11.c **** 		break;
+  73              	 .loc 1 37 0
+  74 003c 04E0     	 b .L8
+  75              	.L7:
+  38:../BGT24MTR11.c **** 
+  39:../BGT24MTR11.c **** 	case TX_MAX:
+  40:../BGT24MTR11.c **** 		SPI_data =  BGT24_PC1_BUF_MASK | BGT24_PC_PA_0;  // TX on with maximum power
+  76              	 .loc 1 40 0
+  77 003e 0823     	 movs r3,#8
+  78 0040 FB81     	 strh r3,[r7,#14]
+  41:../BGT24MTR11.c **** 		break;
+  79              	 .loc 1 41 0
+  80 0042 01E0     	 b .L8
+  81              	.L2:
+  42:../BGT24MTR11.c **** 
+  43:../BGT24MTR11.c **** 	default:
+  44:../BGT24MTR11.c **** 		SPI_data = BGT24_PC_PA_7;  // TX on with minimum power
+  82              	 .loc 1 44 0
+  83 0044 0723     	 movs r3,#7
+  84 0046 FB81     	 strh r3,[r7,#14]
+  85              	.L8:
+  45:../BGT24MTR11.c **** 
+  46:../BGT24MTR11.c **** 	}  // bottom of switch(PwrLvl)
+  47:../BGT24MTR11.c **** 
+  48:../BGT24MTR11.c **** 	SPI_MASTER_Transmit(&SPI_BGT, (uint8_t *)&SPI_data, 1);
+  86              	 .loc 1 48 0
+  87 0048 07F10E03 	 add r3,r7,#14
+  88 004c 0348     	 ldr r0,.L9
+  89 004e 1946     	 mov r1,r3
+  90 0050 0122     	 movs r2,#1
+  91 0052 FFF7FEFF 	 bl SPI_MASTER_Transmit
+  49:../BGT24MTR11.c **** 
+  50:../BGT24MTR11.c **** }  // end of BGTSetTxPower
+  92              	 .loc 1 50 0
+  93 0056 1037     	 adds r7,r7,#16
+  94              	.LCFI3:
+  95              	 .cfi_def_cfa_offset 8
+  96 0058 BD46     	 mov sp,r7
+  97              	.LCFI4:
+  98              	 .cfi_def_cfa_register 13
+  99              	 
+ 100 005a 80BD     	 pop {r7,pc}
+ 101              	.L10:
+ 102              	 .align 2
+ 103              	.L9:
+ 104 005c 00000000 	 .word SPI_BGT
+ 105              	 .cfi_endproc
+ 106              	.LFE443:
+ 108              	 .section .text.BGTStopTX,"ax",%progbits
+ 109              	 .align 2
+ 110              	 .global BGTStopTX
+ 111              	 .thumb
+ 112              	 .thumb_func
+ 114              	BGTStopTX:
+ 115              	.LFB444:
+  51:../BGT24MTR11.c **** 
+  52:../BGT24MTR11.c **** 
+  53:../BGT24MTR11.c **** #if 0
+  54:../BGT24MTR11.c **** static void delayCycles(uint32_t cyc)
+  55:../BGT24MTR11.c **** {
+  56:../BGT24MTR11.c **** 	volatile uint32_t idx;
+  57:../BGT24MTR11.c **** 	volatile int val = 3;
+  58:../BGT24MTR11.c **** 
+  59:../BGT24MTR11.c **** 	for(idx=0; idx<cyc; idx++)
+  60:../BGT24MTR11.c **** 		val += idx*3;
+  61:../BGT24MTR11.c **** 
+  62:../BGT24MTR11.c **** 
+  63:../BGT24MTR11.c **** }
+  64:../BGT24MTR11.c **** #endif
+  65:../BGT24MTR11.c **** 
+  66:../BGT24MTR11.c **** 
+  67:../BGT24MTR11.c **** //***********************************************
+  68:../BGT24MTR11.c **** //  Stop the transmitter on the BGT24MTR11
+  69:../BGT24MTR11.c **** //
+  70:../BGT24MTR11.c **** void BGTStopTX(void)
+  71:../BGT24MTR11.c **** {
+ 116              	 .loc 1 71 0
+ 117              	 .cfi_startproc
+ 118              	 
+ 119              	 
+ 120 0000 80B5     	 push {r7,lr}
+ 121              	.LCFI5:
+ 122              	 .cfi_def_cfa_offset 8
+ 123              	 .cfi_offset 7,-8
+ 124              	 .cfi_offset 14,-4
+ 125 0002 82B0     	 sub sp,sp,#8
+ 126              	.LCFI6:
+ 127              	 .cfi_def_cfa_offset 16
+ 128 0004 00AF     	 add r7,sp,#0
+ 129              	.LCFI7:
+ 130              	 .cfi_def_cfa_register 7
+  72:../BGT24MTR11.c **** 	uint16_t SPI_data;
+  73:../BGT24MTR11.c **** 
+  74:../BGT24MTR11.c **** 	SPI_data = BGT24_DIS_PA_MASK | BGT24_PC_PA_7;
+ 131              	 .loc 1 74 0
+ 132 0006 41F20703 	 movw r3,#4103
+ 133 000a FB80     	 strh r3,[r7,#6]
+  75:../BGT24MTR11.c **** 
+  76:../BGT24MTR11.c **** 	SPI_MASTER_Transmit(&SPI_BGT, (uint8_t *)&SPI_data, 1);
+ 134              	 .loc 1 76 0
+ 135 000c BB1D     	 adds r3,r7,#6
+ 136 000e 0448     	 ldr r0,.L12
+ 137 0010 1946     	 mov r1,r3
+ 138 0012 0122     	 movs r2,#1
+ 139 0014 FFF7FEFF 	 bl SPI_MASTER_Transmit
+  77:../BGT24MTR11.c **** }  // end of BGTStopTX()
+ 140              	 .loc 1 77 0
+ 141 0018 0837     	 adds r7,r7,#8
+ 142              	.LCFI8:
+ 143              	 .cfi_def_cfa_offset 8
+ 144 001a BD46     	 mov sp,r7
+ 145              	.LCFI9:
+ 146              	 .cfi_def_cfa_register 13
+ 147              	 
+ 148 001c 80BD     	 pop {r7,pc}
+ 149              	.L13:
+ 150 001e 00BF     	 .align 2
+ 151              	.L12:
+ 152 0020 00000000 	 .word SPI_BGT
+ 153              	 .cfi_endproc
+ 154              	.LFE444:
+ 156              	 .section .text.BGTStartTX,"ax",%progbits
+ 157              	 .align 2
+ 158              	 .global BGTStartTX
+ 159              	 .thumb
+ 160              	 .thumb_func
+ 162              	BGTStartTX:
+ 163              	.LFB445:
+  78:../BGT24MTR11.c **** 
+  79:../BGT24MTR11.c **** 
+  80:../BGT24MTR11.c **** //***********************************************
+  81:../BGT24MTR11.c **** //  Start the transmitter on the BGT24MTR11
+  82:../BGT24MTR11.c **** //
+  83:../BGT24MTR11.c **** void BGTStartTX(void)
+  84:../BGT24MTR11.c **** {
+ 164              	 .loc 1 84 0
+ 165              	 .cfi_startproc
+ 166              	 
+ 167              	 
+ 168 0000 80B5     	 push {r7,lr}
+ 169              	.LCFI10:
+ 170              	 .cfi_def_cfa_offset 8
+ 171              	 .cfi_offset 7,-8
+ 172              	 .cfi_offset 14,-4
+ 173 0002 82B0     	 sub sp,sp,#8
+ 174              	.LCFI11:
+ 175              	 .cfi_def_cfa_offset 16
+ 176 0004 00AF     	 add r7,sp,#0
+ 177              	.LCFI12:
+ 178              	 .cfi_def_cfa_register 7
+  85:../BGT24MTR11.c **** 	uint16_t SPI_data;
+  86:../BGT24MTR11.c **** #ifdef BGT_TX_MIN_POWER
+  87:../BGT24MTR11.c **** 	SPI_data = BGT24_PC_PA_7;  // TX on with minimum power
+  88:../BGT24MTR11.c **** #else
+  89:../BGT24MTR11.c **** 	SPI_data = BGT24_PC2_BUF_MASK | BGT24_PC1_BUF_MASK | BGT24_PC_PA_0;  // TX on with maximum power
+ 179              	 .loc 1 89 0
+ 180 0006 1823     	 movs r3,#24
+ 181 0008 FB80     	 strh r3,[r7,#6]
+  90:../BGT24MTR11.c **** #endif
+  91:../BGT24MTR11.c **** 
+  92:../BGT24MTR11.c **** 	SPI_MASTER_Transmit(&SPI_BGT, (uint8_t *)&SPI_data, 1);
+ 182              	 .loc 1 92 0
+ 183 000a BB1D     	 adds r3,r7,#6
+ 184 000c 0348     	 ldr r0,.L15
+ 185 000e 1946     	 mov r1,r3
+ 186 0010 0122     	 movs r2,#1
+ 187 0012 FFF7FEFF 	 bl SPI_MASTER_Transmit
+  93:../BGT24MTR11.c **** }  // end of BGTStartTX()
+ 188              	 .loc 1 93 0
+ 189 0016 0837     	 adds r7,r7,#8
+ 190              	.LCFI13:
+ 191              	 .cfi_def_cfa_offset 8
+ 192 0018 BD46     	 mov sp,r7
+ 193              	.LCFI14:
+ 194              	 .cfi_def_cfa_register 13
+ 195              	 
+ 196 001a 80BD     	 pop {r7,pc}
+ 197              	.L16:
+ 198              	 .align 2
+ 199              	.L15:
+ 200 001c 00000000 	 .word SPI_BGT
+ 201              	 .cfi_endproc
+ 202              	.LFE445:
+ 204              	 .section .text.BGT_LO_Adjust,"ax",%progbits
+ 205              	 .align 2
+ 206              	 .global BGT_LO_Adjust
+ 207              	 .thumb
+ 208              	 .thumb_func
+ 210              	BGT_LO_Adjust:
+ 211              	.LFB446:
+  94:../BGT24MTR11.c **** 
+  95:../BGT24MTR11.c **** 
+  96:../BGT24MTR11.c **** //**********************************************
+  97:../BGT24MTR11.c **** //
+  98:../BGT24MTR11.c **** //  Set BGT local oscillator to ISM range
+  99:../BGT24MTR11.c **** //  24.000GHz to 24.250GHz
+ 100:../BGT24MTR11.c **** //  Q2 is the LO/(2^^20)
+ 101:../BGT24MTR11.c **** //
+ 102:../BGT24MTR11.c **** void BGT_LO_Adjust(uint32_t Q2Count)
+ 103:../BGT24MTR11.c **** {
+ 212              	 .loc 1 103 0
+ 213              	 .cfi_startproc
+ 214              	 
+ 215              	 
+ 216 0000 80B5     	 push {r7,lr}
+ 217              	.LCFI15:
+ 218              	 .cfi_def_cfa_offset 8
+ 219              	 .cfi_offset 7,-8
+ 220              	 .cfi_offset 14,-4
+ 221 0002 82B0     	 sub sp,sp,#8
+ 222              	.LCFI16:
+ 223              	 .cfi_def_cfa_offset 16
+ 224 0004 00AF     	 add r7,sp,#0
+ 225              	.LCFI17:
+ 226              	 .cfi_def_cfa_register 7
+ 227 0006 7860     	 str r0,[r7,#4]
+ 104:../BGT24MTR11.c **** 	static int32_t fineDACVal = 0;
+ 105:../BGT24MTR11.c **** 	static int32_t coarseDACVal = 0;
+ 106:../BGT24MTR11.c **** 
+ 107:../BGT24MTR11.c ****     if (Q2Count < ISM_CNT_MIN)   // increase LO
+ 228              	 .loc 1 107 0
+ 229 0008 7B68     	 ldr r3,[r7,#4]
+ 230 000a 45F66712 	 movw r2,#22887
+ 231 000e 9342     	 cmp r3,r2
+ 232 0010 0DD8     	 bhi .L18
+ 108:../BGT24MTR11.c ****     {
+ 109:../BGT24MTR11.c ****     	coarseDACVal += 10;
+ 233              	 .loc 1 109 0
+ 234 0012 314B     	 ldr r3,.L22
+ 235 0014 1B68     	 ldr r3,[r3]
+ 236 0016 0A33     	 adds r3,r3,#10
+ 237 0018 2F4A     	 ldr r2,.L22
+ 238 001a 1360     	 str r3,[r2]
+ 110:../BGT24MTR11.c ****     	DAC_SingleValue_SetValue_s16(&VCOARSE,coarseDACVal);
+ 239              	 .loc 1 110 0
+ 240 001c 2E4B     	 ldr r3,.L22
+ 241 001e 1B68     	 ldr r3,[r3]
+ 242 0020 9BB2     	 uxth r3,r3
+ 243 0022 1BB2     	 sxth r3,r3
+ 244 0024 2D48     	 ldr r0,.L22+4
+ 245 0026 1946     	 mov r1,r3
+ 246 0028 FFF7FEFF 	 bl DAC_SingleValue_SetValue_s16
+ 247 002c 51E0     	 b .L17
+ 248              	.L18:
+ 111:../BGT24MTR11.c ****     }
+ 112:../BGT24MTR11.c ****     else if (Q2Count > ISM_CNT_MAX)  // decrease LO
+ 249              	 .loc 1 112 0
+ 250 002e 7B68     	 ldr r3,[r7,#4]
+ 251 0030 45F65622 	 movw r2,#23126
+ 252 0034 9342     	 cmp r3,r2
+ 253 0036 0DD9     	 bls .L20
+ 113:../BGT24MTR11.c ****     {
+ 114:../BGT24MTR11.c ****     	coarseDACVal -= 10;
+ 254              	 .loc 1 114 0
+ 255 0038 274B     	 ldr r3,.L22
+ 256 003a 1B68     	 ldr r3,[r3]
+ 257 003c 0A3B     	 subs r3,r3,#10
+ 258 003e 264A     	 ldr r2,.L22
+ 259 0040 1360     	 str r3,[r2]
+ 115:../BGT24MTR11.c ****     	DAC_SingleValue_SetValue_s16(&VCOARSE,coarseDACVal);
+ 260              	 .loc 1 115 0
+ 261 0042 254B     	 ldr r3,.L22
+ 262 0044 1B68     	 ldr r3,[r3]
+ 263 0046 9BB2     	 uxth r3,r3
+ 264 0048 1BB2     	 sxth r3,r3
+ 265 004a 2448     	 ldr r0,.L22+4
+ 266 004c 1946     	 mov r1,r3
+ 267 004e FFF7FEFF 	 bl DAC_SingleValue_SetValue_s16
+ 268 0052 3EE0     	 b .L17
+ 269              	.L20:
+ 116:../BGT24MTR11.c **** 
+ 117:../BGT24MTR11.c ****     }
+ 118:../BGT24MTR11.c ****     else if (Q2Count < (ISM_CNT_MID - ISM_CNT_HYST) )  // increase LO
+ 270              	 .loc 1 118 0
+ 271 0054 7B68     	 ldr r3,[r7,#4]
+ 272 0056 45F6D912 	 movw r2,#23001
+ 273 005a 9342     	 cmp r3,r2
+ 274 005c 1AD8     	 bhi .L21
+ 119:../BGT24MTR11.c ****     {
+ 120:../BGT24MTR11.c ****     	fineDACVal += 1;
+ 275              	 .loc 1 120 0
+ 276 005e 204B     	 ldr r3,.L22+8
+ 277 0060 1B68     	 ldr r3,[r3]
+ 278 0062 0133     	 adds r3,r3,#1
+ 279 0064 1E4A     	 ldr r2,.L22+8
+ 280 0066 1360     	 str r3,[r2]
+ 121:../BGT24MTR11.c ****     	coarseDACVal += 1;
+ 281              	 .loc 1 121 0
+ 282 0068 1B4B     	 ldr r3,.L22
+ 283 006a 1B68     	 ldr r3,[r3]
+ 284 006c 0133     	 adds r3,r3,#1
+ 285 006e 1A4A     	 ldr r2,.L22
+ 286 0070 1360     	 str r3,[r2]
+ 122:../BGT24MTR11.c ****     	DAC_SingleValue_SetValue_s16(&VCOARSE,coarseDACVal);
+ 287              	 .loc 1 122 0
+ 288 0072 194B     	 ldr r3,.L22
+ 289 0074 1B68     	 ldr r3,[r3]
+ 290 0076 9BB2     	 uxth r3,r3
+ 291 0078 1BB2     	 sxth r3,r3
+ 292 007a 1848     	 ldr r0,.L22+4
+ 293 007c 1946     	 mov r1,r3
+ 294 007e FFF7FEFF 	 bl DAC_SingleValue_SetValue_s16
+ 123:../BGT24MTR11.c ****     	DAC_SingleValue_SetValue_s16(&VFINE,fineDACVal);
+ 295              	 .loc 1 123 0
+ 296 0082 174B     	 ldr r3,.L22+8
+ 297 0084 1B68     	 ldr r3,[r3]
+ 298 0086 9BB2     	 uxth r3,r3
+ 299 0088 1BB2     	 sxth r3,r3
+ 300 008a 1648     	 ldr r0,.L22+12
+ 301 008c 1946     	 mov r1,r3
+ 302 008e FFF7FEFF 	 bl DAC_SingleValue_SetValue_s16
+ 303 0092 1EE0     	 b .L17
+ 304              	.L21:
+ 124:../BGT24MTR11.c ****     }
+ 125:../BGT24MTR11.c ****     else if (Q2Count > (ISM_CNT_MID + ISM_CNT_HYST) )  // decrease LO
+ 305              	 .loc 1 125 0
+ 306 0094 7B68     	 ldr r3,[r7,#4]
+ 307 0096 45F6E412 	 movw r2,#23012
+ 308 009a 9342     	 cmp r3,r2
+ 309 009c 19D9     	 bls .L17
+ 126:../BGT24MTR11.c ****     {
+ 127:../BGT24MTR11.c ****     	fineDACVal -= 1;
+ 310              	 .loc 1 127 0
+ 311 009e 104B     	 ldr r3,.L22+8
+ 312 00a0 1B68     	 ldr r3,[r3]
+ 313 00a2 013B     	 subs r3,r3,#1
+ 314 00a4 0E4A     	 ldr r2,.L22+8
+ 315 00a6 1360     	 str r3,[r2]
+ 128:../BGT24MTR11.c ****     	coarseDACVal -= 1;
+ 316              	 .loc 1 128 0
+ 317 00a8 0B4B     	 ldr r3,.L22
+ 318 00aa 1B68     	 ldr r3,[r3]
+ 319 00ac 013B     	 subs r3,r3,#1
+ 320 00ae 0A4A     	 ldr r2,.L22
+ 321 00b0 1360     	 str r3,[r2]
+ 129:../BGT24MTR11.c ****     	DAC_SingleValue_SetValue_s16(&VCOARSE,coarseDACVal);
+ 322              	 .loc 1 129 0
+ 323 00b2 094B     	 ldr r3,.L22
+ 324 00b4 1B68     	 ldr r3,[r3]
+ 325 00b6 9BB2     	 uxth r3,r3
+ 326 00b8 1BB2     	 sxth r3,r3
+ 327 00ba 0848     	 ldr r0,.L22+4
+ 328 00bc 1946     	 mov r1,r3
+ 329 00be FFF7FEFF 	 bl DAC_SingleValue_SetValue_s16
+ 130:../BGT24MTR11.c ****     	DAC_SingleValue_SetValue_s16(&VFINE,fineDACVal);
+ 330              	 .loc 1 130 0
+ 331 00c2 074B     	 ldr r3,.L22+8
+ 332 00c4 1B68     	 ldr r3,[r3]
+ 333 00c6 9BB2     	 uxth r3,r3
+ 334 00c8 1BB2     	 sxth r3,r3
+ 335 00ca 0648     	 ldr r0,.L22+12
+ 336 00cc 1946     	 mov r1,r3
+ 337 00ce FFF7FEFF 	 bl DAC_SingleValue_SetValue_s16
+ 338              	.L17:
+ 131:../BGT24MTR11.c ****     }
+ 132:../BGT24MTR11.c **** 
+ 133:../BGT24MTR11.c **** 
+ 134:../BGT24MTR11.c **** }  // end of BGT_LO_Adjust
+ 339              	 .loc 1 134 0
+ 340 00d2 0837     	 adds r7,r7,#8
+ 341              	.LCFI18:
+ 342              	 .cfi_def_cfa_offset 8
+ 343 00d4 BD46     	 mov sp,r7
+ 344              	.LCFI19:
+ 345              	 .cfi_def_cfa_register 13
+ 346              	 
+ 347 00d6 80BD     	 pop {r7,pc}
+ 348              	.L23:
+ 349              	 .align 2
+ 350              	.L22:
+ 351 00d8 00000000 	 .word coarseDACVal.12771
+ 352 00dc 00000000 	 .word VCOARSE
+ 353 00e0 00000000 	 .word fineDACVal.12770
+ 354 00e4 00000000 	 .word VFINE
+ 355              	 .cfi_endproc
+ 356              	.LFE446:
+ 358              	 .section .bss.coarseDACVal.12771,"aw",%nobits
+ 359              	 .align 2
+ 362              	coarseDACVal.12771:
+ 363 0000 00000000 	 .space 4
+ 364              	 .section .bss.fineDACVal.12770,"aw",%nobits
+ 365              	 .align 2
+ 368              	fineDACVal.12770:
+ 369 0000 00000000 	 .space 4
+ 370              	 .text
+ 371              	.Letext0:
+ 372              	 .file 2 "c:\\davev4-64bit\\dave-4.2.6\\eclipse\\arm-gcc-49\\arm-none-eabi\\include\\machine\\_default_types.h"
+ 373              	 .file 3 "c:\\davev4-64bit\\dave-4.2.6\\eclipse\\arm-gcc-49\\arm-none-eabi\\include\\stdint.h"
+ 374              	 .file 4 "C:\\Users\\Depes Crystalline\\Desktop\\school\\Active_Bike_Lighting_System\\Radar_Core\\Libraries\\XMCLib\\inc/xmc_gpio.h"
+ 375              	 .file 5 "C:\\Users\\Depes Crystalline\\Desktop\\school\\Active_Bike_Lighting_System\\Radar_Core\\Libraries\\XMCLib\\inc/xmc4_gpio.h"
+ 376              	 .file 6 "C:\\Users\\Depes Crystalline\\Desktop\\school\\Active_Bike_Lighting_System\\Radar_Core\\Libraries\\XMCLib\\inc/xmc_dac.h"
+ 377              	 .file 7 "C:\\Users\\Depes Crystalline\\Desktop\\school\\Active_Bike_Lighting_System\\Radar_Core\\Dave\\Generated/DAC/dac.h"
+ 378              	 .file 8 "C:\\Users\\Depes Crystalline\\Desktop\\school\\Active_Bike_Lighting_System\\Radar_Core\\Libraries\\XMCLib\\inc/xmc_usic.h"
+ 379              	 .file 9 "C:\\Users\\Depes Crystalline\\Desktop\\school\\Active_Bike_Lighting_System\\Radar_Core\\Libraries\\XMCLib\\inc/xmc_spi.h"
+ 380              	 .file 10 "C:\\Users\\Depes Crystalline\\Desktop\\school\\Active_Bike_Lighting_System\\Radar_Core\\Dave\\Generated/SPI_MASTER/spi_master.h"
+ 381              	 .file 11 "../BGT24MTR11.h"
+ 382              	 .file 12 "C:\\Users\\Depes Crystalline\\Desktop\\school\\Active_Bike_Lighting_System\\Radar_Core/Libraries/CMSIS/Include/core_cm4.h"
+ 383              	 .file 13 "C:\\Users\\Depes Crystalline\\Desktop\\school\\Active_Bike_Lighting_System\\Radar_Core/Libraries/CMSIS/Infineon/XMC4200_series/Include/system_XMC4200.h"
+ 384              	 .file 14 "C:\\Users\\Depes Crystalline\\Desktop\\school\\Active_Bike_Lighting_System\\Radar_Core\\Dave\\Generated/DAC/dac_extern.h"
+ 385              	 .file 15 "C:\\Users\\Depes Crystalline\\Desktop\\school\\Active_Bike_Lighting_System\\Radar_Core\\Dave\\Generated/SPI_MASTER/spi_master_extern.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 BGT24MTR11.c
+    {standard input}:19     .text.BGTSetTxPower:00000000 $t
+    {standard input}:24     .text.BGTSetTxPower:00000000 BGTSetTxPower
+    {standard input}:52     .text.BGTSetTxPower:00000018 $d
+    {standard input}:56     .text.BGTSetTxPower:00000028 $t
+    {standard input}:104    .text.BGTSetTxPower:0000005c $d
+    {standard input}:109    .text.BGTStopTX:00000000 $t
+    {standard input}:114    .text.BGTStopTX:00000000 BGTStopTX
+    {standard input}:152    .text.BGTStopTX:00000020 $d
+    {standard input}:157    .text.BGTStartTX:00000000 $t
+    {standard input}:162    .text.BGTStartTX:00000000 BGTStartTX
+    {standard input}:200    .text.BGTStartTX:0000001c $d
+    {standard input}:205    .text.BGT_LO_Adjust:00000000 $t
+    {standard input}:210    .text.BGT_LO_Adjust:00000000 BGT_LO_Adjust
+    {standard input}:351    .text.BGT_LO_Adjust:000000d8 $d
+    {standard input}:362    .bss.coarseDACVal.12771:00000000 coarseDACVal.12771
+    {standard input}:368    .bss.fineDACVal.12770:00000000 fineDACVal.12770
+    {standard input}:359    .bss.coarseDACVal.12771:00000000 $d
+    {standard input}:365    .bss.fineDACVal.12770:00000000 $d
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+SPI_MASTER_Transmit
+SPI_BGT
+DAC_SingleValue_SetValue_s16
+VCOARSE
+VFINE

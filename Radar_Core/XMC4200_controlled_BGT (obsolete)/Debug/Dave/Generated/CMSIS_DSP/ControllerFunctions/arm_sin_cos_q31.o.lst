@@ -1,0 +1,1187 @@
+   1              	 .syntax unified
+   2              	 .cpu cortex-m4
+   3              	 .fpu softvfp
+   4              	 .eabi_attribute 20,1
+   5              	 .eabi_attribute 21,1
+   6              	 .eabi_attribute 23,3
+   7              	 .eabi_attribute 24,1
+   8              	 .eabi_attribute 25,1
+   9              	 .eabi_attribute 26,1
+  10              	 .eabi_attribute 30,6
+  11              	 .eabi_attribute 34,1
+  12              	 .eabi_attribute 18,4
+  13              	 .thumb
+  14              	 .file "arm_sin_cos_q31.c"
+  15              	 .text
+  16              	.Ltext0:
+  17              	 .cfi_sections .debug_frame
+  18              	 .section .text.clip_q63_to_q31,"ax",%progbits
+  19              	 .align 2
+  20              	 .thumb
+  21              	 .thumb_func
+  23              	clip_q63_to_q31:
+  24              	.LFB106:
+  25              	 .file 1 "C:\\Users\\Depes Crystalline\\Desktop\\school\\Active_Bike_Lighting_System\\Radar_Core\\Dave\\Generated/CMSIS_DSP/arm_math.h"
+   1:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** /* ----------------------------------------------------------------------
+   2:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** * Copyright (C) 2010-2014 ARM Limited. All rights reserved.
+   3:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** *
+   4:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** * $Date:        12. March 2014
+   5:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** * $Revision: 	V1.4.4
+   6:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** *
+   7:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** * Project: 	    CMSIS DSP Library
+   8:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** * Title:	    arm_math.h
+   9:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** *
+  10:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** * Description:	Public header file for CMSIS DSP Library
+  11:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** *
+  12:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** * Target Processor: Cortex-M7/Cortex-M4/Cortex-M3/Cortex-M0
+  13:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** *
+  14:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** * Redistribution and use in source and binary forms, with or without
+  15:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** * modification, are permitted provided that the following conditions
+  16:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** * are met:
+  17:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** *   - Redistributions of source code must retain the above copyright
+  18:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** *     notice, this list of conditions and the following disclaimer.
+  19:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** *   - Redistributions in binary form must reproduce the above copyright
+  20:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** *     notice, this list of conditions and the following disclaimer in
+  21:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** *     the documentation and/or other materials provided with the
+  22:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** *     distribution.
+  23:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** *   - Neither the name of ARM LIMITED nor the names of its contributors
+  24:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** *     may be used to endorse or promote products derived from this
+  25:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** *     software without specific prior written permission.
+  26:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** *
+  27:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  28:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  29:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+  30:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** * FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+  31:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** * COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+  32:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+  33:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  34:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+  35:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+  36:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+  37:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+  38:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** * POSSIBILITY OF SUCH DAMAGE.
+  39:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  * -------------------------------------------------------------------- */
+  40:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** 
+  41:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** /**
+  42:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    \mainpage CMSIS DSP Software Library
+  43:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    *
+  44:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * Introduction
+  45:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * ------------
+  46:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    *
+  47:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * This user manual describes the CMSIS DSP software library,
+  48:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * a suite of common signal processing functions for use on Cortex-M processor based devices.
+  49:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    *
+  50:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * The library is divided into a number of functions each covering a specific category:
+  51:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * - Basic math functions
+  52:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * - Fast math functions
+  53:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * - Complex math functions
+  54:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * - Filters
+  55:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * - Matrix functions
+  56:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * - Transforms
+  57:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * - Motor control functions
+  58:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * - Statistical functions
+  59:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * - Support functions
+  60:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * - Interpolation functions
+  61:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    *
+  62:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * The library has separate functions for operating on 8-bit integers, 16-bit integers,
+  63:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * 32-bit integer and 32-bit floating-point values.
+  64:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    *
+  65:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * Using the Library
+  66:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * ------------
+  67:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    *
+  68:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * The library installer contains prebuilt versions of the libraries in the <code>Lib</code> fold
+  69:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * - arm_cortexM7lfdp_math.lib (Little endian and Double Precision Floating Point Unit on Cortex-
+  70:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * - arm_cortexM7bfdp_math.lib (Big endian and Double Precision Floating Point Unit on Cortex-M7)
+  71:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * - arm_cortexM7lfsp_math.lib (Little endian and Single Precision Floating Point Unit on Cortex-
+  72:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * - arm_cortexM7bfsp_math.lib (Big endian and Single Precision Floating Point Unit on Cortex-M7)
+  73:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * - arm_cortexM7l_math.lib (Little endian on Cortex-M7)
+  74:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * - arm_cortexM7b_math.lib (Big endian on Cortex-M7)
+  75:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * - arm_cortexM4lf_math.lib (Little endian and Floating Point Unit on Cortex-M4)
+  76:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * - arm_cortexM4bf_math.lib (Big endian and Floating Point Unit on Cortex-M4)
+  77:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * - arm_cortexM4l_math.lib (Little endian on Cortex-M4)
+  78:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * - arm_cortexM4b_math.lib (Big endian on Cortex-M4)
+  79:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * - arm_cortexM3l_math.lib (Little endian on Cortex-M3)
+  80:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * - arm_cortexM3b_math.lib (Big endian on Cortex-M3)
+  81:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * - arm_cortexM0l_math.lib (Little endian on Cortex-M0 / CortexM0+)
+  82:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * - arm_cortexM0b_math.lib (Big endian on Cortex-M0 / CortexM0+)
+  83:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    *
+  84:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * The library functions are declared in the public file <code>arm_math.h</code> which is placed 
+  85:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * Simply include this file and link the appropriate library in the application and begin calling
+  86:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * public header file <code> arm_math.h</code> for Cortex-M7/M4/M3/M0/M0+ with little endian and 
+  87:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * Define the appropriate pre processor MACRO ARM_MATH_CM7 or ARM_MATH_CM4 or  ARM_MATH_CM3 or
+  88:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * ARM_MATH_CM0 or ARM_MATH_CM0PLUS depending on the target processor in the application.
+  89:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    *
+  90:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * Examples
+  91:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * --------
+  92:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    *
+  93:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * The library ships with a number of examples which demonstrate how to use the library functions
+  94:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    *
+  95:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * Toolchain Support
+  96:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * ------------
+  97:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    *
+  98:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * The library has been developed and tested with MDK-ARM version 4.60.
+  99:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * The library is being tested in GCC and IAR toolchains and updates on this activity will be mad
+ 100:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    *
+ 101:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * Building the Library
+ 102:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * ------------
+ 103:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    *
+ 104:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * The library installer contains a project file to re build libraries on MDK-ARM Tool chain in t
+ 105:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * - arm_cortexM_math.uvproj
+ 106:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    *
+ 107:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    *
+ 108:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * The libraries can be built by opening the arm_cortexM_math.uvproj project in MDK-ARM, selectin
+ 109:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    *
+ 110:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * Pre-processor Macros
+ 111:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * ------------
+ 112:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    *
+ 113:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * Each library project have differant pre-processor macros.
+ 114:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    *
+ 115:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * - UNALIGNED_SUPPORT_DISABLE:
+ 116:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    *
+ 117:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * Define macro UNALIGNED_SUPPORT_DISABLE, If the silicon does not support unaligned memory acces
+ 118:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    *
+ 119:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * - ARM_MATH_BIG_ENDIAN:
+ 120:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    *
+ 121:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * Define macro ARM_MATH_BIG_ENDIAN to build the library for big endian targets. By default libra
+ 122:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    *
+ 123:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * - ARM_MATH_MATRIX_CHECK:
+ 124:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    *
+ 125:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * Define macro ARM_MATH_MATRIX_CHECK for checking on the input and output sizes of matrices
+ 126:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    *
+ 127:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * - ARM_MATH_ROUNDING:
+ 128:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    *
+ 129:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * Define macro ARM_MATH_ROUNDING for rounding on support functions
+ 130:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    *
+ 131:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * - ARM_MATH_CMx:
+ 132:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    *
+ 133:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * Define macro ARM_MATH_CM4 for building the library on Cortex-M4 target, ARM_MATH_CM3 for build
+ 134:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * and ARM_MATH_CM0 for building library on cortex-M0 target, ARM_MATH_CM0PLUS for building libra
+ 135:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    *
+ 136:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * - __FPU_PRESENT:
+ 137:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    *
+ 138:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * Initialize macro __FPU_PRESENT = 1 when building on FPU supported Targets. Enable this macro f
+ 139:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    *
+ 140:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * <hr>
+ 141:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * CMSIS-DSP in ARM::CMSIS Pack
+ 142:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * -----------------------------
+ 143:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * 
+ 144:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * The following files relevant to CMSIS-DSP are present in the <b>ARM::CMSIS</b> Pack directorie
+ 145:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * |File/Folder                   |Content                                                       
+ 146:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * |------------------------------|--------------------------------------------------------------
+ 147:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * |\b CMSIS\\Documentation\\DSP  | This documentation                                           
+ 148:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * |\b CMSIS\\DSP_Lib             | Software license agreement (license.txt)                     
+ 149:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * |\b CMSIS\\DSP_Lib\\Examples   | Example projects demonstrating the usage of the library funct
+ 150:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * |\b CMSIS\\DSP_Lib\\Source     | Source files for rebuilding the library                      
+ 151:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * 
+ 152:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * <hr>
+ 153:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * Revision History of CMSIS-DSP
+ 154:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * ------------
+ 155:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * Please refer to \ref ChangeLog_pg.
+ 156:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    *
+ 157:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * Copyright Notice
+ 158:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * ------------
+ 159:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    *
+ 160:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * Copyright (C) 2010-2014 ARM Limited. All rights reserved.
+ 161:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    */
+ 162:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** 
+ 163:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** 
+ 164:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** /**
+ 165:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  * @defgroup groupMath Basic Math Functions
+ 166:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  */
+ 167:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** 
+ 168:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** /**
+ 169:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  * @defgroup groupFastMath Fast Math Functions
+ 170:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  * This set of functions provides a fast approximation to sine, cosine, and square root.
+ 171:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  * As compared to most of the other functions in the CMSIS math library, the fast math functions
+ 172:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  * operate on individual values and not arrays.
+ 173:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  * There are separate functions for Q15, Q31, and floating-point data.
+ 174:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  *
+ 175:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  */
+ 176:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** 
+ 177:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** /**
+ 178:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  * @defgroup groupCmplxMath Complex Math Functions
+ 179:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  * This set of functions operates on complex data vectors.
+ 180:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  * The data in the complex arrays is stored in an interleaved fashion
+ 181:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  * (real, imag, real, imag, ...).
+ 182:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  * In the API functions, the number of samples in a complex array refers
+ 183:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  * to the number of complex values; the array contains twice this number of
+ 184:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  * real values.
+ 185:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  */
+ 186:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** 
+ 187:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** /**
+ 188:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  * @defgroup groupFilters Filtering Functions
+ 189:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  */
+ 190:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** 
+ 191:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** /**
+ 192:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  * @defgroup groupMatrix Matrix Functions
+ 193:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  *
+ 194:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  * This set of functions provides basic matrix math operations.
+ 195:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  * The functions operate on matrix data structures.  For example,
+ 196:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  * the type
+ 197:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  * definition for the floating-point matrix structure is shown
+ 198:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  * below:
+ 199:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  * <pre>
+ 200:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  *     typedef struct
+ 201:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  *     {
+ 202:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  *       uint16_t numRows;     // number of rows of the matrix.
+ 203:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  *       uint16_t numCols;     // number of columns of the matrix.
+ 204:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  *       float32_t *pData;     // points to the data of the matrix.
+ 205:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  *     } arm_matrix_instance_f32;
+ 206:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  * </pre>
+ 207:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  * There are similar definitions for Q15 and Q31 data types.
+ 208:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  *
+ 209:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  * The structure specifies the size of the matrix and then points to
+ 210:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  * an array of data.  The array is of size <code>numRows X numCols</code>
+ 211:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  * and the values are arranged in row order.  That is, the
+ 212:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  * matrix element (i, j) is stored at:
+ 213:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  * <pre>
+ 214:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  *     pData[i*numCols + j]
+ 215:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  * </pre>
+ 216:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  *
+ 217:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  * \par Init Functions
+ 218:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  * There is an associated initialization function for each type of matrix
+ 219:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  * data structure.
+ 220:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  * The initialization function sets the values of the internal structure fields.
+ 221:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  * Refer to the function <code>arm_mat_init_f32()</code>, <code>arm_mat_init_q31()</code>
+ 222:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  * and <code>arm_mat_init_q15()</code> for floating-point, Q31 and Q15 types,  respectively.
+ 223:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  *
+ 224:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  * \par
+ 225:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  * Use of the initialization function is optional. However, if initialization function is used
+ 226:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  * then the instance structure cannot be placed into a const data section.
+ 227:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  * To place the instance structure in a const data
+ 228:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  * section, manually initialize the data structure.  For example:
+ 229:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  * <pre>
+ 230:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  * <code>arm_matrix_instance_f32 S = {nRows, nColumns, pData};</code>
+ 231:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  * <code>arm_matrix_instance_q31 S = {nRows, nColumns, pData};</code>
+ 232:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  * <code>arm_matrix_instance_q15 S = {nRows, nColumns, pData};</code>
+ 233:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  * </pre>
+ 234:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  * where <code>nRows</code> specifies the number of rows, <code>nColumns</code>
+ 235:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  * specifies the number of columns, and <code>pData</code> points to the
+ 236:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  * data array.
+ 237:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  *
+ 238:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  * \par Size Checking
+ 239:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  * By default all of the matrix functions perform size checking on the input and
+ 240:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  * output matrices.  For example, the matrix addition function verifies that the
+ 241:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  * two input matrices and the output matrix all have the same number of rows and
+ 242:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  * columns.  If the size check fails the functions return:
+ 243:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  * <pre>
+ 244:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  *     ARM_MATH_SIZE_MISMATCH
+ 245:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  * </pre>
+ 246:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  * Otherwise the functions return
+ 247:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  * <pre>
+ 248:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  *     ARM_MATH_SUCCESS
+ 249:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  * </pre>
+ 250:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  * There is some overhead associated with this matrix size checking.
+ 251:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  * The matrix size checking is enabled via the \#define
+ 252:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  * <pre>
+ 253:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  *     ARM_MATH_MATRIX_CHECK
+ 254:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  * </pre>
+ 255:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  * within the library project settings.  By default this macro is defined
+ 256:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  * and size checking is enabled.  By changing the project settings and
+ 257:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  * undefining this macro size checking is eliminated and the functions
+ 258:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  * run a bit faster.  With size checking disabled the functions always
+ 259:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  * return <code>ARM_MATH_SUCCESS</code>.
+ 260:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  */
+ 261:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** 
+ 262:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** /**
+ 263:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  * @defgroup groupTransforms Transform Functions
+ 264:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  */
+ 265:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** 
+ 266:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** /**
+ 267:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  * @defgroup groupController Controller Functions
+ 268:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  */
+ 269:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** 
+ 270:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** /**
+ 271:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  * @defgroup groupStats Statistics Functions
+ 272:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  */
+ 273:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** /**
+ 274:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  * @defgroup groupSupport Support Functions
+ 275:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  */
+ 276:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** 
+ 277:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** /**
+ 278:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  * @defgroup groupInterpolation Interpolation Functions
+ 279:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  * These functions perform 1- and 2-dimensional interpolation of data.
+ 280:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  * Linear interpolation is used for 1-dimensional data and
+ 281:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  * bilinear interpolation is used for 2-dimensional data.
+ 282:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  */
+ 283:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** 
+ 284:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** /**
+ 285:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  * @defgroup groupExamples Examples
+ 286:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****  */
+ 287:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** #ifndef _ARM_MATH_H
+ 288:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** #define _ARM_MATH_H
+ 289:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** 
+ 290:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** #define __CMSIS_GENERIC         /* disable NVIC and Systick functions */
+ 291:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** 
+ 292:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** #if defined(ARM_MATH_CM7)
+ 293:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****   #include "core_cm7.h"
+ 294:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** #elif defined (ARM_MATH_CM4)
+ 295:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****   #include "core_cm4.h"
+ 296:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** #elif defined (ARM_MATH_CM3)
+ 297:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****   #include "core_cm3.h"
+ 298:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** #elif defined (ARM_MATH_CM0)
+ 299:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****   #include "core_cm0.h"
+ 300:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** #define ARM_MATH_CM0_FAMILY
+ 301:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****   #elif defined (ARM_MATH_CM0PLUS)
+ 302:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** #include "core_cm0plus.h"
+ 303:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****   #define ARM_MATH_CM0_FAMILY
+ 304:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** #else
+ 305:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****   #error "Define according the used Cortex core ARM_MATH_CM7, ARM_MATH_CM4, ARM_MATH_CM3, ARM_MATH_
+ 306:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** #endif
+ 307:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** 
+ 308:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** #undef  __CMSIS_GENERIC         /* enable NVIC and Systick functions */
+ 309:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** #include "string.h"
+ 310:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** #include "math.h"
+ 311:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** #ifdef	__cplusplus
+ 312:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** extern "C"
+ 313:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** {
+ 314:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** #endif
+ 315:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** 
+ 316:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** 
+ 317:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****   /**
+ 318:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * @brief Macros required for reciprocal calculation in Normalized LMS
+ 319:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    */
+ 320:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** 
+ 321:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** #define DELTA_Q31 			(0x100)
+ 322:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** #define DELTA_Q15 			0x5
+ 323:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** #define INDEX_MASK 			0x0000003F
+ 324:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** #ifndef PI
+ 325:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** #define PI					3.14159265358979f
+ 326:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** #endif
+ 327:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** 
+ 328:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****   /**
+ 329:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * @brief Macros required for SINE and COSINE Fast math approximations
+ 330:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    */
+ 331:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** 
+ 332:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** #define FAST_MATH_TABLE_SIZE  512
+ 333:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** #define FAST_MATH_Q31_SHIFT   (32 - 10)
+ 334:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** #define FAST_MATH_Q15_SHIFT   (16 - 10)
+ 335:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** #define CONTROLLER_Q31_SHIFT  (32 - 9)
+ 336:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** #define TABLE_SIZE  256
+ 337:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** #define TABLE_SPACING_Q31	   0x400000
+ 338:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** #define TABLE_SPACING_Q15	   0x80
+ 339:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** 
+ 340:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****   /**
+ 341:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * @brief Macros required for SINE and COSINE Controller functions
+ 342:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    */
+ 343:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****   /* 1.31(q31) Fixed value of 2/360 */
+ 344:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****   /* -1 to +1 is divided into 360 values so total spacing is (2/360) */
+ 345:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** #define INPUT_SPACING			0xB60B61
+ 346:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** 
+ 347:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****   /**
+ 348:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * @brief Macro for Unaligned Support
+ 349:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    */
+ 350:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** #ifndef UNALIGNED_SUPPORT_DISABLE
+ 351:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****     #define ALIGN4
+ 352:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** #else
+ 353:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****   #if defined  (__GNUC__)
+ 354:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****     #define ALIGN4 __attribute__((aligned(4)))
+ 355:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****   #elif defined  (__ICCARM__)
+ 356:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****     #define ALIGN4
+ 357:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****   #else
+ 358:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****     #define ALIGN4 __align(4)
+ 359:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****   #endif
+ 360:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** #endif	/*	#ifndef UNALIGNED_SUPPORT_DISABLE	*/
+ 361:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** 
+ 362:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****   /**
+ 363:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * @brief Error status returned by some functions in the library.
+ 364:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    */
+ 365:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** 
+ 366:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****   typedef enum
+ 367:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****   {
+ 368:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****     ARM_MATH_SUCCESS = 0,                /**< No error */
+ 369:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****     ARM_MATH_ARGUMENT_ERROR = -1,        /**< One or more arguments are incorrect */
+ 370:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****     ARM_MATH_LENGTH_ERROR = -2,          /**< Length of data buffer is incorrect */
+ 371:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****     ARM_MATH_SIZE_MISMATCH = -3,         /**< Size of matrices is not compatible with the operation
+ 372:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****     ARM_MATH_NANINF = -4,                /**< Not-a-number (NaN) or infinity is generated */
+ 373:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****     ARM_MATH_SINGULAR = -5,              /**< Generated by matrix inversion if the input matrix is 
+ 374:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****     ARM_MATH_TEST_FAILURE = -6           /**< Test Failed  */
+ 375:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****   } arm_status;
+ 376:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** 
+ 377:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****   /**
+ 378:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * @brief 8-bit fractional data type in 1.7 format.
+ 379:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    */
+ 380:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****   typedef int8_t q7_t;
+ 381:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** 
+ 382:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****   /**
+ 383:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * @brief 16-bit fractional data type in 1.15 format.
+ 384:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    */
+ 385:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****   typedef int16_t q15_t;
+ 386:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** 
+ 387:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****   /**
+ 388:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * @brief 32-bit fractional data type in 1.31 format.
+ 389:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    */
+ 390:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****   typedef int32_t q31_t;
+ 391:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** 
+ 392:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****   /**
+ 393:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * @brief 64-bit fractional data type in 1.63 format.
+ 394:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    */
+ 395:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****   typedef int64_t q63_t;
+ 396:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** 
+ 397:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****   /**
+ 398:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * @brief 32-bit floating-point type definition.
+ 399:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    */
+ 400:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****   typedef float float32_t;
+ 401:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** 
+ 402:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****   /**
+ 403:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * @brief 64-bit floating-point type definition.
+ 404:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    */
+ 405:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****   typedef double float64_t;
+ 406:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** 
+ 407:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****   /**
+ 408:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * @brief definition to read/write two 16 bit values.
+ 409:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    */
+ 410:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** #if defined __CC_ARM
+ 411:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** #define __SIMD32_TYPE int32_t __packed
+ 412:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** #define CMSIS_UNUSED __attribute__((unused))
+ 413:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** #elif defined __ICCARM__
+ 414:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** #define CMSIS_UNUSED
+ 415:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** #define __SIMD32_TYPE int32_t __packed
+ 416:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** #elif defined __GNUC__
+ 417:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** #define __SIMD32_TYPE int32_t
+ 418:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** #define CMSIS_UNUSED __attribute__((unused))
+ 419:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** #elif defined __CSMC__			/* Cosmic */
+ 420:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** #define CMSIS_UNUSED
+ 421:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** #define __SIMD32_TYPE int32_t
+ 422:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** #else
+ 423:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** #error Unknown compiler
+ 424:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** #endif
+ 425:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** 
+ 426:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** #define __SIMD32(addr)  (*(__SIMD32_TYPE **) & (addr))
+ 427:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** #define __SIMD32_CONST(addr)  ((__SIMD32_TYPE *)(addr))
+ 428:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** 
+ 429:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** #define _SIMD32_OFFSET(addr)  (*(__SIMD32_TYPE *)  (addr))
+ 430:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** 
+ 431:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** #define __SIMD64(addr)  (*(int64_t **) & (addr))
+ 432:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** 
+ 433:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** #if defined (ARM_MATH_CM3) || defined (ARM_MATH_CM0_FAMILY)
+ 434:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****   /**
+ 435:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * @brief definition to pack two 16 bit values.
+ 436:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    */
+ 437:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** #define __PKHBT(ARG1, ARG2, ARG3)      ( (((int32_t)(ARG1) <<  0) & (int32_t)0x0000FFFF) | \
+ 438:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****                                          (((int32_t)(ARG2) << ARG3) & (int32_t)0xFFFF0000)  )
+ 439:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** #define __PKHTB(ARG1, ARG2, ARG3)      ( (((int32_t)(ARG1) <<  0) & (int32_t)0xFFFF0000) | \
+ 440:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****                                          (((int32_t)(ARG2) >> ARG3) & (int32_t)0x0000FFFF)  )
+ 441:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** 
+ 442:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** #endif
+ 443:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** 
+ 444:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** 
+ 445:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    /**
+ 446:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * @brief definition to pack four 8 bit values.
+ 447:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    */
+ 448:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** #ifndef ARM_MATH_BIG_ENDIAN
+ 449:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** 
+ 450:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** #define __PACKq7(v0,v1,v2,v3) ( (((int32_t)(v0) <<  0) & (int32_t)0x000000FF) |	\
+ 451:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****                                 (((int32_t)(v1) <<  8) & (int32_t)0x0000FF00) |	\
+ 452:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** 							    (((int32_t)(v2) << 16) & (int32_t)0x00FF0000) |	\
+ 453:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** 							    (((int32_t)(v3) << 24) & (int32_t)0xFF000000)  )
+ 454:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** #else
+ 455:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** 
+ 456:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** #define __PACKq7(v0,v1,v2,v3) ( (((int32_t)(v3) <<  0) & (int32_t)0x000000FF) |	\
+ 457:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****                                 (((int32_t)(v2) <<  8) & (int32_t)0x0000FF00) |	\
+ 458:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** 							    (((int32_t)(v1) << 16) & (int32_t)0x00FF0000) |	\
+ 459:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** 							    (((int32_t)(v0) << 24) & (int32_t)0xFF000000)  )
+ 460:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** 
+ 461:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** #endif
+ 462:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** 
+ 463:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h **** 
+ 464:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****   /**
+ 465:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    * @brief Clips Q63 to Q31 values.
+ 466:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****    */
+ 467:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****   static __INLINE q31_t clip_q63_to_q31(
+ 468:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****   q63_t x)
+ 469:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****   {
+  26              	 .loc 1 469 0
+  27              	 .cfi_startproc
+  28              	 
+  29              	 
+  30              	 
+  31 0000 2DE9B003 	 push {r4,r5,r7,r8,r9}
+  32              	.LCFI0:
+  33              	 .cfi_def_cfa_offset 20
+  34              	 .cfi_offset 4,-20
+  35              	 .cfi_offset 5,-16
+  36              	 .cfi_offset 7,-12
+  37              	 .cfi_offset 8,-8
+  38              	 .cfi_offset 9,-4
+  39 0004 83B0     	 sub sp,sp,#12
+  40              	.LCFI1:
+  41              	 .cfi_def_cfa_offset 32
+  42 0006 00AF     	 add r7,sp,#0
+  43              	.LCFI2:
+  44              	 .cfi_def_cfa_register 7
+  45 0008 C7E90001 	 strd r0,[r7]
+ 470:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****     return ((q31_t) (x >> 32) != ((q31_t) x >> 31)) ?
+  46              	 .loc 1 470 0
+  47 000c D7E90023 	 ldrd r2,[r7]
+  48 0010 9846     	 mov r8,r3
+  49 0012 4FEAE379 	 asr r9,r3,#31
+  50 0016 4246     	 mov r2,r8
+  51 0018 3B68     	 ldr r3,[r7]
+  52 001a DB17     	 asrs r3,r3,#31
+ 471:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****       ((0x7FFFFFFF ^ ((q31_t) (x >> 63)))) : (q31_t) x;
+  53              	 .loc 1 471 0
+  54 001c 9A42     	 cmp r2,r3
+  55 001e 08D0     	 beq .L2
+  56              	 .loc 1 471 0 is_stmt 0 discriminator 1
+  57 0020 D7E90023 	 ldrd r2,[r7]
+  58 0024 DC17     	 asrs r4,r3,#31
+  59 0026 DD17     	 asrs r5,r3,#31
+  60 0028 2346     	 mov r3,r4
+  61 002a 83F00043 	 eor r3,r3,#-2147483648
+  62 002e DB43     	 mvns r3,r3
+  63 0030 00E0     	 b .L3
+  64              	.L2:
+  65              	 .loc 1 471 0 discriminator 2
+  66 0032 3B68     	 ldr r3,[r7]
+  67              	.L3:
+ 472:C:\Users\Depes Crystalline\Desktop\school\Active_Bike_Lighting_System\Radar_Core\Dave\Generated/CMSIS_DSP\arm_math.h ****   }
+  68              	 .loc 1 472 0 is_stmt 1
+  69 0034 1846     	 mov r0,r3
+  70 0036 0C37     	 adds r7,r7,#12
+  71              	.LCFI3:
+  72              	 .cfi_def_cfa_offset 20
+  73 0038 BD46     	 mov sp,r7
+  74              	.LCFI4:
+  75              	 .cfi_def_cfa_register 13
+  76              	 
+  77 003a BDE8B003 	 pop {r4,r5,r7,r8,r9}
+  78              	.LCFI5:
+  79              	 .cfi_restore 9
+  80              	 .cfi_restore 8
+  81              	 .cfi_restore 7
+  82              	 .cfi_restore 5
+  83              	 .cfi_restore 4
+  84              	 .cfi_def_cfa_offset 0
+  85 003e 7047     	 bx lr
+  86              	 .cfi_endproc
+  87              	.LFE106:
+  89              	 .section .text.arm_sin_cos_q31,"ax",%progbits
+  90              	 .align 2
+  91              	 .global arm_sin_cos_q31
+  92              	 .thumb
+  93              	 .thumb_func
+  95              	arm_sin_cos_q31:
+  96              	.LFB139:
+  97              	 .file 2 "../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c"
+   1:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c **** /* ----------------------------------------------------------------------    
+   2:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c **** * Copyright (C) 2010-2014 ARM Limited. All rights reserved.    
+   3:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c **** *    
+   4:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c **** * $Date:        12. March 2014
+   5:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c **** * $Revision: 	V1.4.4
+   6:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c **** *    
+   7:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c **** * Project: 	    CMSIS DSP Library    
+   8:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c **** * Title:		arm_sin_cos_q31.c    
+   9:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c **** *    
+  10:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c **** * Description:	Cosine & Sine calculation for Q31 values.   
+  11:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c **** *    
+  12:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c **** * Target Processor: Cortex-M4/Cortex-M3/Cortex-M0
+  13:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c **** *  
+  14:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c **** * Redistribution and use in source and binary forms, with or without 
+  15:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c **** * modification, are permitted provided that the following conditions
+  16:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c **** * are met:
+  17:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c **** *   - Redistributions of source code must retain the above copyright
+  18:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c **** *     notice, this list of conditions and the following disclaimer.
+  19:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c **** *   - Redistributions in binary form must reproduce the above copyright
+  20:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c **** *     notice, this list of conditions and the following disclaimer in
+  21:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c **** *     the documentation and/or other materials provided with the 
+  22:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c **** *     distribution.
+  23:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c **** *   - Neither the name of ARM LIMITED nor the names of its contributors
+  24:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c **** *     may be used to endorse or promote products derived from this
+  25:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c **** *     software without specific prior written permission.
+  26:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c **** *
+  27:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c **** * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  28:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c **** * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  29:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c **** * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+  30:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c **** * FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE 
+  31:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c **** * COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+  32:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c **** * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+  33:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c **** * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  34:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c **** * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+  35:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c **** * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+  36:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c **** * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+  37:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c **** * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+  38:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c **** * POSSIBILITY OF SUCH DAMAGE.    
+  39:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c **** * -------------------------------------------------------------------- */
+  40:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c **** 
+  41:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c **** #include "CMSIS_DSP/cmsis_dsp.h"
+  42:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c **** #include "CMSIS_DSP/arm_common_tables.h"
+  43:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c **** 
+  44:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c **** /**    
+  45:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c ****  * @ingroup groupController    
+  46:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c ****  */
+  47:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c **** 
+  48:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c ****  /**    
+  49:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c ****  * @addtogroup SinCos    
+  50:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c ****  * @{    
+  51:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c ****  */
+  52:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c **** 
+  53:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c **** /**    
+  54:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c ****  * @brief  Q31 sin_cos function.   
+  55:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c ****  * @param[in]  theta    scaled input value in degrees    
+  56:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c ****  * @param[out] *pSinVal points to the processed sine output.    
+  57:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c ****  * @param[out] *pCosVal points to the processed cosine output.    
+  58:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c ****  * @return none.   
+  59:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c ****  *    
+  60:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c ****  * The Q31 input value is in the range [-1 0.999999] and is mapped to a degree value in the range [
+  61:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c ****  *    
+  62:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c ****  */
+  63:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c **** 
+  64:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c **** void arm_sin_cos_q31(
+  65:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c ****   q31_t theta,
+  66:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c ****   q31_t * pSinVal,
+  67:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c ****   q31_t * pCosVal)
+  68:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c **** {
+  98              	 .loc 2 68 0
+  99              	 .cfi_startproc
+ 100              	 
+ 101              	 
+ 102 0000 2DE9B04F 	 push {r4,r5,r7,r8,r9,r10,fp,lr}
+ 103              	.LCFI6:
+ 104              	 .cfi_def_cfa_offset 32
+ 105              	 .cfi_offset 4,-32
+ 106              	 .cfi_offset 5,-28
+ 107              	 .cfi_offset 7,-24
+ 108              	 .cfi_offset 8,-20
+ 109              	 .cfi_offset 9,-16
+ 110              	 .cfi_offset 10,-12
+ 111              	 .cfi_offset 11,-8
+ 112              	 .cfi_offset 14,-4
+ 113 0004 A2B0     	 sub sp,sp,#136
+ 114              	.LCFI7:
+ 115              	 .cfi_def_cfa_offset 168
+ 116 0006 00AF     	 add r7,sp,#0
+ 117              	.LCFI8:
+ 118              	 .cfi_def_cfa_register 7
+ 119 0008 F865     	 str r0,[r7,#92]
+ 120 000a B965     	 str r1,[r7,#88]
+ 121 000c 7A65     	 str r2,[r7,#84]
+  69:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c ****   q31_t fract;                                 /* Temporary variables for input, output */
+  70:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c ****   uint16_t indexS, indexC;                     /* Index variable */
+  71:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c ****   q31_t f1, f2, d1, d2;                        /* Two nearest output values */
+  72:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c ****   q31_t Dn, Df;
+  73:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c ****   q63_t temp;
+  74:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c ****   
+  75:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c ****   /* Calculate the nearest index */
+  76:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c ****   indexS = (uint32_t)theta >> CONTROLLER_Q31_SHIFT;
+ 122              	 .loc 2 76 0
+ 123 000e FB6D     	 ldr r3,[r7,#92]
+ 124 0010 DB0D     	 lsrs r3,r3,#23
+ 125 0012 A7F88630 	 strh r3,[r7,#134]
+  77:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c ****   indexC = (indexS + 128) & 0x1ff;
+ 126              	 .loc 2 77 0
+ 127 0016 B7F88630 	 ldrh r3,[r7,#134]
+ 128 001a 8033     	 adds r3,r3,#128
+ 129 001c 9BB2     	 uxth r3,r3
+ 130 001e C3F30803 	 ubfx r3,r3,#0,#9
+ 131 0022 A7F88430 	 strh r3,[r7,#132]
+  78:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c **** 
+  79:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c ****   /* Calculation of fractional value */
+  80:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c ****   fract = (theta - (indexS << CONTROLLER_Q31_SHIFT)) << 8;
+ 132              	 .loc 2 80 0
+ 133 0026 B7F88630 	 ldrh r3,[r7,#134]
+ 134 002a DA05     	 lsls r2,r3,#23
+ 135 002c FB6D     	 ldr r3,[r7,#92]
+ 136 002e 9B1A     	 subs r3,r3,r2
+ 137 0030 1B02     	 lsls r3,r3,#8
+ 138 0032 C7F88030 	 str r3,[r7,#128]
+  81:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c ****   
+  82:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c ****   /* Read two nearest values of input value from the cos & sin tables */
+  83:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c ****   f1 = sinTable_q31[indexC+0];
+ 139              	 .loc 2 83 0
+ 140 0036 B7F88420 	 ldrh r2,[r7,#132]
+ 141 003a BD4B     	 ldr r3,.L6
+ 142 003c 53F82230 	 ldr r3,[r3,r2,lsl#2]
+ 143 0040 FB67     	 str r3,[r7,#124]
+  84:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c ****   f2 = sinTable_q31[indexC+1];
+ 144              	 .loc 2 84 0
+ 145 0042 B7F88430 	 ldrh r3,[r7,#132]
+ 146 0046 5A1C     	 adds r2,r3,#1
+ 147 0048 B94B     	 ldr r3,.L6
+ 148 004a 53F82230 	 ldr r3,[r3,r2,lsl#2]
+ 149 004e BB67     	 str r3,[r7,#120]
+  85:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c ****   d1 = -sinTable_q31[indexS+0];
+ 150              	 .loc 2 85 0
+ 151 0050 B7F88620 	 ldrh r2,[r7,#134]
+ 152 0054 B64B     	 ldr r3,.L6
+ 153 0056 53F82230 	 ldr r3,[r3,r2,lsl#2]
+ 154 005a 5B42     	 negs r3,r3
+ 155 005c 7B67     	 str r3,[r7,#116]
+  86:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c ****   d2 = -sinTable_q31[indexS+1];
+ 156              	 .loc 2 86 0
+ 157 005e B7F88630 	 ldrh r3,[r7,#134]
+ 158 0062 5A1C     	 adds r2,r3,#1
+ 159 0064 B24B     	 ldr r3,.L6
+ 160 0066 53F82230 	 ldr r3,[r3,r2,lsl#2]
+ 161 006a 5B42     	 negs r3,r3
+ 162 006c 3B67     	 str r3,[r7,#112]
+  87:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c **** 
+  88:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c ****   Dn = 0x1921FB5; // delta between the two points (fixed), in this case 2*pi/FAST_MATH_TABLE_SIZE
+ 163              	 .loc 2 88 0
+ 164 006e B14B     	 ldr r3,.L6+4
+ 165 0070 FB66     	 str r3,[r7,#108]
+  89:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c ****   Df = f2 - f1; // delta between the values of the functions
+ 166              	 .loc 2 89 0
+ 167 0072 BA6F     	 ldr r2,[r7,#120]
+ 168 0074 FB6F     	 ldr r3,[r7,#124]
+ 169 0076 D31A     	 subs r3,r2,r3
+ 170 0078 BB66     	 str r3,[r7,#104]
+  90:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c ****   temp = Dn*((q63_t)d1 + d2);
+ 171              	 .loc 2 90 0
+ 172 007a FB6E     	 ldr r3,[r7,#108]
+ 173 007c 1C46     	 mov r4,r3
+ 174 007e 4FEAE475 	 asr r5,r4,#31
+ 175 0082 7B6F     	 ldr r3,[r7,#116]
+ 176 0084 1846     	 mov r0,r3
+ 177 0086 4FEAE071 	 asr r1,r0,#31
+ 178 008a 3B6F     	 ldr r3,[r7,#112]
+ 179 008c 1A46     	 mov r2,r3
+ 180 008e 4FEAE273 	 asr r3,r2,#31
+ 181 0092 1218     	 adds r2,r2,r0
+ 182 0094 43EB0103 	 adc r3,r3,r1
+ 183 0098 02FB05F0 	 mul r0,r2,r5
+ 184 009c 04FB03F1 	 mul r1,r4,r3
+ 185 00a0 0144     	 add r1,r1,r0
+ 186 00a2 A4FB0223 	 umull r2,r3,r4,r2
+ 187 00a6 1944     	 add r1,r1,r3
+ 188 00a8 0B46     	 mov r3,r1
+ 189 00aa C7E91823 	 strd r2,[r7,#96]
+ 190 00ae C7E91823 	 strd r2,[r7,#96]
+  91:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c ****   temp = temp - ((q63_t)Df << 32);
+ 191              	 .loc 2 91 0
+ 192 00b2 BB6E     	 ldr r3,[r7,#104]
+ 193 00b4 1A46     	 mov r2,r3
+ 194 00b6 4FEAE273 	 asr r3,r2,#31
+ 195 00ba 1300     	 movs r3,r2
+ 196 00bc FB60     	 str r3,[r7,#12]
+ 197 00be 0023     	 movs r3,#0
+ 198 00c0 BB60     	 str r3,[r7,#8]
+ 199 00c2 D7E91823 	 ldrd r2,[r7,#96]
+ 200 00c6 D7E90201 	 ldrd r0,[r7,#8]
+ 201 00ca 101A     	 subs r0,r2,r0
+ 202 00cc 63EB0101 	 sbc r1,r3,r1
+ 203 00d0 0246     	 mov r2,r0
+ 204 00d2 0B46     	 mov r3,r1
+ 205 00d4 C7E91823 	 strd r2,[r7,#96]
+  92:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c ****   temp = (q63_t)fract*(temp >> 31);
+ 206              	 .loc 2 92 0
+ 207 00d8 D7F88030 	 ldr r3,[r7,#128]
+ 208 00dc 1846     	 mov r0,r3
+ 209 00de 4FEAE071 	 asr r1,r0,#31
+ 210 00e2 D7E91823 	 ldrd r2,[r7,#96]
+ 211 00e6 4FEAD278 	 lsr r8,r2,#31
+ 212 00ea 48EA4308 	 orr r8,r8,r3,lsl#1
+ 213 00ee 4FEAE379 	 asr r9,r3,#31
+ 214 00f2 08FB01F2 	 mul r2,r8,r1
+ 215 00f6 00FB09F3 	 mul r3,r0,r9
+ 216 00fa D418     	 adds r4,r2,r3
+ 217 00fc A0FB0823 	 umull r2,r3,r0,r8
+ 218 0100 E118     	 adds r1,r4,r3
+ 219 0102 0B46     	 mov r3,r1
+ 220 0104 C7E91823 	 strd r2,[r7,#96]
+ 221 0108 C7E91823 	 strd r2,[r7,#96]
+  93:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c ****   temp = temp + ((3*(q63_t)Df << 31) - (d2 + ((q63_t)d1 << 1))*Dn);
+ 222              	 .loc 2 93 0
+ 223 010c BB6E     	 ldr r3,[r7,#104]
+ 224 010e 1846     	 mov r0,r3
+ 225 0110 4FEAE071 	 asr r1,r0,#31
+ 226 0114 0246     	 mov r2,r0
+ 227 0116 0B46     	 mov r3,r1
+ 228 0118 9218     	 adds r2,r2,r2
+ 229 011a 43EB0303 	 adc r3,r3,r3
+ 230 011e 1218     	 adds r2,r2,r0
+ 231 0120 43EB0103 	 adc r3,r3,r1
+ 232 0124 D907     	 lsls r1,r3,#31
+ 233 0126 F964     	 str r1,[r7,#76]
+ 234 0128 F96C     	 ldr r1,[r7,#76]
+ 235 012a 41EA5201 	 orr r1,r1,r2,lsr#1
+ 236 012e F964     	 str r1,[r7,#76]
+ 237 0130 D307     	 lsls r3,r2,#31
+ 238 0132 BB64     	 str r3,[r7,#72]
+ 239 0134 3B6F     	 ldr r3,[r7,#112]
+ 240 0136 1846     	 mov r0,r3
+ 241 0138 4FEAE071 	 asr r1,r0,#31
+ 242 013c 7B6F     	 ldr r3,[r7,#116]
+ 243 013e 1A46     	 mov r2,r3
+ 244 0140 4FEAE273 	 asr r3,r2,#31
+ 245 0144 9218     	 adds r2,r2,r2
+ 246 0146 43EB0303 	 adc r3,r3,r3
+ 247 014a 8018     	 adds r0,r0,r2
+ 248 014c 41EB0301 	 adc r1,r1,r3
+ 249 0150 FB6E     	 ldr r3,[r7,#108]
+ 250 0152 1A46     	 mov r2,r3
+ 251 0154 4FEAE273 	 asr r3,r2,#31
+ 252 0158 02FB01F5 	 mul r5,r2,r1
+ 253 015c 00FB03F4 	 mul r4,r0,r3
+ 254 0160 2C44     	 add r4,r4,r5
+ 255 0162 A0FB0201 	 umull r0,r1,r0,r2
+ 256 0166 6318     	 adds r3,r4,r1
+ 257 0168 1946     	 mov r1,r3
+ 258 016a D7E91223 	 ldrd r2,[r7,#72]
+ 259 016e 121A     	 subs r2,r2,r0
+ 260 0170 63EB0103 	 sbc r3,r3,r1
+ 261 0174 1046     	 mov r0,r2
+ 262 0176 1946     	 mov r1,r3
+ 263 0178 D7E91823 	 ldrd r2,[r7,#96]
+ 264 017c 1218     	 adds r2,r2,r0
+ 265 017e 43EB0103 	 adc r3,r3,r1
+ 266 0182 C7E91823 	 strd r2,[r7,#96]
+  94:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c ****   temp = (q63_t)fract*(temp >> 31);
+ 267              	 .loc 2 94 0
+ 268 0186 D7F88030 	 ldr r3,[r7,#128]
+ 269 018a 1846     	 mov r0,r3
+ 270 018c 4FEAE071 	 asr r1,r0,#31
+ 271 0190 D7E91823 	 ldrd r2,[r7,#96]
+ 272 0194 4FEAD27A 	 lsr r10,r2,#31
+ 273 0198 4AEA430A 	 orr r10,r10,r3,lsl#1
+ 274 019c 4FEAE37B 	 asr fp,r3,#31
+ 275 01a0 0AFB01F2 	 mul r2,r10,r1
+ 276 01a4 00FB0BF3 	 mul r3,r0,fp
+ 277 01a8 D418     	 adds r4,r2,r3
+ 278 01aa A0FB0A23 	 umull r2,r3,r0,r10
+ 279 01ae E118     	 adds r1,r4,r3
+ 280 01b0 0B46     	 mov r3,r1
+ 281 01b2 C7E91823 	 strd r2,[r7,#96]
+ 282 01b6 C7E91823 	 strd r2,[r7,#96]
+  95:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c ****   temp = temp + (q63_t)d1*Dn;
+ 283              	 .loc 2 95 0
+ 284 01ba 7B6F     	 ldr r3,[r7,#116]
+ 285 01bc 1846     	 mov r0,r3
+ 286 01be 4FEAE071 	 asr r1,r0,#31
+ 287 01c2 FB6E     	 ldr r3,[r7,#108]
+ 288 01c4 1A46     	 mov r2,r3
+ 289 01c6 4FEAE273 	 asr r3,r2,#31
+ 290 01ca 02FB01F5 	 mul r5,r2,r1
+ 291 01ce 00FB03F4 	 mul r4,r0,r3
+ 292 01d2 2C44     	 add r4,r4,r5
+ 293 01d4 A0FB0201 	 umull r0,r1,r0,r2
+ 294 01d8 6318     	 adds r3,r4,r1
+ 295 01da 1946     	 mov r1,r3
+ 296 01dc D7E91823 	 ldrd r2,[r7,#96]
+ 297 01e0 1218     	 adds r2,r2,r0
+ 298 01e2 43EB0103 	 adc r3,r3,r1
+ 299 01e6 C7E91823 	 strd r2,[r7,#96]
+  96:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c ****   temp = (q63_t)fract*(temp >> 31);
+ 300              	 .loc 2 96 0
+ 301 01ea D7F88030 	 ldr r3,[r7,#128]
+ 302 01ee 1846     	 mov r0,r3
+ 303 01f0 4FEAE071 	 asr r1,r0,#31
+ 304 01f4 D7E91823 	 ldrd r2,[r7,#96]
+ 305 01f8 D40F     	 lsrs r4,r2,#31
+ 306 01fa 3C64     	 str r4,[r7,#64]
+ 307 01fc 3C6C     	 ldr r4,[r7,#64]
+ 308 01fe 44EA4304 	 orr r4,r4,r3,lsl#1
+ 309 0202 3C64     	 str r4,[r7,#64]
+ 310 0204 DB17     	 asrs r3,r3,#31
+ 311 0206 7B64     	 str r3,[r7,#68]
+ 312 0208 D7E91089 	 ldrd r8,[r7,#64]
+ 313 020c 4346     	 mov r3,r8
+ 314 020e 03FB01F2 	 mul r2,r3,r1
+ 315 0212 4B46     	 mov r3,r9
+ 316 0214 00FB03F3 	 mul r3,r0,r3
+ 317 0218 D418     	 adds r4,r2,r3
+ 318 021a 4346     	 mov r3,r8
+ 319 021c A0FB0323 	 umull r2,r3,r0,r3
+ 320 0220 E118     	 adds r1,r4,r3
+ 321 0222 0B46     	 mov r3,r1
+ 322 0224 C7E91823 	 strd r2,[r7,#96]
+ 323 0228 C7E91823 	 strd r2,[r7,#96]
+  97:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c **** 
+  98:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c ****   /* Calculation of cosine value */
+  99:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c ****   *pCosVal = clip_q63_to_q31((temp >> 31) + (q63_t)f1);
+ 324              	 .loc 2 99 0
+ 325 022c D7E91823 	 ldrd r2,[r7,#96]
+ 326 0230 D10F     	 lsrs r1,r2,#31
+ 327 0232 B963     	 str r1,[r7,#56]
+ 328 0234 B96B     	 ldr r1,[r7,#56]
+ 329 0236 41EA4301 	 orr r1,r1,r3,lsl#1
+ 330 023a B963     	 str r1,[r7,#56]
+ 331 023c DB17     	 asrs r3,r3,#31
+ 332 023e FB63     	 str r3,[r7,#60]
+ 333 0240 FB6F     	 ldr r3,[r7,#124]
+ 334 0242 1A46     	 mov r2,r3
+ 335 0244 4FEAE273 	 asr r3,r2,#31
+ 336 0248 D7E90E01 	 ldrd r0,[r7,#56]
+ 337 024c 8018     	 adds r0,r0,r2
+ 338 024e 41EB0301 	 adc r1,r1,r3
+ 339 0252 0246     	 mov r2,r0
+ 340 0254 0B46     	 mov r3,r1
+ 341 0256 1046     	 mov r0,r2
+ 342 0258 1946     	 mov r1,r3
+ 343 025a FFF7FEFF 	 bl clip_q63_to_q31
+ 344 025e 0246     	 mov r2,r0
+ 345 0260 7B6D     	 ldr r3,[r7,#84]
+ 346 0262 1A60     	 str r2,[r3]
+ 100:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c ****   
+ 101:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c ****   /* Read two nearest values of input value from the cos & sin tables */
+ 102:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c ****   f1 = sinTable_q31[indexS+0];
+ 347              	 .loc 2 102 0
+ 348 0264 B7F88630 	 ldrh r3,[r7,#134]
+ 349 0268 314A     	 ldr r2,.L6
+ 350 026a 52F82330 	 ldr r3,[r2,r3,lsl#2]
+ 351 026e FB67     	 str r3,[r7,#124]
+ 103:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c ****   f2 = sinTable_q31[indexS+1];
+ 352              	 .loc 2 103 0
+ 353 0270 B7F88630 	 ldrh r3,[r7,#134]
+ 354 0274 0133     	 adds r3,r3,#1
+ 355 0276 2E4A     	 ldr r2,.L6
+ 356 0278 52F82330 	 ldr r3,[r2,r3,lsl#2]
+ 357 027c BB67     	 str r3,[r7,#120]
+ 104:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c ****   d1 = sinTable_q31[indexC+0];
+ 358              	 .loc 2 104 0
+ 359 027e B7F88430 	 ldrh r3,[r7,#132]
+ 360 0282 2B4A     	 ldr r2,.L6
+ 361 0284 52F82330 	 ldr r3,[r2,r3,lsl#2]
+ 362 0288 7B67     	 str r3,[r7,#116]
+ 105:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c ****   d2 = sinTable_q31[indexC+1];
+ 363              	 .loc 2 105 0
+ 364 028a B7F88430 	 ldrh r3,[r7,#132]
+ 365 028e 0133     	 adds r3,r3,#1
+ 366 0290 274A     	 ldr r2,.L6
+ 367 0292 52F82330 	 ldr r3,[r2,r3,lsl#2]
+ 368 0296 3B67     	 str r3,[r7,#112]
+ 106:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c **** 
+ 107:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c ****   Df = f2 - f1; // delta between the values of the functions
+ 369              	 .loc 2 107 0
+ 370 0298 BA6F     	 ldr r2,[r7,#120]
+ 371 029a FB6F     	 ldr r3,[r7,#124]
+ 372 029c D31A     	 subs r3,r2,r3
+ 373 029e BB66     	 str r3,[r7,#104]
+ 108:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c ****   temp = Dn*((q63_t)d1 + d2);
+ 374              	 .loc 2 108 0
+ 375 02a0 FB6E     	 ldr r3,[r7,#108]
+ 376 02a2 1C46     	 mov r4,r3
+ 377 02a4 4FEAE475 	 asr r5,r4,#31
+ 378 02a8 7B6F     	 ldr r3,[r7,#116]
+ 379 02aa 1846     	 mov r0,r3
+ 380 02ac 4FEAE071 	 asr r1,r0,#31
+ 381 02b0 3B6F     	 ldr r3,[r7,#112]
+ 382 02b2 1A46     	 mov r2,r3
+ 383 02b4 4FEAE273 	 asr r3,r2,#31
+ 384 02b8 1218     	 adds r2,r2,r0
+ 385 02ba 43EB0103 	 adc r3,r3,r1
+ 386 02be 02FB05F0 	 mul r0,r2,r5
+ 387 02c2 04FB03F1 	 mul r1,r4,r3
+ 388 02c6 0144     	 add r1,r1,r0
+ 389 02c8 A4FB0223 	 umull r2,r3,r4,r2
+ 390 02cc 1944     	 add r1,r1,r3
+ 391 02ce 0B46     	 mov r3,r1
+ 392 02d0 C7E91823 	 strd r2,[r7,#96]
+ 393 02d4 C7E91823 	 strd r2,[r7,#96]
+ 109:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c ****   temp = temp - ((q63_t)Df << 32);
+ 394              	 .loc 2 109 0
+ 395 02d8 BB6E     	 ldr r3,[r7,#104]
+ 396 02da 1A46     	 mov r2,r3
+ 397 02dc 4FEAE273 	 asr r3,r2,#31
+ 398 02e0 1300     	 movs r3,r2
+ 399 02e2 7B60     	 str r3,[r7,#4]
+ 400 02e4 0023     	 movs r3,#0
+ 401 02e6 3B60     	 str r3,[r7]
+ 402 02e8 D7E91823 	 ldrd r2,[r7,#96]
+ 403 02ec D7E90001 	 ldrd r0,[r7]
+ 404 02f0 101A     	 subs r0,r2,r0
+ 405 02f2 63EB0101 	 sbc r1,r3,r1
+ 406 02f6 0246     	 mov r2,r0
+ 407 02f8 0B46     	 mov r3,r1
+ 408 02fa C7E91823 	 strd r2,[r7,#96]
+ 110:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c ****   temp = (q63_t)fract*(temp >> 31);
+ 409              	 .loc 2 110 0
+ 410 02fe D7F88030 	 ldr r3,[r7,#128]
+ 411 0302 1A46     	 mov r2,r3
+ 412 0304 4FEAE273 	 asr r3,r2,#31
+ 413 0308 D7E91801 	 ldrd r0,[r7,#96]
+ 414 030c C40F     	 lsrs r4,r0,#31
+ 415 030e 3C63     	 str r4,[r7,#48]
+ 416 0310 3C6B     	 ldr r4,[r7,#48]
+ 417 0312 44EA4104 	 orr r4,r4,r1,lsl#1
+ 418 0316 3C63     	 str r4,[r7,#48]
+ 419 0318 C917     	 asrs r1,r1,#31
+ 420 031a 7963     	 str r1,[r7,#52]
+ 421 031c D7E90C45 	 ldrd r4,[r7,#48]
+ 422 0320 2146     	 mov r1,r4
+ 423 0322 01FB03F0 	 mul r0,r1,r3
+ 424 0326 2946     	 mov r1,r5
+ 425 0328 02FB01F1 	 mul r1,r2,r1
+ 426 032c 04E0     	 b .L7
+ 427              	.L8:
+ 428 032e 00BF     	 .align 2
+ 429              	.L6:
+ 430 0330 00000000 	 .word sinTable_q31
+ 431 0334 B51F9201 	 .word 26353589
+ 432              	.L7:
+ 433 0338 0144     	 add r1,r1,r0
+ 434 033a 2046     	 mov r0,r4
+ 435 033c A2FB0023 	 umull r2,r3,r2,r0
+ 436 0340 1944     	 add r1,r1,r3
+ 437 0342 0B46     	 mov r3,r1
+ 438 0344 C7E91823 	 strd r2,[r7,#96]
+ 439 0348 C7E91823 	 strd r2,[r7,#96]
+ 111:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c ****   temp = temp + ((3*(q63_t)Df << 31) - (d2 + ((q63_t)d1 << 1))*Dn);
+ 440              	 .loc 2 111 0
+ 441 034c BB6E     	 ldr r3,[r7,#104]
+ 442 034e 1846     	 mov r0,r3
+ 443 0350 4FEAE071 	 asr r1,r0,#31
+ 444 0354 0246     	 mov r2,r0
+ 445 0356 0B46     	 mov r3,r1
+ 446 0358 9218     	 adds r2,r2,r2
+ 447 035a 43EB0303 	 adc r3,r3,r3
+ 448 035e 1218     	 adds r2,r2,r0
+ 449 0360 43EB0103 	 adc r3,r3,r1
+ 450 0364 D907     	 lsls r1,r3,#31
+ 451 0366 F962     	 str r1,[r7,#44]
+ 452 0368 F96A     	 ldr r1,[r7,#44]
+ 453 036a 41EA5201 	 orr r1,r1,r2,lsr#1
+ 454 036e F962     	 str r1,[r7,#44]
+ 455 0370 D307     	 lsls r3,r2,#31
+ 456 0372 BB62     	 str r3,[r7,#40]
+ 457 0374 3B6F     	 ldr r3,[r7,#112]
+ 458 0376 1846     	 mov r0,r3
+ 459 0378 4FEAE071 	 asr r1,r0,#31
+ 460 037c 7B6F     	 ldr r3,[r7,#116]
+ 461 037e 1A46     	 mov r2,r3
+ 462 0380 4FEAE273 	 asr r3,r2,#31
+ 463 0384 9218     	 adds r2,r2,r2
+ 464 0386 43EB0303 	 adc r3,r3,r3
+ 465 038a 8018     	 adds r0,r0,r2
+ 466 038c 41EB0301 	 adc r1,r1,r3
+ 467 0390 FB6E     	 ldr r3,[r7,#108]
+ 468 0392 1A46     	 mov r2,r3
+ 469 0394 4FEAE273 	 asr r3,r2,#31
+ 470 0398 02FB01F5 	 mul r5,r2,r1
+ 471 039c 00FB03F4 	 mul r4,r0,r3
+ 472 03a0 2C44     	 add r4,r4,r5
+ 473 03a2 A0FB0223 	 umull r2,r3,r0,r2
+ 474 03a6 E118     	 adds r1,r4,r3
+ 475 03a8 0B46     	 mov r3,r1
+ 476 03aa D7E90A01 	 ldrd r0,[r7,#40]
+ 477 03ae 801A     	 subs r0,r0,r2
+ 478 03b0 61EB0301 	 sbc r1,r1,r3
+ 479 03b4 0246     	 mov r2,r0
+ 480 03b6 0B46     	 mov r3,r1
+ 481 03b8 D7E91801 	 ldrd r0,[r7,#96]
+ 482 03bc 1218     	 adds r2,r2,r0
+ 483 03be 43EB0103 	 adc r3,r3,r1
+ 484 03c2 C7E91823 	 strd r2,[r7,#96]
+ 112:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c ****   temp = (q63_t)fract*(temp >> 31);
+ 485              	 .loc 2 112 0
+ 486 03c6 D7F88030 	 ldr r3,[r7,#128]
+ 487 03ca 1A46     	 mov r2,r3
+ 488 03cc 4FEAE273 	 asr r3,r2,#31
+ 489 03d0 D7E91801 	 ldrd r0,[r7,#96]
+ 490 03d4 C40F     	 lsrs r4,r0,#31
+ 491 03d6 3C62     	 str r4,[r7,#32]
+ 492 03d8 3C6A     	 ldr r4,[r7,#32]
+ 493 03da 44EA4104 	 orr r4,r4,r1,lsl#1
+ 494 03de 3C62     	 str r4,[r7,#32]
+ 495 03e0 C917     	 asrs r1,r1,#31
+ 496 03e2 7962     	 str r1,[r7,#36]
+ 497 03e4 D7E90845 	 ldrd r4,[r7,#32]
+ 498 03e8 2146     	 mov r1,r4
+ 499 03ea 01FB03F0 	 mul r0,r1,r3
+ 500 03ee 2946     	 mov r1,r5
+ 501 03f0 02FB01F1 	 mul r1,r2,r1
+ 502 03f4 0144     	 add r1,r1,r0
+ 503 03f6 2046     	 mov r0,r4
+ 504 03f8 A2FB0023 	 umull r2,r3,r2,r0
+ 505 03fc 1944     	 add r1,r1,r3
+ 506 03fe 0B46     	 mov r3,r1
+ 507 0400 C7E91823 	 strd r2,[r7,#96]
+ 508 0404 C7E91823 	 strd r2,[r7,#96]
+ 113:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c ****   temp = temp + (q63_t)d1*Dn;
+ 509              	 .loc 2 113 0
+ 510 0408 7B6F     	 ldr r3,[r7,#116]
+ 511 040a 1846     	 mov r0,r3
+ 512 040c 4FEAE071 	 asr r1,r0,#31
+ 513 0410 FB6E     	 ldr r3,[r7,#108]
+ 514 0412 1A46     	 mov r2,r3
+ 515 0414 4FEAE273 	 asr r3,r2,#31
+ 516 0418 02FB01F5 	 mul r5,r2,r1
+ 517 041c 00FB03F4 	 mul r4,r0,r3
+ 518 0420 2C44     	 add r4,r4,r5
+ 519 0422 A0FB0223 	 umull r2,r3,r0,r2
+ 520 0426 E118     	 adds r1,r4,r3
+ 521 0428 0B46     	 mov r3,r1
+ 522 042a D7E91801 	 ldrd r0,[r7,#96]
+ 523 042e 1218     	 adds r2,r2,r0
+ 524 0430 43EB0103 	 adc r3,r3,r1
+ 525 0434 C7E91823 	 strd r2,[r7,#96]
+ 114:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c ****   temp = (q63_t)fract*(temp >> 31);
+ 526              	 .loc 2 114 0
+ 527 0438 D7F88030 	 ldr r3,[r7,#128]
+ 528 043c 1A46     	 mov r2,r3
+ 529 043e 4FEAE273 	 asr r3,r2,#31
+ 530 0442 D7E91801 	 ldrd r0,[r7,#96]
+ 531 0446 C40F     	 lsrs r4,r0,#31
+ 532 0448 BC61     	 str r4,[r7,#24]
+ 533 044a BC69     	 ldr r4,[r7,#24]
+ 534 044c 44EA4104 	 orr r4,r4,r1,lsl#1
+ 535 0450 BC61     	 str r4,[r7,#24]
+ 536 0452 C917     	 asrs r1,r1,#31
+ 537 0454 F961     	 str r1,[r7,#28]
+ 538 0456 D7E90645 	 ldrd r4,[r7,#24]
+ 539 045a 2146     	 mov r1,r4
+ 540 045c 01FB03F0 	 mul r0,r1,r3
+ 541 0460 2946     	 mov r1,r5
+ 542 0462 02FB01F1 	 mul r1,r2,r1
+ 543 0466 0144     	 add r1,r1,r0
+ 544 0468 2046     	 mov r0,r4
+ 545 046a A2FB0023 	 umull r2,r3,r2,r0
+ 546 046e 1944     	 add r1,r1,r3
+ 547 0470 0B46     	 mov r3,r1
+ 548 0472 C7E91823 	 strd r2,[r7,#96]
+ 549 0476 C7E91823 	 strd r2,[r7,#96]
+ 115:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c ****   
+ 116:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c ****   /* Calculation of sine value */
+ 117:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c ****   *pSinVal = clip_q63_to_q31((temp >> 31) + (q63_t)f1);
+ 550              	 .loc 2 117 0
+ 551 047a D7E91823 	 ldrd r2,[r7,#96]
+ 552 047e D10F     	 lsrs r1,r2,#31
+ 553 0480 3961     	 str r1,[r7,#16]
+ 554 0482 3969     	 ldr r1,[r7,#16]
+ 555 0484 41EA4301 	 orr r1,r1,r3,lsl#1
+ 556 0488 3961     	 str r1,[r7,#16]
+ 557 048a DB17     	 asrs r3,r3,#31
+ 558 048c 7B61     	 str r3,[r7,#20]
+ 559 048e FB6F     	 ldr r3,[r7,#124]
+ 560 0490 1A46     	 mov r2,r3
+ 561 0492 4FEAE273 	 asr r3,r2,#31
+ 562 0496 D7E90401 	 ldrd r0,[r7,#16]
+ 563 049a 8018     	 adds r0,r0,r2
+ 564 049c 41EB0301 	 adc r1,r1,r3
+ 565 04a0 0246     	 mov r2,r0
+ 566 04a2 0B46     	 mov r3,r1
+ 567 04a4 1046     	 mov r0,r2
+ 568 04a6 1946     	 mov r1,r3
+ 569 04a8 FFF7FEFF 	 bl clip_q63_to_q31
+ 570 04ac 0246     	 mov r2,r0
+ 571 04ae BB6D     	 ldr r3,[r7,#88]
+ 572 04b0 1A60     	 str r2,[r3]
+ 118:../Dave/Generated/CMSIS_DSP/ControllerFunctions/arm_sin_cos_q31.c **** }
+ 573              	 .loc 2 118 0
+ 574 04b2 8837     	 adds r7,r7,#136
+ 575              	.LCFI9:
+ 576              	 .cfi_def_cfa_offset 32
+ 577 04b4 BD46     	 mov sp,r7
+ 578              	.LCFI10:
+ 579              	 .cfi_def_cfa_register 13
+ 580              	 
+ 581 04b6 BDE8B08F 	 pop {r4,r5,r7,r8,r9,r10,fp,pc}
+ 582              	 .cfi_endproc
+ 583              	.LFE139:
+ 585 04ba 00BF     	 .text
+ 586              	.Letext0:
+ 587              	 .file 3 "c:\\davev4-64bit\\dave-4.2.6\\eclipse\\arm-gcc-49\\arm-none-eabi\\include\\machine\\_default_types.h"
+ 588              	 .file 4 "c:\\davev4-64bit\\dave-4.2.6\\eclipse\\arm-gcc-49\\arm-none-eabi\\include\\stdint.h"
+ 589              	 .file 5 "C:\\Users\\Depes Crystalline\\Desktop\\school\\Active_Bike_Lighting_System\\Radar_Core\\Dave\\Generated/CMSIS_DSP/arm_common_tables.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 arm_sin_cos_q31.c
+    {standard input}:19     .text.clip_q63_to_q31:00000000 $t
+    {standard input}:23     .text.clip_q63_to_q31:00000000 clip_q63_to_q31
+    {standard input}:90     .text.arm_sin_cos_q31:00000000 $t
+    {standard input}:95     .text.arm_sin_cos_q31:00000000 arm_sin_cos_q31
+    {standard input}:430    .text.arm_sin_cos_q31:00000330 $d
+    {standard input}:433    .text.arm_sin_cos_q31:00000338 $t
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+sinTable_q31

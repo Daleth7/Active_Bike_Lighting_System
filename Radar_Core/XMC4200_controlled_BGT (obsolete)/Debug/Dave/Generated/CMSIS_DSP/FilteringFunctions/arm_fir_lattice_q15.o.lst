@@ -1,0 +1,2308 @@
+   1              	 .syntax unified
+   2              	 .cpu cortex-m4
+   3              	 .fpu softvfp
+   4              	 .eabi_attribute 20,1
+   5              	 .eabi_attribute 21,1
+   6              	 .eabi_attribute 23,3
+   7              	 .eabi_attribute 24,1
+   8              	 .eabi_attribute 25,1
+   9              	 .eabi_attribute 26,1
+  10              	 .eabi_attribute 30,6
+  11              	 .eabi_attribute 34,1
+  12              	 .eabi_attribute 18,4
+  13              	 .thumb
+  14              	 .file "arm_fir_lattice_q15.c"
+  15              	 .text
+  16              	.Ltext0:
+  17              	 .cfi_sections .debug_frame
+  18              	 .section .text.arm_fir_lattice_q15,"ax",%progbits
+  19              	 .align 2
+  20              	 .global arm_fir_lattice_q15
+  21              	 .thumb
+  22              	 .thumb_func
+  24              	arm_fir_lattice_q15:
+  25              	.LFB139:
+  26              	 .file 1 "../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c"
+   1:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** /* ----------------------------------------------------------------------    
+   2:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** * Copyright (C) 2010-2014 ARM Limited. All rights reserved.    
+   3:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** *    
+   4:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** * $Date:        12. March 2014
+   5:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** * $Revision: 	V1.4.4
+   6:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** *    
+   7:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** * Project: 	    CMSIS DSP Library    
+   8:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** * Title:	    arm_fir_lattice_q15.c    
+   9:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** *    
+  10:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** * Description:	Q15 FIR lattice filter processing function.    
+  11:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** *    
+  12:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** * Target Processor: Cortex-M4/Cortex-M3/Cortex-M0
+  13:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** *  
+  14:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** * Redistribution and use in source and binary forms, with or without 
+  15:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** * modification, are permitted provided that the following conditions
+  16:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** * are met:
+  17:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** *   - Redistributions of source code must retain the above copyright
+  18:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** *     notice, this list of conditions and the following disclaimer.
+  19:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** *   - Redistributions in binary form must reproduce the above copyright
+  20:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** *     notice, this list of conditions and the following disclaimer in
+  21:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** *     the documentation and/or other materials provided with the 
+  22:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** *     distribution.
+  23:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** *   - Neither the name of ARM LIMITED nor the names of its contributors
+  24:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** *     may be used to endorse or promote products derived from this
+  25:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** *     software without specific prior written permission.
+  26:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** *
+  27:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  28:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  29:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+  30:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** * FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE 
+  31:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** * COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+  32:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+  33:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  34:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+  35:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+  36:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+  37:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+  38:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** * POSSIBILITY OF SUCH DAMAGE. 
+  39:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** * -------------------------------------------------------------------- */
+  40:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+  41:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** #include "CMSIS_DSP/cmsis_dsp.h"
+  42:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+  43:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** /**    
+  44:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****  * @ingroup groupFilters    
+  45:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****  */
+  46:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+  47:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** /**    
+  48:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****  * @addtogroup FIR_Lattice    
+  49:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****  * @{    
+  50:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****  */
+  51:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+  52:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+  53:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** /**    
+  54:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****  * @brief Processing function for the Q15 FIR lattice filter.    
+  55:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****  * @param[in]  *S        points to an instance of the Q15 FIR lattice structure.    
+  56:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****  * @param[in]  *pSrc     points to the block of input data.    
+  57:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****  * @param[out] *pDst     points to the block of output data    
+  58:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****  * @param[in]  blockSize number of samples to process.    
+  59:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****  * @return none.    
+  60:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****  */
+  61:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+  62:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** void arm_fir_lattice_q15(
+  63:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****   const arm_fir_lattice_instance_q15 * S,
+  64:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****   q15_t * pSrc,
+  65:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****   q15_t * pDst,
+  66:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****   uint32_t blockSize)
+  67:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** {
+  27              	 .loc 1 67 0
+  28              	 .cfi_startproc
+  29              	 
+  30              	 
+  31              	 
+  32 0000 90B4     	 push {r4,r7}
+  33              	.LCFI0:
+  34              	 .cfi_def_cfa_offset 8
+  35              	 .cfi_offset 4,-8
+  36              	 .cfi_offset 7,-4
+  37 0002 ADF5087D 	 sub sp,sp,#544
+  38              	.LCFI1:
+  39              	 .cfi_def_cfa_offset 552
+  40 0006 00AF     	 add r7,sp,#0
+  41              	.LCFI2:
+  42              	 .cfi_def_cfa_register 7
+  43 0008 07F10C04 	 add r4,r7,#12
+  44 000c 2060     	 str r0,[r4]
+  45 000e 07F10800 	 add r0,r7,#8
+  46 0012 0160     	 str r1,[r0]
+  47 0014 391D     	 adds r1,r7,#4
+  48 0016 0A60     	 str r2,[r1]
+  49 0018 3A46     	 mov r2,r7
+  50 001a 1360     	 str r3,[r2]
+  68:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****   q15_t *pState;                                 /* State pointer */
+  69:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****   q15_t *pCoeffs = S->pCoeffs;                   /* Coefficient pointer */
+  51              	 .loc 1 69 0
+  52 001c 07F10C03 	 add r3,r7,#12
+  53 0020 1B68     	 ldr r3,[r3]
+  54 0022 9B68     	 ldr r3,[r3,#8]
+  55 0024 C7F8EC31 	 str r3,[r7,#492]
+  70:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****   q15_t *px;                                     /* temporary state pointer */
+  71:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****   q15_t *pk;                                     /* temporary coefficient pointer */
+  72:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+  73:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+  74:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** #ifndef ARM_MATH_CM0_FAMILY
+  75:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+  76:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****   /* Run the below code for Cortex-M4 and Cortex-M3 */
+  77:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+  78:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****   q31_t fcurnt1, fnext1, gcurnt1 = 0, gnext1;    /* temporary variables for first sample in loop un
+  56              	 .loc 1 78 0
+  57 0028 0023     	 movs r3,#0
+  58 002a C7F8E831 	 str r3,[r7,#488]
+  79:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****   q31_t fcurnt2, fnext2, gnext2;                 /* temporary variables for second sample in loop u
+  80:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****   q31_t fcurnt3, fnext3, gnext3;                 /* temporary variables for third sample in loop un
+  81:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****   q31_t fcurnt4, fnext4, gnext4;                 /* temporary variables for fourth sample in loop u
+  82:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****   uint32_t numStages = S->numStages;             /* Number of stages in the filter */
+  59              	 .loc 1 82 0
+  60 002e 07F10C03 	 add r3,r7,#12
+  61 0032 1B68     	 ldr r3,[r3]
+  62 0034 1B88     	 ldrh r3,[r3]
+  63 0036 C7F8E431 	 str r3,[r7,#484]
+  83:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****   uint32_t blkCnt, stageCnt;                     /* temporary variables for counts */
+  84:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+  85:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****   pState = &S->pState[0];
+  64              	 .loc 1 85 0
+  65 003a 07F10C03 	 add r3,r7,#12
+  66 003e 1B68     	 ldr r3,[r3]
+  67 0040 5B68     	 ldr r3,[r3,#4]
+  68 0042 C7F8E031 	 str r3,[r7,#480]
+  86:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+  87:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****   blkCnt = blockSize >> 2u;
+  69              	 .loc 1 87 0
+  70 0046 3B46     	 mov r3,r7
+  71 0048 1B68     	 ldr r3,[r3]
+  72 004a 9B08     	 lsrs r3,r3,#2
+  73 004c C7F8F431 	 str r3,[r7,#500]
+  88:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+  89:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****   /* First part of the processing with loop unrolling.  Compute 4 outputs at a time.    
+  90:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****    ** a second loop below computes the remaining 1 to 3 samples. */
+  91:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****   while(blkCnt > 0u)
+  74              	 .loc 1 91 0
+  75 0050 00F0CDBE 	 b .L2
+  76              	.L7:
+  92:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****   {
+  93:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+  94:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     /* Read two samples from input buffer */
+  95:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     /* f0(n) = x(n) */
+  96:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     fcurnt1 = *pSrc++;
+  77              	 .loc 1 96 0
+  78 0054 07F10803 	 add r3,r7,#8
+  79 0058 1B68     	 ldr r3,[r3]
+  80 005a 07F10802 	 add r2,r7,#8
+  81 005e 991C     	 adds r1,r3,#2
+  82 0060 1160     	 str r1,[r2]
+  83 0062 1B88     	 ldrh r3,[r3]
+  84 0064 1BB2     	 sxth r3,r3
+  85 0066 C7F81432 	 str r3,[r7,#532]
+  97:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     fcurnt2 = *pSrc++;
+  86              	 .loc 1 97 0
+  87 006a 07F10803 	 add r3,r7,#8
+  88 006e 1B68     	 ldr r3,[r3]
+  89 0070 07F10802 	 add r2,r7,#8
+  90 0074 991C     	 adds r1,r3,#2
+  91 0076 1160     	 str r1,[r2]
+  92 0078 1B88     	 ldrh r3,[r3]
+  93 007a 1BB2     	 sxth r3,r3
+  94 007c C7F80C32 	 str r3,[r7,#524]
+  98:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+  99:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     /* Initialize coeff pointer */
+ 100:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     pk = (pCoeffs);
+  95              	 .loc 1 100 0
+  96 0080 D7F8EC31 	 ldr r3,[r7,#492]
+  97 0084 C7F81832 	 str r3,[r7,#536]
+ 101:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 102:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     /* Initialize state pointer */
+ 103:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     px = pState;
+  98              	 .loc 1 103 0
+  99 0088 D7F8E031 	 ldr r3,[r7,#480]
+ 100 008c C7F81C32 	 str r3,[r7,#540]
+ 104:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 105:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     /* Read g0(n-1) from state */
+ 106:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     gcurnt1 = *px;
+ 101              	 .loc 1 106 0
+ 102 0090 D7F81C32 	 ldr r3,[r7,#540]
+ 103 0094 1B88     	 ldrh r3,[r3]
+ 104 0096 1BB2     	 sxth r3,r3
+ 105 0098 C7F8E831 	 str r3,[r7,#488]
+ 107:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 108:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     /* Process first sample for first tap */
+ 109:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     /* f1(n) = f0(n) +  K1 * g0(n-1) */
+ 110:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     fnext1 = (q31_t) ((gcurnt1 * (*pk)) >> 15u) + fcurnt1;
+ 106              	 .loc 1 110 0
+ 107 009c D7F81832 	 ldr r3,[r7,#536]
+ 108 00a0 1B88     	 ldrh r3,[r3]
+ 109 00a2 1BB2     	 sxth r3,r3
+ 110 00a4 D7F8E821 	 ldr r2,[r7,#488]
+ 111 00a8 02FB03F3 	 mul r3,r2,r3
+ 112 00ac DA13     	 asrs r2,r3,#15
+ 113 00ae D7F81432 	 ldr r3,[r7,#532]
+ 114 00b2 1344     	 add r3,r3,r2
+ 115 00b4 C7F8DC31 	 str r3,[r7,#476]
+ 116              	.LBB2:
+ 111:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     fnext1 = __SSAT(fnext1, 16);
+ 117              	 .loc 1 111 0
+ 118 00b8 D7F8DC31 	 ldr r3,[r7,#476]
+ 119 00bc C7F8D831 	 str r3,[r7,#472]
+ 120 00c0 D7F8D831 	 ldr r3,[r7,#472]
+ 121              	
+ 122 00c4 03F30F03 	 ssat r3,#16,r3
+ 123              	
+ 124              	 .thumb
+ 125 00c8 C7F8D431 	 str r3,[r7,#468]
+ 126 00cc D7F8D431 	 ldr r3,[r7,#468]
+ 127              	.LBE2:
+ 128 00d0 C7F8DC31 	 str r3,[r7,#476]
+ 112:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 113:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     /* g1(n) = f0(n) * K1  +  g0(n-1) */
+ 114:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     gnext1 = (q31_t) ((fcurnt1 * (*pk)) >> 15u) + gcurnt1;
+ 129              	 .loc 1 114 0
+ 130 00d4 D7F81832 	 ldr r3,[r7,#536]
+ 131 00d8 1B88     	 ldrh r3,[r3]
+ 132 00da 1BB2     	 sxth r3,r3
+ 133 00dc D7F81422 	 ldr r2,[r7,#532]
+ 134 00e0 02FB03F3 	 mul r3,r2,r3
+ 135 00e4 DA13     	 asrs r2,r3,#15
+ 136 00e6 D7F8E831 	 ldr r3,[r7,#488]
+ 137 00ea 1344     	 add r3,r3,r2
+ 138 00ec C7F81032 	 str r3,[r7,#528]
+ 139              	.LBB3:
+ 115:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     gnext1 = __SSAT(gnext1, 16);
+ 140              	 .loc 1 115 0
+ 141 00f0 D7F81032 	 ldr r3,[r7,#528]
+ 142 00f4 C7F8D031 	 str r3,[r7,#464]
+ 143 00f8 D7F8D031 	 ldr r3,[r7,#464]
+ 144              	
+ 145 00fc 03F30F03 	 ssat r3,#16,r3
+ 146              	
+ 147              	 .thumb
+ 148 0100 C7F8CC31 	 str r3,[r7,#460]
+ 149 0104 D7F8CC31 	 ldr r3,[r7,#460]
+ 150              	.LBE3:
+ 151 0108 C7F81032 	 str r3,[r7,#528]
+ 116:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 117:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     /* Process second sample for first tap */
+ 118:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     /* for sample 2 processing */
+ 119:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     fnext2 = (q31_t) ((fcurnt1 * (*pk)) >> 15u) + fcurnt2;
+ 152              	 .loc 1 119 0
+ 153 010c D7F81832 	 ldr r3,[r7,#536]
+ 154 0110 1B88     	 ldrh r3,[r3]
+ 155 0112 1BB2     	 sxth r3,r3
+ 156 0114 D7F81422 	 ldr r2,[r7,#532]
+ 157 0118 02FB03F3 	 mul r3,r2,r3
+ 158 011c DA13     	 asrs r2,r3,#15
+ 159 011e D7F80C32 	 ldr r3,[r7,#524]
+ 160 0122 1344     	 add r3,r3,r2
+ 161 0124 C7F8C831 	 str r3,[r7,#456]
+ 162              	.LBB4:
+ 120:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     fnext2 = __SSAT(fnext2, 16);
+ 163              	 .loc 1 120 0
+ 164 0128 D7F8C831 	 ldr r3,[r7,#456]
+ 165 012c C7F8C431 	 str r3,[r7,#452]
+ 166 0130 D7F8C431 	 ldr r3,[r7,#452]
+ 167              	
+ 168 0134 03F30F03 	 ssat r3,#16,r3
+ 169              	
+ 170              	 .thumb
+ 171 0138 C7F8C031 	 str r3,[r7,#448]
+ 172 013c D7F8C031 	 ldr r3,[r7,#448]
+ 173              	.LBE4:
+ 174 0140 C7F8C831 	 str r3,[r7,#456]
+ 121:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 122:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     gnext2 = (q31_t) ((fcurnt2 * (*pk)) >> 15u) + fcurnt1;
+ 175              	 .loc 1 122 0
+ 176 0144 D7F81832 	 ldr r3,[r7,#536]
+ 177 0148 1B88     	 ldrh r3,[r3]
+ 178 014a 1BB2     	 sxth r3,r3
+ 179 014c D7F80C22 	 ldr r2,[r7,#524]
+ 180 0150 02FB03F3 	 mul r3,r2,r3
+ 181 0154 DA13     	 asrs r2,r3,#15
+ 182 0156 D7F81432 	 ldr r3,[r7,#532]
+ 183 015a 1344     	 add r3,r3,r2
+ 184 015c C7F80832 	 str r3,[r7,#520]
+ 185              	.LBB5:
+ 123:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     gnext2 = __SSAT(gnext2, 16);
+ 186              	 .loc 1 123 0
+ 187 0160 D7F80832 	 ldr r3,[r7,#520]
+ 188 0164 C7F8BC31 	 str r3,[r7,#444]
+ 189 0168 D7F8BC31 	 ldr r3,[r7,#444]
+ 190              	
+ 191 016c 03F30F03 	 ssat r3,#16,r3
+ 192              	
+ 193              	 .thumb
+ 194 0170 C7F8B831 	 str r3,[r7,#440]
+ 195 0174 D7F8B831 	 ldr r3,[r7,#440]
+ 196              	.LBE5:
+ 197 0178 C7F80832 	 str r3,[r7,#520]
+ 124:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 125:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 126:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     /* Read next two samples from input buffer */
+ 127:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     /* f0(n+2) = x(n+2) */
+ 128:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     fcurnt3 = *pSrc++;
+ 198              	 .loc 1 128 0
+ 199 017c 07F10803 	 add r3,r7,#8
+ 200 0180 1B68     	 ldr r3,[r3]
+ 201 0182 07F10802 	 add r2,r7,#8
+ 202 0186 991C     	 adds r1,r3,#2
+ 203 0188 1160     	 str r1,[r2]
+ 204 018a 1B88     	 ldrh r3,[r3]
+ 205 018c 1BB2     	 sxth r3,r3
+ 206 018e C7F80432 	 str r3,[r7,#516]
+ 129:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     fcurnt4 = *pSrc++;
+ 207              	 .loc 1 129 0
+ 208 0192 07F10803 	 add r3,r7,#8
+ 209 0196 1B68     	 ldr r3,[r3]
+ 210 0198 07F10802 	 add r2,r7,#8
+ 211 019c 991C     	 adds r1,r3,#2
+ 212 019e 1160     	 str r1,[r2]
+ 213 01a0 1B88     	 ldrh r3,[r3]
+ 214 01a2 1BB2     	 sxth r3,r3
+ 215 01a4 C7F8FC31 	 str r3,[r7,#508]
+ 130:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 131:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     /* Copy only last input samples into the state buffer    
+ 132:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****        which is used for next four samples processing */
+ 133:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     *px++ = (q15_t) fcurnt4;
+ 216              	 .loc 1 133 0
+ 217 01a8 D7F81C32 	 ldr r3,[r7,#540]
+ 218 01ac 9A1C     	 adds r2,r3,#2
+ 219 01ae C7F81C22 	 str r2,[r7,#540]
+ 220 01b2 D7F8FC21 	 ldr r2,[r7,#508]
+ 221 01b6 92B2     	 uxth r2,r2
+ 222 01b8 1A80     	 strh r2,[r3]
+ 134:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 135:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     /* Process third sample for first tap */
+ 136:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     fnext3 = (q31_t) ((fcurnt2 * (*pk)) >> 15u) + fcurnt3;
+ 223              	 .loc 1 136 0
+ 224 01ba D7F81832 	 ldr r3,[r7,#536]
+ 225 01be 1B88     	 ldrh r3,[r3]
+ 226 01c0 1BB2     	 sxth r3,r3
+ 227 01c2 D7F80C22 	 ldr r2,[r7,#524]
+ 228 01c6 02FB03F3 	 mul r3,r2,r3
+ 229 01ca DA13     	 asrs r2,r3,#15
+ 230 01cc D7F80432 	 ldr r3,[r7,#516]
+ 231 01d0 1344     	 add r3,r3,r2
+ 232 01d2 C7F8B431 	 str r3,[r7,#436]
+ 233              	.LBB6:
+ 137:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     fnext3 = __SSAT(fnext3, 16);
+ 234              	 .loc 1 137 0
+ 235 01d6 D7F8B431 	 ldr r3,[r7,#436]
+ 236 01da C7F8B031 	 str r3,[r7,#432]
+ 237 01de D7F8B031 	 ldr r3,[r7,#432]
+ 238              	
+ 239 01e2 03F30F03 	 ssat r3,#16,r3
+ 240              	
+ 241              	 .thumb
+ 242 01e6 C7F8AC31 	 str r3,[r7,#428]
+ 243 01ea D7F8AC31 	 ldr r3,[r7,#428]
+ 244              	.LBE6:
+ 245 01ee C7F8B431 	 str r3,[r7,#436]
+ 138:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     gnext3 = (q31_t) ((fcurnt3 * (*pk)) >> 15u) + fcurnt2;
+ 246              	 .loc 1 138 0
+ 247 01f2 D7F81832 	 ldr r3,[r7,#536]
+ 248 01f6 1B88     	 ldrh r3,[r3]
+ 249 01f8 1BB2     	 sxth r3,r3
+ 250 01fa D7F80422 	 ldr r2,[r7,#516]
+ 251 01fe 02FB03F3 	 mul r3,r2,r3
+ 252 0202 DA13     	 asrs r2,r3,#15
+ 253 0204 D7F80C32 	 ldr r3,[r7,#524]
+ 254 0208 1344     	 add r3,r3,r2
+ 255 020a C7F80032 	 str r3,[r7,#512]
+ 256              	.LBB7:
+ 139:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     gnext3 = __SSAT(gnext3, 16);
+ 257              	 .loc 1 139 0
+ 258 020e D7F80032 	 ldr r3,[r7,#512]
+ 259 0212 C7F8A831 	 str r3,[r7,#424]
+ 260 0216 D7F8A831 	 ldr r3,[r7,#424]
+ 261              	
+ 262 021a 03F30F03 	 ssat r3,#16,r3
+ 263              	
+ 264              	 .thumb
+ 265 021e C7F8A431 	 str r3,[r7,#420]
+ 266 0222 D7F8A431 	 ldr r3,[r7,#420]
+ 267              	.LBE7:
+ 268 0226 C7F80032 	 str r3,[r7,#512]
+ 140:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 141:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     /* Process fourth sample for first tap */
+ 142:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     fnext4 = (q31_t) ((fcurnt3 * (*pk)) >> 15u) + fcurnt4;
+ 269              	 .loc 1 142 0
+ 270 022a D7F81832 	 ldr r3,[r7,#536]
+ 271 022e 1B88     	 ldrh r3,[r3]
+ 272 0230 1BB2     	 sxth r3,r3
+ 273 0232 D7F80422 	 ldr r2,[r7,#516]
+ 274 0236 02FB03F3 	 mul r3,r2,r3
+ 275 023a DA13     	 asrs r2,r3,#15
+ 276 023c D7F8FC31 	 ldr r3,[r7,#508]
+ 277 0240 1344     	 add r3,r3,r2
+ 278 0242 C7F8A031 	 str r3,[r7,#416]
+ 279              	.LBB8:
+ 143:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     fnext4 = __SSAT(fnext4, 16);
+ 280              	 .loc 1 143 0
+ 281 0246 D7F8A031 	 ldr r3,[r7,#416]
+ 282 024a C7F89C31 	 str r3,[r7,#412]
+ 283 024e D7F89C31 	 ldr r3,[r7,#412]
+ 284              	
+ 285 0252 03F30F03 	 ssat r3,#16,r3
+ 286              	
+ 287              	 .thumb
+ 288 0256 C7F89831 	 str r3,[r7,#408]
+ 289 025a D7F89831 	 ldr r3,[r7,#408]
+ 290              	.LBE8:
+ 291 025e C7F8A031 	 str r3,[r7,#416]
+ 144:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     gnext4 = (q31_t) ((fcurnt4 * (*pk++)) >> 15u) + fcurnt3;
+ 292              	 .loc 1 144 0
+ 293 0262 D7F81832 	 ldr r3,[r7,#536]
+ 294 0266 9A1C     	 adds r2,r3,#2
+ 295 0268 C7F81822 	 str r2,[r7,#536]
+ 296 026c 1B88     	 ldrh r3,[r3]
+ 297 026e 1BB2     	 sxth r3,r3
+ 298 0270 D7F8FC21 	 ldr r2,[r7,#508]
+ 299 0274 02FB03F3 	 mul r3,r2,r3
+ 300 0278 DA13     	 asrs r2,r3,#15
+ 301 027a D7F80432 	 ldr r3,[r7,#516]
+ 302 027e 1344     	 add r3,r3,r2
+ 303 0280 C7F8F831 	 str r3,[r7,#504]
+ 304              	.LBB9:
+ 145:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     gnext4 = __SSAT(gnext4, 16);
+ 305              	 .loc 1 145 0
+ 306 0284 D7F8F831 	 ldr r3,[r7,#504]
+ 307 0288 C7F89431 	 str r3,[r7,#404]
+ 308 028c D7F89431 	 ldr r3,[r7,#404]
+ 309              	
+ 310 0290 03F30F03 	 ssat r3,#16,r3
+ 311              	
+ 312              	 .thumb
+ 313 0294 C7F89031 	 str r3,[r7,#400]
+ 314 0298 D7F89031 	 ldr r3,[r7,#400]
+ 315              	.LBE9:
+ 316 029c C7F8F831 	 str r3,[r7,#504]
+ 146:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 147:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     /* Update of f values for next coefficient set processing */
+ 148:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     fcurnt1 = fnext1;
+ 317              	 .loc 1 148 0
+ 318 02a0 D7F8DC31 	 ldr r3,[r7,#476]
+ 319 02a4 C7F81432 	 str r3,[r7,#532]
+ 149:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     fcurnt2 = fnext2;
+ 320              	 .loc 1 149 0
+ 321 02a8 D7F8C831 	 ldr r3,[r7,#456]
+ 322 02ac C7F80C32 	 str r3,[r7,#524]
+ 150:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     fcurnt3 = fnext3;
+ 323              	 .loc 1 150 0
+ 324 02b0 D7F8B431 	 ldr r3,[r7,#436]
+ 325 02b4 C7F80432 	 str r3,[r7,#516]
+ 151:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     fcurnt4 = fnext4;
+ 326              	 .loc 1 151 0
+ 327 02b8 D7F8A031 	 ldr r3,[r7,#416]
+ 328 02bc C7F8FC31 	 str r3,[r7,#508]
+ 152:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 153:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 154:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     /* Loop unrolling.  Process 4 taps at a time . */
+ 155:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     stageCnt = (numStages - 1u) >> 2;
+ 329              	 .loc 1 155 0
+ 330 02c0 D7F8E431 	 ldr r3,[r7,#484]
+ 331 02c4 013B     	 subs r3,r3,#1
+ 332 02c6 9B08     	 lsrs r3,r3,#2
+ 333 02c8 C7F8F031 	 str r3,[r7,#496]
+ 156:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 157:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 158:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     /* Loop over the number of taps.  Unroll by a factor of 4.    
+ 159:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****      ** Repeat until we've computed numStages-3 coefficients. */
+ 160:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 161:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     /* Process 2nd, 3rd, 4th and 5th taps ... here */
+ 162:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     while(stageCnt > 0u)
+ 334              	 .loc 1 162 0
+ 335 02cc 00F017BC 	 b .L3
+ 336              	.L4:
+ 163:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     {
+ 164:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       /* Read g1(n-1), g3(n-1) .... from state */
+ 165:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       gcurnt1 = *px;
+ 337              	 .loc 1 165 0
+ 338 02d0 D7F81C32 	 ldr r3,[r7,#540]
+ 339 02d4 1B88     	 ldrh r3,[r3]
+ 340 02d6 1BB2     	 sxth r3,r3
+ 341 02d8 C7F8E831 	 str r3,[r7,#488]
+ 166:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 167:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       /* save g1(n) in state buffer */
+ 168:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       *px++ = (q15_t) gnext4;
+ 342              	 .loc 1 168 0
+ 343 02dc D7F81C32 	 ldr r3,[r7,#540]
+ 344 02e0 9A1C     	 adds r2,r3,#2
+ 345 02e2 C7F81C22 	 str r2,[r7,#540]
+ 346 02e6 D7F8F821 	 ldr r2,[r7,#504]
+ 347 02ea 92B2     	 uxth r2,r2
+ 348 02ec 1A80     	 strh r2,[r3]
+ 169:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 170:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       /* Process first sample for 2nd, 6th .. tap */
+ 171:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       /* Sample processing for K2, K6.... */
+ 172:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       /* f1(n) = f0(n) +  K1 * g0(n-1) */
+ 173:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       fnext1 = (q31_t) ((gcurnt1 * (*pk)) >> 15u) + fcurnt1;
+ 349              	 .loc 1 173 0
+ 350 02ee D7F81832 	 ldr r3,[r7,#536]
+ 351 02f2 1B88     	 ldrh r3,[r3]
+ 352 02f4 1BB2     	 sxth r3,r3
+ 353 02f6 D7F8E821 	 ldr r2,[r7,#488]
+ 354 02fa 02FB03F3 	 mul r3,r2,r3
+ 355 02fe DA13     	 asrs r2,r3,#15
+ 356 0300 D7F81432 	 ldr r3,[r7,#532]
+ 357 0304 1344     	 add r3,r3,r2
+ 358 0306 C7F8DC31 	 str r3,[r7,#476]
+ 359              	.LBB10:
+ 174:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       fnext1 = __SSAT(fnext1, 16);
+ 360              	 .loc 1 174 0
+ 361 030a D7F8DC31 	 ldr r3,[r7,#476]
+ 362 030e C7F88C31 	 str r3,[r7,#396]
+ 363 0312 D7F88C31 	 ldr r3,[r7,#396]
+ 364              	
+ 365 0316 03F30F03 	 ssat r3,#16,r3
+ 366              	
+ 367              	 .thumb
+ 368 031a C7F88831 	 str r3,[r7,#392]
+ 369 031e D7F88831 	 ldr r3,[r7,#392]
+ 370              	.LBE10:
+ 371 0322 C7F8DC31 	 str r3,[r7,#476]
+ 175:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 176:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 177:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       /* Process second sample for 2nd, 6th .. tap */
+ 178:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       /* for sample 2 processing */
+ 179:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       fnext2 = (q31_t) ((gnext1 * (*pk)) >> 15u) + fcurnt2;
+ 372              	 .loc 1 179 0
+ 373 0326 D7F81832 	 ldr r3,[r7,#536]
+ 374 032a 1B88     	 ldrh r3,[r3]
+ 375 032c 1BB2     	 sxth r3,r3
+ 376 032e D7F81022 	 ldr r2,[r7,#528]
+ 377 0332 02FB03F3 	 mul r3,r2,r3
+ 378 0336 DA13     	 asrs r2,r3,#15
+ 379 0338 D7F80C32 	 ldr r3,[r7,#524]
+ 380 033c 1344     	 add r3,r3,r2
+ 381 033e C7F8C831 	 str r3,[r7,#456]
+ 382              	.LBB11:
+ 180:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       fnext2 = __SSAT(fnext2, 16);
+ 383              	 .loc 1 180 0
+ 384 0342 D7F8C831 	 ldr r3,[r7,#456]
+ 385 0346 C7F88431 	 str r3,[r7,#388]
+ 386 034a D7F88431 	 ldr r3,[r7,#388]
+ 387              	
+ 388 034e 03F30F03 	 ssat r3,#16,r3
+ 389              	
+ 390              	 .thumb
+ 391 0352 C7F88031 	 str r3,[r7,#384]
+ 392 0356 D7F88031 	 ldr r3,[r7,#384]
+ 393              	.LBE11:
+ 394 035a C7F8C831 	 str r3,[r7,#456]
+ 181:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       /* Process third sample for 2nd, 6th .. tap */
+ 182:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       fnext3 = (q31_t) ((gnext2 * (*pk)) >> 15u) + fcurnt3;
+ 395              	 .loc 1 182 0
+ 396 035e D7F81832 	 ldr r3,[r7,#536]
+ 397 0362 1B88     	 ldrh r3,[r3]
+ 398 0364 1BB2     	 sxth r3,r3
+ 399 0366 D7F80822 	 ldr r2,[r7,#520]
+ 400 036a 02FB03F3 	 mul r3,r2,r3
+ 401 036e DA13     	 asrs r2,r3,#15
+ 402 0370 D7F80432 	 ldr r3,[r7,#516]
+ 403 0374 1344     	 add r3,r3,r2
+ 404 0376 C7F8B431 	 str r3,[r7,#436]
+ 405              	.LBB12:
+ 183:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       fnext3 = __SSAT(fnext3, 16);
+ 406              	 .loc 1 183 0
+ 407 037a D7F8B431 	 ldr r3,[r7,#436]
+ 408 037e C7F87C31 	 str r3,[r7,#380]
+ 409 0382 D7F87C31 	 ldr r3,[r7,#380]
+ 410              	
+ 411 0386 03F30F03 	 ssat r3,#16,r3
+ 412              	
+ 413              	 .thumb
+ 414 038a C7F87831 	 str r3,[r7,#376]
+ 415 038e D7F87831 	 ldr r3,[r7,#376]
+ 416              	.LBE12:
+ 417 0392 C7F8B431 	 str r3,[r7,#436]
+ 184:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       /* Process fourth sample for 2nd, 6th .. tap */
+ 185:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       /* fnext4 = fcurnt4 + (*pk) * gnext3; */
+ 186:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       fnext4 = (q31_t) ((gnext3 * (*pk)) >> 15u) + fcurnt4;
+ 418              	 .loc 1 186 0
+ 419 0396 D7F81832 	 ldr r3,[r7,#536]
+ 420 039a 1B88     	 ldrh r3,[r3]
+ 421 039c 1BB2     	 sxth r3,r3
+ 422 039e D7F80022 	 ldr r2,[r7,#512]
+ 423 03a2 02FB03F3 	 mul r3,r2,r3
+ 424 03a6 DA13     	 asrs r2,r3,#15
+ 425 03a8 D7F8FC31 	 ldr r3,[r7,#508]
+ 426 03ac 1344     	 add r3,r3,r2
+ 427 03ae C7F8A031 	 str r3,[r7,#416]
+ 428              	.LBB13:
+ 187:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       fnext4 = __SSAT(fnext4, 16);
+ 429              	 .loc 1 187 0
+ 430 03b2 D7F8A031 	 ldr r3,[r7,#416]
+ 431 03b6 C7F87431 	 str r3,[r7,#372]
+ 432 03ba D7F87431 	 ldr r3,[r7,#372]
+ 433              	
+ 434 03be 03F30F03 	 ssat r3,#16,r3
+ 435              	
+ 436              	 .thumb
+ 437 03c2 C7F87031 	 str r3,[r7,#368]
+ 438 03c6 D7F87031 	 ldr r3,[r7,#368]
+ 439              	.LBE13:
+ 440 03ca C7F8A031 	 str r3,[r7,#416]
+ 188:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 189:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       /* g1(n) = f0(n) * K1  +  g0(n-1) */
+ 190:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       /* Calculation of state values for next stage */
+ 191:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       gnext4 = (q31_t) ((fcurnt4 * (*pk)) >> 15u) + gnext3;
+ 441              	 .loc 1 191 0
+ 442 03ce D7F81832 	 ldr r3,[r7,#536]
+ 443 03d2 1B88     	 ldrh r3,[r3]
+ 444 03d4 1BB2     	 sxth r3,r3
+ 445 03d6 D7F8FC21 	 ldr r2,[r7,#508]
+ 446 03da 02FB03F3 	 mul r3,r2,r3
+ 447 03de DA13     	 asrs r2,r3,#15
+ 448 03e0 D7F80032 	 ldr r3,[r7,#512]
+ 449 03e4 1344     	 add r3,r3,r2
+ 450 03e6 C7F8F831 	 str r3,[r7,#504]
+ 451              	.LBB14:
+ 192:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       gnext4 = __SSAT(gnext4, 16);
+ 452              	 .loc 1 192 0
+ 453 03ea D7F8F831 	 ldr r3,[r7,#504]
+ 454 03ee C7F86C31 	 str r3,[r7,#364]
+ 455 03f2 D7F86C31 	 ldr r3,[r7,#364]
+ 456              	
+ 457 03f6 03F30F03 	 ssat r3,#16,r3
+ 458              	
+ 459              	 .thumb
+ 460 03fa C7F86831 	 str r3,[r7,#360]
+ 461 03fe D7F86831 	 ldr r3,[r7,#360]
+ 462              	.LBE14:
+ 463 0402 C7F8F831 	 str r3,[r7,#504]
+ 193:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       gnext3 = (q31_t) ((fcurnt3 * (*pk)) >> 15u) + gnext2;
+ 464              	 .loc 1 193 0
+ 465 0406 D7F81832 	 ldr r3,[r7,#536]
+ 466 040a 1B88     	 ldrh r3,[r3]
+ 467 040c 1BB2     	 sxth r3,r3
+ 468 040e D7F80422 	 ldr r2,[r7,#516]
+ 469 0412 02FB03F3 	 mul r3,r2,r3
+ 470 0416 DA13     	 asrs r2,r3,#15
+ 471 0418 D7F80832 	 ldr r3,[r7,#520]
+ 472 041c 1344     	 add r3,r3,r2
+ 473 041e C7F80032 	 str r3,[r7,#512]
+ 474              	.LBB15:
+ 194:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       gnext3 = __SSAT(gnext3, 16);
+ 475              	 .loc 1 194 0
+ 476 0422 D7F80032 	 ldr r3,[r7,#512]
+ 477 0426 C7F86431 	 str r3,[r7,#356]
+ 478 042a D7F86431 	 ldr r3,[r7,#356]
+ 479              	
+ 480 042e 03F30F03 	 ssat r3,#16,r3
+ 481              	
+ 482              	 .thumb
+ 483 0432 C7F86031 	 str r3,[r7,#352]
+ 484 0436 D7F86031 	 ldr r3,[r7,#352]
+ 485              	.LBE15:
+ 486 043a C7F80032 	 str r3,[r7,#512]
+ 195:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 196:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       gnext2 = (q31_t) ((fcurnt2 * (*pk)) >> 15u) + gnext1;
+ 487              	 .loc 1 196 0
+ 488 043e D7F81832 	 ldr r3,[r7,#536]
+ 489 0442 1B88     	 ldrh r3,[r3]
+ 490 0444 1BB2     	 sxth r3,r3
+ 491 0446 D7F80C22 	 ldr r2,[r7,#524]
+ 492 044a 02FB03F3 	 mul r3,r2,r3
+ 493 044e DA13     	 asrs r2,r3,#15
+ 494 0450 D7F81032 	 ldr r3,[r7,#528]
+ 495 0454 1344     	 add r3,r3,r2
+ 496 0456 C7F80832 	 str r3,[r7,#520]
+ 497              	.LBB16:
+ 197:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       gnext2 = __SSAT(gnext2, 16);
+ 498              	 .loc 1 197 0
+ 499 045a D7F80832 	 ldr r3,[r7,#520]
+ 500 045e C7F85C31 	 str r3,[r7,#348]
+ 501 0462 D7F85C31 	 ldr r3,[r7,#348]
+ 502              	
+ 503 0466 03F30F03 	 ssat r3,#16,r3
+ 504              	
+ 505              	 .thumb
+ 506 046a C7F85831 	 str r3,[r7,#344]
+ 507 046e D7F85831 	 ldr r3,[r7,#344]
+ 508              	.LBE16:
+ 509 0472 C7F80832 	 str r3,[r7,#520]
+ 198:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 199:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       gnext1 = (q31_t) ((fcurnt1 * (*pk++)) >> 15u) + gcurnt1;
+ 510              	 .loc 1 199 0
+ 511 0476 D7F81832 	 ldr r3,[r7,#536]
+ 512 047a 9A1C     	 adds r2,r3,#2
+ 513 047c C7F81822 	 str r2,[r7,#536]
+ 514 0480 1B88     	 ldrh r3,[r3]
+ 515 0482 1BB2     	 sxth r3,r3
+ 516 0484 D7F81422 	 ldr r2,[r7,#532]
+ 517 0488 02FB03F3 	 mul r3,r2,r3
+ 518 048c DA13     	 asrs r2,r3,#15
+ 519 048e D7F8E831 	 ldr r3,[r7,#488]
+ 520 0492 1344     	 add r3,r3,r2
+ 521 0494 C7F81032 	 str r3,[r7,#528]
+ 522              	.LBB17:
+ 200:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       gnext1 = __SSAT(gnext1, 16);
+ 523              	 .loc 1 200 0
+ 524 0498 D7F81032 	 ldr r3,[r7,#528]
+ 525 049c C7F85431 	 str r3,[r7,#340]
+ 526 04a0 D7F85431 	 ldr r3,[r7,#340]
+ 527              	
+ 528 04a4 03F30F03 	 ssat r3,#16,r3
+ 529              	
+ 530              	 .thumb
+ 531 04a8 C7F85031 	 str r3,[r7,#336]
+ 532 04ac D7F85031 	 ldr r3,[r7,#336]
+ 533              	.LBE17:
+ 534 04b0 C7F81032 	 str r3,[r7,#528]
+ 201:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 202:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 203:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       /* Read g2(n-1), g4(n-1) .... from state */
+ 204:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       gcurnt1 = *px;
+ 535              	 .loc 1 204 0
+ 536 04b4 D7F81C32 	 ldr r3,[r7,#540]
+ 537 04b8 1B88     	 ldrh r3,[r3]
+ 538 04ba 1BB2     	 sxth r3,r3
+ 539 04bc C7F8E831 	 str r3,[r7,#488]
+ 205:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 206:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       /* save g1(n) in state buffer */
+ 207:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       *px++ = (q15_t) gnext4;
+ 540              	 .loc 1 207 0
+ 541 04c0 D7F81C32 	 ldr r3,[r7,#540]
+ 542 04c4 9A1C     	 adds r2,r3,#2
+ 543 04c6 C7F81C22 	 str r2,[r7,#540]
+ 544 04ca D7F8F821 	 ldr r2,[r7,#504]
+ 545 04ce 92B2     	 uxth r2,r2
+ 546 04d0 1A80     	 strh r2,[r3]
+ 208:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 209:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       /* Sample processing for K3, K7.... */
+ 210:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       /* Process first sample for 3rd, 7th .. tap */
+ 211:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       /* f3(n) = f2(n) +  K3 * g2(n-1) */
+ 212:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       fcurnt1 = (q31_t) ((gcurnt1 * (*pk)) >> 15u) + fnext1;
+ 547              	 .loc 1 212 0
+ 548 04d2 D7F81832 	 ldr r3,[r7,#536]
+ 549 04d6 1B88     	 ldrh r3,[r3]
+ 550 04d8 1BB2     	 sxth r3,r3
+ 551 04da D7F8E821 	 ldr r2,[r7,#488]
+ 552 04de 02FB03F3 	 mul r3,r2,r3
+ 553 04e2 DA13     	 asrs r2,r3,#15
+ 554 04e4 D7F8DC31 	 ldr r3,[r7,#476]
+ 555 04e8 1344     	 add r3,r3,r2
+ 556 04ea C7F81432 	 str r3,[r7,#532]
+ 557              	.LBB18:
+ 213:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       fcurnt1 = __SSAT(fcurnt1, 16);
+ 558              	 .loc 1 213 0
+ 559 04ee D7F81432 	 ldr r3,[r7,#532]
+ 560 04f2 C7F84C31 	 str r3,[r7,#332]
+ 561 04f6 D7F84C31 	 ldr r3,[r7,#332]
+ 562              	
+ 563 04fa 03F30F03 	 ssat r3,#16,r3
+ 564              	
+ 565              	 .thumb
+ 566 04fe C7F84831 	 str r3,[r7,#328]
+ 567 0502 D7F84831 	 ldr r3,[r7,#328]
+ 568              	.LBE18:
+ 569 0506 C7F81432 	 str r3,[r7,#532]
+ 214:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 215:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       /* Process second sample for 3rd, 7th .. tap */
+ 216:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       fcurnt2 = (q31_t) ((gnext1 * (*pk)) >> 15u) + fnext2;
+ 570              	 .loc 1 216 0
+ 571 050a D7F81832 	 ldr r3,[r7,#536]
+ 572 050e 1B88     	 ldrh r3,[r3]
+ 573 0510 1BB2     	 sxth r3,r3
+ 574 0512 D7F81022 	 ldr r2,[r7,#528]
+ 575 0516 02FB03F3 	 mul r3,r2,r3
+ 576 051a DA13     	 asrs r2,r3,#15
+ 577 051c D7F8C831 	 ldr r3,[r7,#456]
+ 578 0520 1344     	 add r3,r3,r2
+ 579 0522 C7F80C32 	 str r3,[r7,#524]
+ 580              	.LBB19:
+ 217:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       fcurnt2 = __SSAT(fcurnt2, 16);
+ 581              	 .loc 1 217 0
+ 582 0526 D7F80C32 	 ldr r3,[r7,#524]
+ 583 052a C7F84431 	 str r3,[r7,#324]
+ 584 052e D7F84431 	 ldr r3,[r7,#324]
+ 585              	
+ 586 0532 03F30F03 	 ssat r3,#16,r3
+ 587              	
+ 588              	 .thumb
+ 589 0536 C7F84031 	 str r3,[r7,#320]
+ 590 053a D7F84031 	 ldr r3,[r7,#320]
+ 591              	.LBE19:
+ 592 053e C7F80C32 	 str r3,[r7,#524]
+ 218:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 219:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       /* Process third sample for 3rd, 7th .. tap */
+ 220:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       fcurnt3 = (q31_t) ((gnext2 * (*pk)) >> 15u) + fnext3;
+ 593              	 .loc 1 220 0
+ 594 0542 D7F81832 	 ldr r3,[r7,#536]
+ 595 0546 1B88     	 ldrh r3,[r3]
+ 596 0548 1BB2     	 sxth r3,r3
+ 597 054a D7F80822 	 ldr r2,[r7,#520]
+ 598 054e 02FB03F3 	 mul r3,r2,r3
+ 599 0552 DA13     	 asrs r2,r3,#15
+ 600 0554 D7F8B431 	 ldr r3,[r7,#436]
+ 601 0558 1344     	 add r3,r3,r2
+ 602 055a C7F80432 	 str r3,[r7,#516]
+ 603              	.LBB20:
+ 221:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       fcurnt3 = __SSAT(fcurnt3, 16);
+ 604              	 .loc 1 221 0
+ 605 055e D7F80432 	 ldr r3,[r7,#516]
+ 606 0562 C7F83C31 	 str r3,[r7,#316]
+ 607 0566 D7F83C31 	 ldr r3,[r7,#316]
+ 608              	
+ 609 056a 03F30F03 	 ssat r3,#16,r3
+ 610              	
+ 611              	 .thumb
+ 612 056e C7F83831 	 str r3,[r7,#312]
+ 613 0572 D7F83831 	 ldr r3,[r7,#312]
+ 614              	.LBE20:
+ 615 0576 C7F80432 	 str r3,[r7,#516]
+ 222:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 223:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       /* Process fourth sample for 3rd, 7th .. tap */
+ 224:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       fcurnt4 = (q31_t) ((gnext3 * (*pk)) >> 15u) + fnext4;
+ 616              	 .loc 1 224 0
+ 617 057a D7F81832 	 ldr r3,[r7,#536]
+ 618 057e 1B88     	 ldrh r3,[r3]
+ 619 0580 1BB2     	 sxth r3,r3
+ 620 0582 D7F80022 	 ldr r2,[r7,#512]
+ 621 0586 02FB03F3 	 mul r3,r2,r3
+ 622 058a DA13     	 asrs r2,r3,#15
+ 623 058c D7F8A031 	 ldr r3,[r7,#416]
+ 624 0590 1344     	 add r3,r3,r2
+ 625 0592 C7F8FC31 	 str r3,[r7,#508]
+ 626              	.LBB21:
+ 225:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       fcurnt4 = __SSAT(fcurnt4, 16);
+ 627              	 .loc 1 225 0
+ 628 0596 D7F8FC31 	 ldr r3,[r7,#508]
+ 629 059a C7F83431 	 str r3,[r7,#308]
+ 630 059e D7F83431 	 ldr r3,[r7,#308]
+ 631              	
+ 632 05a2 03F30F03 	 ssat r3,#16,r3
+ 633              	
+ 634              	 .thumb
+ 635 05a6 C7F83031 	 str r3,[r7,#304]
+ 636 05aa D7F83031 	 ldr r3,[r7,#304]
+ 637              	.LBE21:
+ 638 05ae C7F8FC31 	 str r3,[r7,#508]
+ 226:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 227:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       /* Calculation of state values for next stage */
+ 228:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       /* g3(n) = f2(n) * K3  +  g2(n-1) */
+ 229:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       gnext4 = (q31_t) ((fnext4 * (*pk)) >> 15u) + gnext3;
+ 639              	 .loc 1 229 0
+ 640 05b2 D7F81832 	 ldr r3,[r7,#536]
+ 641 05b6 1B88     	 ldrh r3,[r3]
+ 642 05b8 1BB2     	 sxth r3,r3
+ 643 05ba D7F8A021 	 ldr r2,[r7,#416]
+ 644 05be 02FB03F3 	 mul r3,r2,r3
+ 645 05c2 DA13     	 asrs r2,r3,#15
+ 646 05c4 D7F80032 	 ldr r3,[r7,#512]
+ 647 05c8 1344     	 add r3,r3,r2
+ 648 05ca C7F8F831 	 str r3,[r7,#504]
+ 649              	.LBB22:
+ 230:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       gnext4 = __SSAT(gnext4, 16);
+ 650              	 .loc 1 230 0
+ 651 05ce D7F8F831 	 ldr r3,[r7,#504]
+ 652 05d2 C7F82C31 	 str r3,[r7,#300]
+ 653 05d6 D7F82C31 	 ldr r3,[r7,#300]
+ 654              	
+ 655 05da 03F30F03 	 ssat r3,#16,r3
+ 656              	
+ 657              	 .thumb
+ 658 05de C7F82831 	 str r3,[r7,#296]
+ 659 05e2 D7F82831 	 ldr r3,[r7,#296]
+ 660              	.LBE22:
+ 661 05e6 C7F8F831 	 str r3,[r7,#504]
+ 231:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 232:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       gnext3 = (q31_t) ((fnext3 * (*pk)) >> 15u) + gnext2;
+ 662              	 .loc 1 232 0
+ 663 05ea D7F81832 	 ldr r3,[r7,#536]
+ 664 05ee 1B88     	 ldrh r3,[r3]
+ 665 05f0 1BB2     	 sxth r3,r3
+ 666 05f2 D7F8B421 	 ldr r2,[r7,#436]
+ 667 05f6 02FB03F3 	 mul r3,r2,r3
+ 668 05fa DA13     	 asrs r2,r3,#15
+ 669 05fc D7F80832 	 ldr r3,[r7,#520]
+ 670 0600 1344     	 add r3,r3,r2
+ 671 0602 C7F80032 	 str r3,[r7,#512]
+ 672              	.LBB23:
+ 233:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       gnext3 = __SSAT(gnext3, 16);
+ 673              	 .loc 1 233 0
+ 674 0606 D7F80032 	 ldr r3,[r7,#512]
+ 675 060a C7F82431 	 str r3,[r7,#292]
+ 676 060e D7F82431 	 ldr r3,[r7,#292]
+ 677              	
+ 678 0612 03F30F02 	 ssat r2,#16,r3
+ 679              	
+ 680              	 .thumb
+ 681 0616 07F59073 	 add r3,r7,#288
+ 682 061a 1A60     	 str r2,[r3]
+ 683 061c 07F59073 	 add r3,r7,#288
+ 684 0620 1B68     	 ldr r3,[r3]
+ 685              	.LBE23:
+ 686 0622 C7F80032 	 str r3,[r7,#512]
+ 234:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 235:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       gnext2 = (q31_t) ((fnext2 * (*pk)) >> 15u) + gnext1;
+ 687              	 .loc 1 235 0
+ 688 0626 D7F81832 	 ldr r3,[r7,#536]
+ 689 062a 1B88     	 ldrh r3,[r3]
+ 690 062c 1BB2     	 sxth r3,r3
+ 691 062e D7F8C821 	 ldr r2,[r7,#456]
+ 692 0632 02FB03F3 	 mul r3,r2,r3
+ 693 0636 DA13     	 asrs r2,r3,#15
+ 694 0638 D7F81032 	 ldr r3,[r7,#528]
+ 695 063c 1344     	 add r3,r3,r2
+ 696 063e C7F80832 	 str r3,[r7,#520]
+ 697              	.LBB24:
+ 236:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       gnext2 = __SSAT(gnext2, 16);
+ 698              	 .loc 1 236 0
+ 699 0642 07F58E73 	 add r3,r7,#284
+ 700 0646 D7F80822 	 ldr r2,[r7,#520]
+ 701 064a 1A60     	 str r2,[r3]
+ 702 064c 07F58E73 	 add r3,r7,#284
+ 703 0650 1B68     	 ldr r3,[r3]
+ 704              	
+ 705 0652 03F30F02 	 ssat r2,#16,r3
+ 706              	
+ 707              	 .thumb
+ 708 0656 07F58C73 	 add r3,r7,#280
+ 709 065a 1A60     	 str r2,[r3]
+ 710 065c 07F58C73 	 add r3,r7,#280
+ 711 0660 1B68     	 ldr r3,[r3]
+ 712              	.LBE24:
+ 713 0662 C7F80832 	 str r3,[r7,#520]
+ 237:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 238:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       gnext1 = (q31_t) ((fnext1 * (*pk++)) >> 15u) + gcurnt1;
+ 714              	 .loc 1 238 0
+ 715 0666 D7F81832 	 ldr r3,[r7,#536]
+ 716 066a 9A1C     	 adds r2,r3,#2
+ 717 066c C7F81822 	 str r2,[r7,#536]
+ 718 0670 1B88     	 ldrh r3,[r3]
+ 719 0672 1BB2     	 sxth r3,r3
+ 720 0674 D7F8DC21 	 ldr r2,[r7,#476]
+ 721 0678 02FB03F3 	 mul r3,r2,r3
+ 722 067c DA13     	 asrs r2,r3,#15
+ 723 067e D7F8E831 	 ldr r3,[r7,#488]
+ 724 0682 1344     	 add r3,r3,r2
+ 725 0684 C7F81032 	 str r3,[r7,#528]
+ 726              	.LBB25:
+ 239:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       gnext1 = __SSAT(gnext1, 16);
+ 727              	 .loc 1 239 0
+ 728 0688 07F58A73 	 add r3,r7,#276
+ 729 068c D7F81022 	 ldr r2,[r7,#528]
+ 730 0690 1A60     	 str r2,[r3]
+ 731 0692 07F58A73 	 add r3,r7,#276
+ 732 0696 1B68     	 ldr r3,[r3]
+ 733              	
+ 734 0698 03F30F02 	 ssat r2,#16,r3
+ 735              	
+ 736              	 .thumb
+ 737 069c 07F58873 	 add r3,r7,#272
+ 738 06a0 1A60     	 str r2,[r3]
+ 739 06a2 07F58873 	 add r3,r7,#272
+ 740 06a6 1B68     	 ldr r3,[r3]
+ 741              	.LBE25:
+ 742 06a8 C7F81032 	 str r3,[r7,#528]
+ 240:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 241:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       /* Read g1(n-1), g3(n-1) .... from state */
+ 242:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       gcurnt1 = *px;
+ 743              	 .loc 1 242 0
+ 744 06ac D7F81C32 	 ldr r3,[r7,#540]
+ 745 06b0 1B88     	 ldrh r3,[r3]
+ 746 06b2 1BB2     	 sxth r3,r3
+ 747 06b4 C7F8E831 	 str r3,[r7,#488]
+ 243:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 244:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       /* save g1(n) in state buffer */
+ 245:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       *px++ = (q15_t) gnext4;
+ 748              	 .loc 1 245 0
+ 749 06b8 D7F81C32 	 ldr r3,[r7,#540]
+ 750 06bc 9A1C     	 adds r2,r3,#2
+ 751 06be C7F81C22 	 str r2,[r7,#540]
+ 752 06c2 D7F8F821 	 ldr r2,[r7,#504]
+ 753 06c6 92B2     	 uxth r2,r2
+ 754 06c8 1A80     	 strh r2,[r3]
+ 246:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 247:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       /* Sample processing for K4, K8.... */
+ 248:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       /* Process first sample for 4th, 8th .. tap */
+ 249:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       /* f4(n) = f3(n) +  K4 * g3(n-1) */
+ 250:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       fnext1 = (q31_t) ((gcurnt1 * (*pk)) >> 15u) + fcurnt1;
+ 755              	 .loc 1 250 0
+ 756 06ca D7F81832 	 ldr r3,[r7,#536]
+ 757 06ce 1B88     	 ldrh r3,[r3]
+ 758 06d0 1BB2     	 sxth r3,r3
+ 759 06d2 D7F8E821 	 ldr r2,[r7,#488]
+ 760 06d6 02FB03F3 	 mul r3,r2,r3
+ 761 06da DA13     	 asrs r2,r3,#15
+ 762 06dc D7F81432 	 ldr r3,[r7,#532]
+ 763 06e0 1344     	 add r3,r3,r2
+ 764 06e2 C7F8DC31 	 str r3,[r7,#476]
+ 765              	.LBB26:
+ 251:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       fnext1 = __SSAT(fnext1, 16);
+ 766              	 .loc 1 251 0
+ 767 06e6 07F58673 	 add r3,r7,#268
+ 768 06ea D7F8DC21 	 ldr r2,[r7,#476]
+ 769 06ee 1A60     	 str r2,[r3]
+ 770 06f0 07F58673 	 add r3,r7,#268
+ 771 06f4 1B68     	 ldr r3,[r3]
+ 772              	
+ 773 06f6 03F30F02 	 ssat r2,#16,r3
+ 774              	
+ 775              	 .thumb
+ 776 06fa 07F58473 	 add r3,r7,#264
+ 777 06fe 1A60     	 str r2,[r3]
+ 778 0700 07F58473 	 add r3,r7,#264
+ 779 0704 1B68     	 ldr r3,[r3]
+ 780              	.LBE26:
+ 781 0706 C7F8DC31 	 str r3,[r7,#476]
+ 252:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 253:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       /* Process second sample for 4th, 8th .. tap */
+ 254:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       /* for sample 2 processing */
+ 255:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       fnext2 = (q31_t) ((gnext1 * (*pk)) >> 15u) + fcurnt2;
+ 782              	 .loc 1 255 0
+ 783 070a D7F81832 	 ldr r3,[r7,#536]
+ 784 070e 1B88     	 ldrh r3,[r3]
+ 785 0710 1BB2     	 sxth r3,r3
+ 786 0712 D7F81022 	 ldr r2,[r7,#528]
+ 787 0716 02FB03F3 	 mul r3,r2,r3
+ 788 071a DA13     	 asrs r2,r3,#15
+ 789 071c D7F80C32 	 ldr r3,[r7,#524]
+ 790 0720 1344     	 add r3,r3,r2
+ 791 0722 C7F8C831 	 str r3,[r7,#456]
+ 792              	.LBB27:
+ 256:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       fnext2 = __SSAT(fnext2, 16);
+ 793              	 .loc 1 256 0
+ 794 0726 07F58273 	 add r3,r7,#260
+ 795 072a D7F8C821 	 ldr r2,[r7,#456]
+ 796 072e 1A60     	 str r2,[r3]
+ 797 0730 07F58273 	 add r3,r7,#260
+ 798 0734 1B68     	 ldr r3,[r3]
+ 799              	
+ 800 0736 03F30F02 	 ssat r2,#16,r3
+ 801              	
+ 802              	 .thumb
+ 803 073a 07F58073 	 add r3,r7,#256
+ 804 073e 1A60     	 str r2,[r3]
+ 805 0740 07F58073 	 add r3,r7,#256
+ 806 0744 1B68     	 ldr r3,[r3]
+ 807              	.LBE27:
+ 808 0746 C7F8C831 	 str r3,[r7,#456]
+ 257:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 258:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       /* Process third sample for 4th, 8th .. tap */
+ 259:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       fnext3 = (q31_t) ((gnext2 * (*pk)) >> 15u) + fcurnt3;
+ 809              	 .loc 1 259 0
+ 810 074a D7F81832 	 ldr r3,[r7,#536]
+ 811 074e 1B88     	 ldrh r3,[r3]
+ 812 0750 1BB2     	 sxth r3,r3
+ 813 0752 D7F80822 	 ldr r2,[r7,#520]
+ 814 0756 02FB03F3 	 mul r3,r2,r3
+ 815 075a DA13     	 asrs r2,r3,#15
+ 816 075c D7F80432 	 ldr r3,[r7,#516]
+ 817 0760 1344     	 add r3,r3,r2
+ 818 0762 C7F8B431 	 str r3,[r7,#436]
+ 819              	.LBB28:
+ 260:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       fnext3 = __SSAT(fnext3, 16);
+ 820              	 .loc 1 260 0
+ 821 0766 07F1FC03 	 add r3,r7,#252
+ 822 076a D7F8B421 	 ldr r2,[r7,#436]
+ 823 076e 1A60     	 str r2,[r3]
+ 824 0770 07F1FC03 	 add r3,r7,#252
+ 825 0774 1B68     	 ldr r3,[r3]
+ 826              	
+ 827 0776 03F30F02 	 ssat r2,#16,r3
+ 828              	
+ 829              	 .thumb
+ 830 077a 07F1F803 	 add r3,r7,#248
+ 831 077e 1A60     	 str r2,[r3]
+ 832 0780 07F1F803 	 add r3,r7,#248
+ 833 0784 1B68     	 ldr r3,[r3]
+ 834              	.LBE28:
+ 835 0786 C7F8B431 	 str r3,[r7,#436]
+ 261:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 262:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       /* Process fourth sample for 4th, 8th .. tap */
+ 263:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       fnext4 = (q31_t) ((gnext3 * (*pk)) >> 15u) + fcurnt4;
+ 836              	 .loc 1 263 0
+ 837 078a D7F81832 	 ldr r3,[r7,#536]
+ 838 078e 1B88     	 ldrh r3,[r3]
+ 839 0790 1BB2     	 sxth r3,r3
+ 840 0792 D7F80022 	 ldr r2,[r7,#512]
+ 841 0796 02FB03F3 	 mul r3,r2,r3
+ 842 079a DA13     	 asrs r2,r3,#15
+ 843 079c D7F8FC31 	 ldr r3,[r7,#508]
+ 844 07a0 1344     	 add r3,r3,r2
+ 845 07a2 C7F8A031 	 str r3,[r7,#416]
+ 846              	.LBB29:
+ 264:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       fnext4 = __SSAT(fnext4, 16);
+ 847              	 .loc 1 264 0
+ 848 07a6 07F1F403 	 add r3,r7,#244
+ 849 07aa D7F8A021 	 ldr r2,[r7,#416]
+ 850 07ae 1A60     	 str r2,[r3]
+ 851 07b0 07F1F403 	 add r3,r7,#244
+ 852 07b4 1B68     	 ldr r3,[r3]
+ 853              	
+ 854 07b6 03F30F02 	 ssat r2,#16,r3
+ 855              	
+ 856              	 .thumb
+ 857 07ba 07F1F003 	 add r3,r7,#240
+ 858 07be 1A60     	 str r2,[r3]
+ 859 07c0 07F1F003 	 add r3,r7,#240
+ 860 07c4 1B68     	 ldr r3,[r3]
+ 861              	.LBE29:
+ 862 07c6 C7F8A031 	 str r3,[r7,#416]
+ 265:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 266:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       /* g4(n) = f3(n) * K4  +  g3(n-1) */
+ 267:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       /* Calculation of state values for next stage */
+ 268:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       gnext4 = (q31_t) ((fcurnt4 * (*pk)) >> 15u) + gnext3;
+ 863              	 .loc 1 268 0
+ 864 07ca D7F81832 	 ldr r3,[r7,#536]
+ 865 07ce 1B88     	 ldrh r3,[r3]
+ 866 07d0 1BB2     	 sxth r3,r3
+ 867 07d2 D7F8FC21 	 ldr r2,[r7,#508]
+ 868 07d6 02FB03F3 	 mul r3,r2,r3
+ 869 07da DA13     	 asrs r2,r3,#15
+ 870 07dc D7F80032 	 ldr r3,[r7,#512]
+ 871 07e0 1344     	 add r3,r3,r2
+ 872 07e2 C7F8F831 	 str r3,[r7,#504]
+ 873              	.LBB30:
+ 269:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       gnext4 = __SSAT(gnext4, 16);
+ 874              	 .loc 1 269 0
+ 875 07e6 07F1EC03 	 add r3,r7,#236
+ 876 07ea D7F8F821 	 ldr r2,[r7,#504]
+ 877 07ee 1A60     	 str r2,[r3]
+ 878 07f0 07F1EC03 	 add r3,r7,#236
+ 879 07f4 1B68     	 ldr r3,[r3]
+ 880              	
+ 881 07f6 03F30F02 	 ssat r2,#16,r3
+ 882              	
+ 883              	 .thumb
+ 884 07fa 07F1E803 	 add r3,r7,#232
+ 885 07fe 1A60     	 str r2,[r3]
+ 886 0800 07F1E803 	 add r3,r7,#232
+ 887 0804 1B68     	 ldr r3,[r3]
+ 888              	.LBE30:
+ 889 0806 C7F8F831 	 str r3,[r7,#504]
+ 270:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 271:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       gnext3 = (q31_t) ((fcurnt3 * (*pk)) >> 15u) + gnext2;
+ 890              	 .loc 1 271 0
+ 891 080a D7F81832 	 ldr r3,[r7,#536]
+ 892 080e 1B88     	 ldrh r3,[r3]
+ 893 0810 1BB2     	 sxth r3,r3
+ 894 0812 D7F80422 	 ldr r2,[r7,#516]
+ 895 0816 02FB03F3 	 mul r3,r2,r3
+ 896 081a DA13     	 asrs r2,r3,#15
+ 897 081c D7F80832 	 ldr r3,[r7,#520]
+ 898 0820 1344     	 add r3,r3,r2
+ 899 0822 C7F80032 	 str r3,[r7,#512]
+ 900              	.LBB31:
+ 272:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       gnext3 = __SSAT(gnext3, 16);
+ 901              	 .loc 1 272 0
+ 902 0826 07F1E403 	 add r3,r7,#228
+ 903 082a D7F80022 	 ldr r2,[r7,#512]
+ 904 082e 1A60     	 str r2,[r3]
+ 905 0830 07F1E403 	 add r3,r7,#228
+ 906 0834 1B68     	 ldr r3,[r3]
+ 907              	
+ 908 0836 03F30F02 	 ssat r2,#16,r3
+ 909              	
+ 910              	 .thumb
+ 911 083a 07F1E003 	 add r3,r7,#224
+ 912 083e 1A60     	 str r2,[r3]
+ 913 0840 07F1E003 	 add r3,r7,#224
+ 914 0844 1B68     	 ldr r3,[r3]
+ 915              	.LBE31:
+ 916 0846 C7F80032 	 str r3,[r7,#512]
+ 273:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 274:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       gnext2 = (q31_t) ((fcurnt2 * (*pk)) >> 15u) + gnext1;
+ 917              	 .loc 1 274 0
+ 918 084a D7F81832 	 ldr r3,[r7,#536]
+ 919 084e 1B88     	 ldrh r3,[r3]
+ 920 0850 1BB2     	 sxth r3,r3
+ 921 0852 D7F80C22 	 ldr r2,[r7,#524]
+ 922 0856 02FB03F3 	 mul r3,r2,r3
+ 923 085a DA13     	 asrs r2,r3,#15
+ 924 085c D7F81032 	 ldr r3,[r7,#528]
+ 925 0860 1344     	 add r3,r3,r2
+ 926 0862 C7F80832 	 str r3,[r7,#520]
+ 927              	.LBB32:
+ 275:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       gnext2 = __SSAT(gnext2, 16);
+ 928              	 .loc 1 275 0
+ 929 0866 07F1DC03 	 add r3,r7,#220
+ 930 086a D7F80822 	 ldr r2,[r7,#520]
+ 931 086e 1A60     	 str r2,[r3]
+ 932 0870 07F1DC03 	 add r3,r7,#220
+ 933 0874 1B68     	 ldr r3,[r3]
+ 934              	
+ 935 0876 03F30F02 	 ssat r2,#16,r3
+ 936              	
+ 937              	 .thumb
+ 938 087a 07F1D803 	 add r3,r7,#216
+ 939 087e 1A60     	 str r2,[r3]
+ 940 0880 07F1D803 	 add r3,r7,#216
+ 941 0884 1B68     	 ldr r3,[r3]
+ 942              	.LBE32:
+ 943 0886 C7F80832 	 str r3,[r7,#520]
+ 276:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       gnext1 = (q31_t) ((fcurnt1 * (*pk++)) >> 15u) + gcurnt1;
+ 944              	 .loc 1 276 0
+ 945 088a D7F81832 	 ldr r3,[r7,#536]
+ 946 088e 9A1C     	 adds r2,r3,#2
+ 947 0890 C7F81822 	 str r2,[r7,#536]
+ 948 0894 1B88     	 ldrh r3,[r3]
+ 949 0896 1BB2     	 sxth r3,r3
+ 950 0898 D7F81422 	 ldr r2,[r7,#532]
+ 951 089c 02FB03F3 	 mul r3,r2,r3
+ 952 08a0 DA13     	 asrs r2,r3,#15
+ 953 08a2 D7F8E831 	 ldr r3,[r7,#488]
+ 954 08a6 1344     	 add r3,r3,r2
+ 955 08a8 C7F81032 	 str r3,[r7,#528]
+ 956              	.LBB33:
+ 277:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       gnext1 = __SSAT(gnext1, 16);
+ 957              	 .loc 1 277 0
+ 958 08ac 07F1D403 	 add r3,r7,#212
+ 959 08b0 D7F81022 	 ldr r2,[r7,#528]
+ 960 08b4 1A60     	 str r2,[r3]
+ 961 08b6 07F1D403 	 add r3,r7,#212
+ 962 08ba 1B68     	 ldr r3,[r3]
+ 963              	
+ 964 08bc 03F30F02 	 ssat r2,#16,r3
+ 965              	
+ 966              	 .thumb
+ 967 08c0 07F1D003 	 add r3,r7,#208
+ 968 08c4 1A60     	 str r2,[r3]
+ 969 08c6 07F1D003 	 add r3,r7,#208
+ 970 08ca 1B68     	 ldr r3,[r3]
+ 971              	.LBE33:
+ 972 08cc C7F81032 	 str r3,[r7,#528]
+ 278:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 279:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 280:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       /* Read g2(n-1), g4(n-1) .... from state */
+ 281:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       gcurnt1 = *px;
+ 973              	 .loc 1 281 0
+ 974 08d0 D7F81C32 	 ldr r3,[r7,#540]
+ 975 08d4 1B88     	 ldrh r3,[r3]
+ 976 08d6 1BB2     	 sxth r3,r3
+ 977 08d8 C7F8E831 	 str r3,[r7,#488]
+ 282:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 283:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       /* save g4(n) in state buffer */
+ 284:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       *px++ = (q15_t) gnext4;
+ 978              	 .loc 1 284 0
+ 979 08dc D7F81C32 	 ldr r3,[r7,#540]
+ 980 08e0 9A1C     	 adds r2,r3,#2
+ 981 08e2 C7F81C22 	 str r2,[r7,#540]
+ 982 08e6 D7F8F821 	 ldr r2,[r7,#504]
+ 983 08ea 92B2     	 uxth r2,r2
+ 984 08ec 1A80     	 strh r2,[r3]
+ 285:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 286:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       /* Sample processing for K5, K9.... */
+ 287:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       /* Process first sample for 5th, 9th .. tap */
+ 288:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       /* f5(n) = f4(n) +  K5 * g4(n-1) */
+ 289:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       fcurnt1 = (q31_t) ((gcurnt1 * (*pk)) >> 15u) + fnext1;
+ 985              	 .loc 1 289 0
+ 986 08ee D7F81832 	 ldr r3,[r7,#536]
+ 987 08f2 1B88     	 ldrh r3,[r3]
+ 988 08f4 1BB2     	 sxth r3,r3
+ 989 08f6 D7F8E821 	 ldr r2,[r7,#488]
+ 990 08fa 02FB03F3 	 mul r3,r2,r3
+ 991 08fe DA13     	 asrs r2,r3,#15
+ 992 0900 D7F8DC31 	 ldr r3,[r7,#476]
+ 993 0904 1344     	 add r3,r3,r2
+ 994 0906 C7F81432 	 str r3,[r7,#532]
+ 995              	.LBB34:
+ 290:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       fcurnt1 = __SSAT(fcurnt1, 16);
+ 996              	 .loc 1 290 0
+ 997 090a 07F1CC03 	 add r3,r7,#204
+ 998 090e D7F81422 	 ldr r2,[r7,#532]
+ 999 0912 1A60     	 str r2,[r3]
+ 1000 0914 07F1CC03 	 add r3,r7,#204
+ 1001 0918 1B68     	 ldr r3,[r3]
+ 1002              	
+ 1003 091a 03F30F02 	 ssat r2,#16,r3
+ 1004              	
+ 1005              	 .thumb
+ 1006 091e 07F1C803 	 add r3,r7,#200
+ 1007 0922 1A60     	 str r2,[r3]
+ 1008 0924 07F1C803 	 add r3,r7,#200
+ 1009 0928 1B68     	 ldr r3,[r3]
+ 1010              	.LBE34:
+ 1011 092a C7F81432 	 str r3,[r7,#532]
+ 291:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 292:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       /* Process second sample for 5th, 9th .. tap */
+ 293:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       fcurnt2 = (q31_t) ((gnext1 * (*pk)) >> 15u) + fnext2;
+ 1012              	 .loc 1 293 0
+ 1013 092e D7F81832 	 ldr r3,[r7,#536]
+ 1014 0932 1B88     	 ldrh r3,[r3]
+ 1015 0934 1BB2     	 sxth r3,r3
+ 1016 0936 D7F81022 	 ldr r2,[r7,#528]
+ 1017 093a 02FB03F3 	 mul r3,r2,r3
+ 1018 093e DA13     	 asrs r2,r3,#15
+ 1019 0940 D7F8C831 	 ldr r3,[r7,#456]
+ 1020 0944 1344     	 add r3,r3,r2
+ 1021 0946 C7F80C32 	 str r3,[r7,#524]
+ 1022              	.LBB35:
+ 294:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       fcurnt2 = __SSAT(fcurnt2, 16);
+ 1023              	 .loc 1 294 0
+ 1024 094a 07F1C403 	 add r3,r7,#196
+ 1025 094e D7F80C22 	 ldr r2,[r7,#524]
+ 1026 0952 1A60     	 str r2,[r3]
+ 1027 0954 07F1C403 	 add r3,r7,#196
+ 1028 0958 1B68     	 ldr r3,[r3]
+ 1029              	
+ 1030 095a 03F30F02 	 ssat r2,#16,r3
+ 1031              	
+ 1032              	 .thumb
+ 1033 095e 07F1C003 	 add r3,r7,#192
+ 1034 0962 1A60     	 str r2,[r3]
+ 1035 0964 07F1C003 	 add r3,r7,#192
+ 1036 0968 1B68     	 ldr r3,[r3]
+ 1037              	.LBE35:
+ 1038 096a C7F80C32 	 str r3,[r7,#524]
+ 295:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 296:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       /* Process third sample for 5th, 9th .. tap */
+ 297:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       fcurnt3 = (q31_t) ((gnext2 * (*pk)) >> 15u) + fnext3;
+ 1039              	 .loc 1 297 0
+ 1040 096e D7F81832 	 ldr r3,[r7,#536]
+ 1041 0972 1B88     	 ldrh r3,[r3]
+ 1042 0974 1BB2     	 sxth r3,r3
+ 1043 0976 D7F80822 	 ldr r2,[r7,#520]
+ 1044 097a 02FB03F3 	 mul r3,r2,r3
+ 1045 097e DA13     	 asrs r2,r3,#15
+ 1046 0980 D7F8B431 	 ldr r3,[r7,#436]
+ 1047 0984 1344     	 add r3,r3,r2
+ 1048 0986 C7F80432 	 str r3,[r7,#516]
+ 1049              	.LBB36:
+ 298:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       fcurnt3 = __SSAT(fcurnt3, 16);
+ 1050              	 .loc 1 298 0
+ 1051 098a 07F1BC03 	 add r3,r7,#188
+ 1052 098e D7F80422 	 ldr r2,[r7,#516]
+ 1053 0992 1A60     	 str r2,[r3]
+ 1054 0994 07F1BC03 	 add r3,r7,#188
+ 1055 0998 1B68     	 ldr r3,[r3]
+ 1056              	
+ 1057 099a 03F30F02 	 ssat r2,#16,r3
+ 1058              	
+ 1059              	 .thumb
+ 1060 099e 07F1B803 	 add r3,r7,#184
+ 1061 09a2 1A60     	 str r2,[r3]
+ 1062 09a4 07F1B803 	 add r3,r7,#184
+ 1063 09a8 1B68     	 ldr r3,[r3]
+ 1064              	.LBE36:
+ 1065 09aa C7F80432 	 str r3,[r7,#516]
+ 299:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 300:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       /* Process fourth sample for 5th, 9th .. tap */
+ 301:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       fcurnt4 = (q31_t) ((gnext3 * (*pk)) >> 15u) + fnext4;
+ 1066              	 .loc 1 301 0
+ 1067 09ae D7F81832 	 ldr r3,[r7,#536]
+ 1068 09b2 1B88     	 ldrh r3,[r3]
+ 1069 09b4 1BB2     	 sxth r3,r3
+ 1070 09b6 D7F80022 	 ldr r2,[r7,#512]
+ 1071 09ba 02FB03F3 	 mul r3,r2,r3
+ 1072 09be DA13     	 asrs r2,r3,#15
+ 1073 09c0 D7F8A031 	 ldr r3,[r7,#416]
+ 1074 09c4 1344     	 add r3,r3,r2
+ 1075 09c6 C7F8FC31 	 str r3,[r7,#508]
+ 1076              	.LBB37:
+ 302:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       fcurnt4 = __SSAT(fcurnt4, 16);
+ 1077              	 .loc 1 302 0
+ 1078 09ca 07F1B403 	 add r3,r7,#180
+ 1079 09ce D7F8FC21 	 ldr r2,[r7,#508]
+ 1080 09d2 1A60     	 str r2,[r3]
+ 1081 09d4 07F1B403 	 add r3,r7,#180
+ 1082 09d8 1B68     	 ldr r3,[r3]
+ 1083              	
+ 1084 09da 03F30F02 	 ssat r2,#16,r3
+ 1085              	
+ 1086              	 .thumb
+ 1087 09de 07F1B003 	 add r3,r7,#176
+ 1088 09e2 1A60     	 str r2,[r3]
+ 1089 09e4 07F1B003 	 add r3,r7,#176
+ 1090 09e8 1B68     	 ldr r3,[r3]
+ 1091              	.LBE37:
+ 1092 09ea C7F8FC31 	 str r3,[r7,#508]
+ 303:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 304:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       /* Calculation of state values for next stage */
+ 305:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       /* g5(n) = f4(n) * K5  +  g4(n-1) */
+ 306:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       gnext4 = (q31_t) ((fnext4 * (*pk)) >> 15u) + gnext3;
+ 1093              	 .loc 1 306 0
+ 1094 09ee D7F81832 	 ldr r3,[r7,#536]
+ 1095 09f2 1B88     	 ldrh r3,[r3]
+ 1096 09f4 1BB2     	 sxth r3,r3
+ 1097 09f6 D7F8A021 	 ldr r2,[r7,#416]
+ 1098 09fa 02FB03F3 	 mul r3,r2,r3
+ 1099 09fe DA13     	 asrs r2,r3,#15
+ 1100 0a00 D7F80032 	 ldr r3,[r7,#512]
+ 1101 0a04 1344     	 add r3,r3,r2
+ 1102 0a06 C7F8F831 	 str r3,[r7,#504]
+ 1103              	.LBB38:
+ 307:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       gnext4 = __SSAT(gnext4, 16);
+ 1104              	 .loc 1 307 0
+ 1105 0a0a 07F1AC03 	 add r3,r7,#172
+ 1106 0a0e D7F8F821 	 ldr r2,[r7,#504]
+ 1107 0a12 1A60     	 str r2,[r3]
+ 1108 0a14 07F1AC03 	 add r3,r7,#172
+ 1109 0a18 1B68     	 ldr r3,[r3]
+ 1110              	
+ 1111 0a1a 03F30F02 	 ssat r2,#16,r3
+ 1112              	
+ 1113              	 .thumb
+ 1114 0a1e 07F1A803 	 add r3,r7,#168
+ 1115 0a22 1A60     	 str r2,[r3]
+ 1116 0a24 07F1A803 	 add r3,r7,#168
+ 1117 0a28 1B68     	 ldr r3,[r3]
+ 1118              	.LBE38:
+ 1119 0a2a C7F8F831 	 str r3,[r7,#504]
+ 308:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       gnext3 = (q31_t) ((fnext3 * (*pk)) >> 15u) + gnext2;
+ 1120              	 .loc 1 308 0
+ 1121 0a2e D7F81832 	 ldr r3,[r7,#536]
+ 1122 0a32 1B88     	 ldrh r3,[r3]
+ 1123 0a34 1BB2     	 sxth r3,r3
+ 1124 0a36 D7F8B421 	 ldr r2,[r7,#436]
+ 1125 0a3a 02FB03F3 	 mul r3,r2,r3
+ 1126 0a3e DA13     	 asrs r2,r3,#15
+ 1127 0a40 D7F80832 	 ldr r3,[r7,#520]
+ 1128 0a44 1344     	 add r3,r3,r2
+ 1129 0a46 C7F80032 	 str r3,[r7,#512]
+ 1130              	.LBB39:
+ 309:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       gnext3 = __SSAT(gnext3, 16);
+ 1131              	 .loc 1 309 0
+ 1132 0a4a 07F1A403 	 add r3,r7,#164
+ 1133 0a4e D7F80022 	 ldr r2,[r7,#512]
+ 1134 0a52 1A60     	 str r2,[r3]
+ 1135 0a54 07F1A403 	 add r3,r7,#164
+ 1136 0a58 1B68     	 ldr r3,[r3]
+ 1137              	
+ 1138 0a5a 03F30F02 	 ssat r2,#16,r3
+ 1139              	
+ 1140              	 .thumb
+ 1141 0a5e 07F1A003 	 add r3,r7,#160
+ 1142 0a62 1A60     	 str r2,[r3]
+ 1143 0a64 07F1A003 	 add r3,r7,#160
+ 1144 0a68 1B68     	 ldr r3,[r3]
+ 1145              	.LBE39:
+ 1146 0a6a C7F80032 	 str r3,[r7,#512]
+ 310:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       gnext2 = (q31_t) ((fnext2 * (*pk)) >> 15u) + gnext1;
+ 1147              	 .loc 1 310 0
+ 1148 0a6e D7F81832 	 ldr r3,[r7,#536]
+ 1149 0a72 1B88     	 ldrh r3,[r3]
+ 1150 0a74 1BB2     	 sxth r3,r3
+ 1151 0a76 D7F8C821 	 ldr r2,[r7,#456]
+ 1152 0a7a 02FB03F3 	 mul r3,r2,r3
+ 1153 0a7e DA13     	 asrs r2,r3,#15
+ 1154 0a80 D7F81032 	 ldr r3,[r7,#528]
+ 1155 0a84 1344     	 add r3,r3,r2
+ 1156 0a86 C7F80832 	 str r3,[r7,#520]
+ 1157              	.LBB40:
+ 311:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       gnext2 = __SSAT(gnext2, 16);
+ 1158              	 .loc 1 311 0
+ 1159 0a8a 07F19C03 	 add r3,r7,#156
+ 1160 0a8e D7F80822 	 ldr r2,[r7,#520]
+ 1161 0a92 1A60     	 str r2,[r3]
+ 1162 0a94 07F19C03 	 add r3,r7,#156
+ 1163 0a98 1B68     	 ldr r3,[r3]
+ 1164              	
+ 1165 0a9a 03F30F02 	 ssat r2,#16,r3
+ 1166              	
+ 1167              	 .thumb
+ 1168 0a9e 07F19803 	 add r3,r7,#152
+ 1169 0aa2 1A60     	 str r2,[r3]
+ 1170 0aa4 07F19803 	 add r3,r7,#152
+ 1171 0aa8 1B68     	 ldr r3,[r3]
+ 1172              	.LBE40:
+ 1173 0aaa C7F80832 	 str r3,[r7,#520]
+ 312:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       gnext1 = (q31_t) ((fnext1 * (*pk++)) >> 15u) + gcurnt1;
+ 1174              	 .loc 1 312 0
+ 1175 0aae D7F81832 	 ldr r3,[r7,#536]
+ 1176 0ab2 9A1C     	 adds r2,r3,#2
+ 1177 0ab4 C7F81822 	 str r2,[r7,#536]
+ 1178 0ab8 1B88     	 ldrh r3,[r3]
+ 1179 0aba 1BB2     	 sxth r3,r3
+ 1180 0abc D7F8DC21 	 ldr r2,[r7,#476]
+ 1181 0ac0 02FB03F3 	 mul r3,r2,r3
+ 1182 0ac4 DA13     	 asrs r2,r3,#15
+ 1183 0ac6 D7F8E831 	 ldr r3,[r7,#488]
+ 1184 0aca 1344     	 add r3,r3,r2
+ 1185 0acc C7F81032 	 str r3,[r7,#528]
+ 1186              	.LBB41:
+ 313:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       gnext1 = __SSAT(gnext1, 16);
+ 1187              	 .loc 1 313 0
+ 1188 0ad0 07F19403 	 add r3,r7,#148
+ 1189 0ad4 D7F81022 	 ldr r2,[r7,#528]
+ 1190 0ad8 1A60     	 str r2,[r3]
+ 1191 0ada 07F19403 	 add r3,r7,#148
+ 1192 0ade 1B68     	 ldr r3,[r3]
+ 1193              	
+ 1194 0ae0 03F30F02 	 ssat r2,#16,r3
+ 1195              	
+ 1196              	 .thumb
+ 1197 0ae4 07F19003 	 add r3,r7,#144
+ 1198 0ae8 1A60     	 str r2,[r3]
+ 1199 0aea 07F19003 	 add r3,r7,#144
+ 1200 0aee 1B68     	 ldr r3,[r3]
+ 1201              	.LBE41:
+ 1202 0af0 C7F81032 	 str r3,[r7,#528]
+ 314:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 315:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       stageCnt--;
+ 1203              	 .loc 1 315 0
+ 1204 0af4 D7F8F031 	 ldr r3,[r7,#496]
+ 1205 0af8 013B     	 subs r3,r3,#1
+ 1206 0afa C7F8F031 	 str r3,[r7,#496]
+ 1207              	.L3:
+ 162:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     {
+ 1208              	 .loc 1 162 0
+ 1209 0afe D7F8F031 	 ldr r3,[r7,#496]
+ 1210 0b02 002B     	 cmp r3,#0
+ 1211 0b04 7FF4E4AB 	 bne .L4
+ 316:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     }
+ 317:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 318:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     /* If the (filter length -1) is not a multiple of 4, compute the remaining filter taps */
+ 319:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     stageCnt = (numStages - 1u) % 0x4u;
+ 1212              	 .loc 1 319 0
+ 1213 0b08 D7F8E431 	 ldr r3,[r7,#484]
+ 1214 0b0c 013B     	 subs r3,r3,#1
+ 1215 0b0e 03F00303 	 and r3,r3,#3
+ 1216 0b12 C7F8F031 	 str r3,[r7,#496]
+ 320:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 321:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     while(stageCnt > 0u)
+ 1217              	 .loc 1 321 0
+ 1218 0b16 26E1     	 b .L5
+ 1219              	.L6:
+ 322:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     {
+ 323:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       gcurnt1 = *px;
+ 1220              	 .loc 1 323 0
+ 1221 0b18 D7F81C32 	 ldr r3,[r7,#540]
+ 1222 0b1c 1B88     	 ldrh r3,[r3]
+ 1223 0b1e 1BB2     	 sxth r3,r3
+ 1224 0b20 C7F8E831 	 str r3,[r7,#488]
+ 324:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 325:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       /* save g value in state buffer */
+ 326:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       *px++ = (q15_t) gnext4;
+ 1225              	 .loc 1 326 0
+ 1226 0b24 D7F81C32 	 ldr r3,[r7,#540]
+ 1227 0b28 9A1C     	 adds r2,r3,#2
+ 1228 0b2a C7F81C22 	 str r2,[r7,#540]
+ 1229 0b2e D7F8F821 	 ldr r2,[r7,#504]
+ 1230 0b32 92B2     	 uxth r2,r2
+ 1231 0b34 1A80     	 strh r2,[r3]
+ 327:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 328:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       /* Process four samples for last three taps here */
+ 329:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       fnext1 = (q31_t) ((gcurnt1 * (*pk)) >> 15u) + fcurnt1;
+ 1232              	 .loc 1 329 0
+ 1233 0b36 D7F81832 	 ldr r3,[r7,#536]
+ 1234 0b3a 1B88     	 ldrh r3,[r3]
+ 1235 0b3c 1BB2     	 sxth r3,r3
+ 1236 0b3e D7F8E821 	 ldr r2,[r7,#488]
+ 1237 0b42 02FB03F3 	 mul r3,r2,r3
+ 1238 0b46 DA13     	 asrs r2,r3,#15
+ 1239 0b48 D7F81432 	 ldr r3,[r7,#532]
+ 1240 0b4c 1344     	 add r3,r3,r2
+ 1241 0b4e C7F8DC31 	 str r3,[r7,#476]
+ 1242              	.LBB42:
+ 330:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       fnext1 = __SSAT(fnext1, 16);
+ 1243              	 .loc 1 330 0
+ 1244 0b52 07F18C03 	 add r3,r7,#140
+ 1245 0b56 D7F8DC21 	 ldr r2,[r7,#476]
+ 1246 0b5a 1A60     	 str r2,[r3]
+ 1247 0b5c 07F18C03 	 add r3,r7,#140
+ 1248 0b60 1B68     	 ldr r3,[r3]
+ 1249              	
+ 1250 0b62 03F30F02 	 ssat r2,#16,r3
+ 1251              	
+ 1252              	 .thumb
+ 1253 0b66 07F18803 	 add r3,r7,#136
+ 1254 0b6a 1A60     	 str r2,[r3]
+ 1255 0b6c 07F18803 	 add r3,r7,#136
+ 1256 0b70 1B68     	 ldr r3,[r3]
+ 1257              	.LBE42:
+ 1258 0b72 C7F8DC31 	 str r3,[r7,#476]
+ 331:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       fnext2 = (q31_t) ((gnext1 * (*pk)) >> 15u) + fcurnt2;
+ 1259              	 .loc 1 331 0
+ 1260 0b76 D7F81832 	 ldr r3,[r7,#536]
+ 1261 0b7a 1B88     	 ldrh r3,[r3]
+ 1262 0b7c 1BB2     	 sxth r3,r3
+ 1263 0b7e D7F81022 	 ldr r2,[r7,#528]
+ 1264 0b82 02FB03F3 	 mul r3,r2,r3
+ 1265 0b86 DA13     	 asrs r2,r3,#15
+ 1266 0b88 D7F80C32 	 ldr r3,[r7,#524]
+ 1267 0b8c 1344     	 add r3,r3,r2
+ 1268 0b8e C7F8C831 	 str r3,[r7,#456]
+ 1269              	.LBB43:
+ 332:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       fnext2 = __SSAT(fnext2, 16);
+ 1270              	 .loc 1 332 0
+ 1271 0b92 07F18403 	 add r3,r7,#132
+ 1272 0b96 D7F8C821 	 ldr r2,[r7,#456]
+ 1273 0b9a 1A60     	 str r2,[r3]
+ 1274 0b9c 07F18403 	 add r3,r7,#132
+ 1275 0ba0 1B68     	 ldr r3,[r3]
+ 1276              	
+ 1277 0ba2 03F30F02 	 ssat r2,#16,r3
+ 1278              	
+ 1279              	 .thumb
+ 1280 0ba6 07F18003 	 add r3,r7,#128
+ 1281 0baa 1A60     	 str r2,[r3]
+ 1282 0bac 07F18003 	 add r3,r7,#128
+ 1283 0bb0 1B68     	 ldr r3,[r3]
+ 1284              	.LBE43:
+ 1285 0bb2 C7F8C831 	 str r3,[r7,#456]
+ 333:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 334:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       fnext3 = (q31_t) ((gnext2 * (*pk)) >> 15u) + fcurnt3;
+ 1286              	 .loc 1 334 0
+ 1287 0bb6 D7F81832 	 ldr r3,[r7,#536]
+ 1288 0bba 1B88     	 ldrh r3,[r3]
+ 1289 0bbc 1BB2     	 sxth r3,r3
+ 1290 0bbe D7F80822 	 ldr r2,[r7,#520]
+ 1291 0bc2 02FB03F3 	 mul r3,r2,r3
+ 1292 0bc6 DA13     	 asrs r2,r3,#15
+ 1293 0bc8 D7F80432 	 ldr r3,[r7,#516]
+ 1294 0bcc 1344     	 add r3,r3,r2
+ 1295 0bce C7F8B431 	 str r3,[r7,#436]
+ 1296              	.LBB44:
+ 335:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       fnext3 = __SSAT(fnext3, 16);
+ 1297              	 .loc 1 335 0
+ 1298 0bd2 07F17C03 	 add r3,r7,#124
+ 1299 0bd6 D7F8B421 	 ldr r2,[r7,#436]
+ 1300 0bda 1A60     	 str r2,[r3]
+ 1301 0bdc 07F17C03 	 add r3,r7,#124
+ 1302 0be0 1B68     	 ldr r3,[r3]
+ 1303              	
+ 1304 0be2 03F30F02 	 ssat r2,#16,r3
+ 1305              	
+ 1306              	 .thumb
+ 1307 0be6 07F17803 	 add r3,r7,#120
+ 1308 0bea 1A60     	 str r2,[r3]
+ 1309 0bec 07F17803 	 add r3,r7,#120
+ 1310 0bf0 1B68     	 ldr r3,[r3]
+ 1311              	.LBE44:
+ 1312 0bf2 C7F8B431 	 str r3,[r7,#436]
+ 336:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 337:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       fnext4 = (q31_t) ((gnext3 * (*pk)) >> 15u) + fcurnt4;
+ 1313              	 .loc 1 337 0
+ 1314 0bf6 D7F81832 	 ldr r3,[r7,#536]
+ 1315 0bfa 1B88     	 ldrh r3,[r3]
+ 1316 0bfc 1BB2     	 sxth r3,r3
+ 1317 0bfe D7F80022 	 ldr r2,[r7,#512]
+ 1318 0c02 02FB03F3 	 mul r3,r2,r3
+ 1319 0c06 DA13     	 asrs r2,r3,#15
+ 1320 0c08 D7F8FC31 	 ldr r3,[r7,#508]
+ 1321 0c0c 1344     	 add r3,r3,r2
+ 1322 0c0e C7F8A031 	 str r3,[r7,#416]
+ 1323              	.LBB45:
+ 338:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       fnext4 = __SSAT(fnext4, 16);
+ 1324              	 .loc 1 338 0
+ 1325 0c12 07F17403 	 add r3,r7,#116
+ 1326 0c16 D7F8A021 	 ldr r2,[r7,#416]
+ 1327 0c1a 1A60     	 str r2,[r3]
+ 1328 0c1c 07F17403 	 add r3,r7,#116
+ 1329 0c20 1B68     	 ldr r3,[r3]
+ 1330              	
+ 1331 0c22 03F30F02 	 ssat r2,#16,r3
+ 1332              	
+ 1333              	 .thumb
+ 1334 0c26 07F17003 	 add r3,r7,#112
+ 1335 0c2a 1A60     	 str r2,[r3]
+ 1336 0c2c 07F17003 	 add r3,r7,#112
+ 1337 0c30 1B68     	 ldr r3,[r3]
+ 1338              	.LBE45:
+ 1339 0c32 C7F8A031 	 str r3,[r7,#416]
+ 339:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 340:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       /* g1(n) = f0(n) * K1  +  g0(n-1) */
+ 341:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       gnext4 = (q31_t) ((fcurnt4 * (*pk)) >> 15u) + gnext3;
+ 1340              	 .loc 1 341 0
+ 1341 0c36 D7F81832 	 ldr r3,[r7,#536]
+ 1342 0c3a 1B88     	 ldrh r3,[r3]
+ 1343 0c3c 1BB2     	 sxth r3,r3
+ 1344 0c3e D7F8FC21 	 ldr r2,[r7,#508]
+ 1345 0c42 02FB03F3 	 mul r3,r2,r3
+ 1346 0c46 DA13     	 asrs r2,r3,#15
+ 1347 0c48 D7F80032 	 ldr r3,[r7,#512]
+ 1348 0c4c 1344     	 add r3,r3,r2
+ 1349 0c4e C7F8F831 	 str r3,[r7,#504]
+ 1350              	.LBB46:
+ 342:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       gnext4 = __SSAT(gnext4, 16);
+ 1351              	 .loc 1 342 0
+ 1352 0c52 07F16C03 	 add r3,r7,#108
+ 1353 0c56 D7F8F821 	 ldr r2,[r7,#504]
+ 1354 0c5a 1A60     	 str r2,[r3]
+ 1355 0c5c 07F16C03 	 add r3,r7,#108
+ 1356 0c60 1B68     	 ldr r3,[r3]
+ 1357              	
+ 1358 0c62 03F30F02 	 ssat r2,#16,r3
+ 1359              	
+ 1360              	 .thumb
+ 1361 0c66 07F16803 	 add r3,r7,#104
+ 1362 0c6a 1A60     	 str r2,[r3]
+ 1363 0c6c 07F16803 	 add r3,r7,#104
+ 1364 0c70 1B68     	 ldr r3,[r3]
+ 1365              	.LBE46:
+ 1366 0c72 C7F8F831 	 str r3,[r7,#504]
+ 343:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       gnext3 = (q31_t) ((fcurnt3 * (*pk)) >> 15u) + gnext2;
+ 1367              	 .loc 1 343 0
+ 1368 0c76 D7F81832 	 ldr r3,[r7,#536]
+ 1369 0c7a 1B88     	 ldrh r3,[r3]
+ 1370 0c7c 1BB2     	 sxth r3,r3
+ 1371 0c7e D7F80422 	 ldr r2,[r7,#516]
+ 1372 0c82 02FB03F3 	 mul r3,r2,r3
+ 1373 0c86 DA13     	 asrs r2,r3,#15
+ 1374 0c88 D7F80832 	 ldr r3,[r7,#520]
+ 1375 0c8c 1344     	 add r3,r3,r2
+ 1376 0c8e C7F80032 	 str r3,[r7,#512]
+ 1377              	.LBB47:
+ 344:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       gnext3 = __SSAT(gnext3, 16);
+ 1378              	 .loc 1 344 0
+ 1379 0c92 07F16403 	 add r3,r7,#100
+ 1380 0c96 D7F80022 	 ldr r2,[r7,#512]
+ 1381 0c9a 1A60     	 str r2,[r3]
+ 1382 0c9c 07F16403 	 add r3,r7,#100
+ 1383 0ca0 1B68     	 ldr r3,[r3]
+ 1384              	
+ 1385 0ca2 03F30F02 	 ssat r2,#16,r3
+ 1386              	
+ 1387              	 .thumb
+ 1388 0ca6 07F16003 	 add r3,r7,#96
+ 1389 0caa 1A60     	 str r2,[r3]
+ 1390 0cac 07F16003 	 add r3,r7,#96
+ 1391 0cb0 1B68     	 ldr r3,[r3]
+ 1392              	.LBE47:
+ 1393 0cb2 C7F80032 	 str r3,[r7,#512]
+ 345:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       gnext2 = (q31_t) ((fcurnt2 * (*pk)) >> 15u) + gnext1;
+ 1394              	 .loc 1 345 0
+ 1395 0cb6 D7F81832 	 ldr r3,[r7,#536]
+ 1396 0cba 1B88     	 ldrh r3,[r3]
+ 1397 0cbc 1BB2     	 sxth r3,r3
+ 1398 0cbe D7F80C22 	 ldr r2,[r7,#524]
+ 1399 0cc2 02FB03F3 	 mul r3,r2,r3
+ 1400 0cc6 DA13     	 asrs r2,r3,#15
+ 1401 0cc8 D7F81032 	 ldr r3,[r7,#528]
+ 1402 0ccc 1344     	 add r3,r3,r2
+ 1403 0cce C7F80832 	 str r3,[r7,#520]
+ 1404              	.LBB48:
+ 346:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       gnext2 = __SSAT(gnext2, 16);
+ 1405              	 .loc 1 346 0
+ 1406 0cd2 07F15C03 	 add r3,r7,#92
+ 1407 0cd6 D7F80822 	 ldr r2,[r7,#520]
+ 1408 0cda 1A60     	 str r2,[r3]
+ 1409 0cdc 07F15C03 	 add r3,r7,#92
+ 1410 0ce0 1B68     	 ldr r3,[r3]
+ 1411              	
+ 1412 0ce2 03F30F02 	 ssat r2,#16,r3
+ 1413              	
+ 1414              	 .thumb
+ 1415 0ce6 07F15803 	 add r3,r7,#88
+ 1416 0cea 1A60     	 str r2,[r3]
+ 1417 0cec 07F15803 	 add r3,r7,#88
+ 1418 0cf0 1B68     	 ldr r3,[r3]
+ 1419              	.LBE48:
+ 1420 0cf2 C7F80832 	 str r3,[r7,#520]
+ 347:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       gnext1 = (q31_t) ((fcurnt1 * (*pk++)) >> 15u) + gcurnt1;
+ 1421              	 .loc 1 347 0
+ 1422 0cf6 D7F81832 	 ldr r3,[r7,#536]
+ 1423 0cfa 9A1C     	 adds r2,r3,#2
+ 1424 0cfc C7F81822 	 str r2,[r7,#536]
+ 1425 0d00 1B88     	 ldrh r3,[r3]
+ 1426 0d02 1BB2     	 sxth r3,r3
+ 1427 0d04 D7F81422 	 ldr r2,[r7,#532]
+ 1428 0d08 02FB03F3 	 mul r3,r2,r3
+ 1429 0d0c DA13     	 asrs r2,r3,#15
+ 1430 0d0e D7F8E831 	 ldr r3,[r7,#488]
+ 1431 0d12 1344     	 add r3,r3,r2
+ 1432 0d14 C7F81032 	 str r3,[r7,#528]
+ 1433              	.LBB49:
+ 348:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       gnext1 = __SSAT(gnext1, 16);
+ 1434              	 .loc 1 348 0
+ 1435 0d18 07F15403 	 add r3,r7,#84
+ 1436 0d1c D7F81022 	 ldr r2,[r7,#528]
+ 1437 0d20 1A60     	 str r2,[r3]
+ 1438 0d22 07F15403 	 add r3,r7,#84
+ 1439 0d26 1B68     	 ldr r3,[r3]
+ 1440              	
+ 1441 0d28 03F30F02 	 ssat r2,#16,r3
+ 1442              	
+ 1443              	 .thumb
+ 1444 0d2c 07F15003 	 add r3,r7,#80
+ 1445 0d30 1A60     	 str r2,[r3]
+ 1446 0d32 07F15003 	 add r3,r7,#80
+ 1447 0d36 1B68     	 ldr r3,[r3]
+ 1448              	.LBE49:
+ 1449 0d38 C7F81032 	 str r3,[r7,#528]
+ 349:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 350:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       /* Update of f values for next coefficient set processing */
+ 351:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       fcurnt1 = fnext1;
+ 1450              	 .loc 1 351 0
+ 1451 0d3c D7F8DC31 	 ldr r3,[r7,#476]
+ 1452 0d40 C7F81432 	 str r3,[r7,#532]
+ 352:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       fcurnt2 = fnext2;
+ 1453              	 .loc 1 352 0
+ 1454 0d44 D7F8C831 	 ldr r3,[r7,#456]
+ 1455 0d48 C7F80C32 	 str r3,[r7,#524]
+ 353:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       fcurnt3 = fnext3;
+ 1456              	 .loc 1 353 0
+ 1457 0d4c D7F8B431 	 ldr r3,[r7,#436]
+ 1458 0d50 C7F80432 	 str r3,[r7,#516]
+ 354:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       fcurnt4 = fnext4;
+ 1459              	 .loc 1 354 0
+ 1460 0d54 D7F8A031 	 ldr r3,[r7,#416]
+ 1461 0d58 C7F8FC31 	 str r3,[r7,#508]
+ 355:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 356:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       stageCnt--;
+ 1462              	 .loc 1 356 0
+ 1463 0d5c D7F8F031 	 ldr r3,[r7,#496]
+ 1464 0d60 013B     	 subs r3,r3,#1
+ 1465 0d62 C7F8F031 	 str r3,[r7,#496]
+ 1466              	.L5:
+ 321:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     {
+ 1467              	 .loc 1 321 0
+ 1468 0d66 D7F8F031 	 ldr r3,[r7,#496]
+ 1469 0d6a 002B     	 cmp r3,#0
+ 1470 0d6c 7FF4D4AE 	 bne .L6
+ 357:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 358:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     }
+ 359:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 360:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     /* The results in the 4 accumulators, store in the destination buffer. */
+ 361:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     /* y(n) = fN(n) */
+ 362:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 363:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** #ifndef  ARM_MATH_BIG_ENDIAN
+ 364:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 365:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     *__SIMD32(pDst)++ = __PKHBT(fcurnt1, fcurnt2, 16);
+ 1471              	 .loc 1 365 0
+ 1472 0d70 3A1D     	 adds r2,r7,#4
+ 1473 0d72 1368     	 ldr r3,[r2]
+ 1474 0d74 191D     	 adds r1,r3,#4
+ 1475 0d76 1160     	 str r1,[r2]
+ 1476              	.LBB50:
+ 1477 0d78 07F14C02 	 add r2,r7,#76
+ 1478 0d7c D7F81412 	 ldr r1,[r7,#532]
+ 1479 0d80 1160     	 str r1,[r2]
+ 1480 0d82 07F14802 	 add r2,r7,#72
+ 1481 0d86 D7F80C12 	 ldr r1,[r7,#524]
+ 1482 0d8a 1160     	 str r1,[r2]
+ 1483 0d8c 07F14C02 	 add r2,r7,#76
+ 1484 0d90 1268     	 ldr r2,[r2]
+ 1485 0d92 07F14801 	 add r1,r7,#72
+ 1486 0d96 0968     	 ldr r1,[r1]
+ 1487              	
+ 1488 0d98 C2EA0141 	 pkhbt r1,r2,r1,lsl#16
+ 1489              	
+ 1490              	 .thumb
+ 1491 0d9c 07F14402 	 add r2,r7,#68
+ 1492 0da0 1160     	 str r1,[r2]
+ 1493 0da2 07F14402 	 add r2,r7,#68
+ 1494 0da6 1268     	 ldr r2,[r2]
+ 1495              	.LBE50:
+ 1496 0da8 1A60     	 str r2,[r3]
+ 366:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     *__SIMD32(pDst)++ = __PKHBT(fcurnt3, fcurnt4, 16);
+ 1497              	 .loc 1 366 0
+ 1498 0daa 3A1D     	 adds r2,r7,#4
+ 1499 0dac 1368     	 ldr r3,[r2]
+ 1500 0dae 191D     	 adds r1,r3,#4
+ 1501 0db0 1160     	 str r1,[r2]
+ 1502              	.LBB51:
+ 1503 0db2 07F14002 	 add r2,r7,#64
+ 1504 0db6 D7F80412 	 ldr r1,[r7,#516]
+ 1505 0dba 1160     	 str r1,[r2]
+ 1506 0dbc 07F13C02 	 add r2,r7,#60
+ 1507 0dc0 D7F8FC11 	 ldr r1,[r7,#508]
+ 1508 0dc4 1160     	 str r1,[r2]
+ 1509 0dc6 07F14002 	 add r2,r7,#64
+ 1510 0dca 1268     	 ldr r2,[r2]
+ 1511 0dcc 07F13C01 	 add r1,r7,#60
+ 1512 0dd0 0968     	 ldr r1,[r1]
+ 1513              	
+ 1514 0dd2 C2EA0141 	 pkhbt r1,r2,r1,lsl#16
+ 1515              	
+ 1516              	 .thumb
+ 1517 0dd6 07F13802 	 add r2,r7,#56
+ 1518 0dda 1160     	 str r1,[r2]
+ 1519 0ddc 07F13802 	 add r2,r7,#56
+ 1520 0de0 1268     	 ldr r2,[r2]
+ 1521              	.LBE51:
+ 1522 0de2 1A60     	 str r2,[r3]
+ 367:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 368:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** #else
+ 369:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 370:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     *__SIMD32(pDst)++ = __PKHBT(fcurnt2, fcurnt1, 16);
+ 371:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     *__SIMD32(pDst)++ = __PKHBT(fcurnt4, fcurnt3, 16);
+ 372:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 373:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** #endif /*      #ifndef  ARM_MATH_BIG_ENDIAN    */
+ 374:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 375:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     blkCnt--;
+ 1523              	 .loc 1 375 0
+ 1524 0de4 D7F8F431 	 ldr r3,[r7,#500]
+ 1525 0de8 013B     	 subs r3,r3,#1
+ 1526 0dea C7F8F431 	 str r3,[r7,#500]
+ 1527              	.L2:
+  91:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****   {
+ 1528              	 .loc 1 91 0
+ 1529 0dee D7F8F431 	 ldr r3,[r7,#500]
+ 1530 0df2 002B     	 cmp r3,#0
+ 1531 0df4 7FF42EA9 	 bne .L7
+ 376:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****   }
+ 377:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 378:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****   /* If the blockSize is not a multiple of 4, compute any remaining output samples here.    
+ 379:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****    ** No loop unrolling is used. */
+ 380:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****   blkCnt = blockSize % 0x4u;
+ 1532              	 .loc 1 380 0
+ 1533 0df8 3B46     	 mov r3,r7
+ 1534 0dfa 1B68     	 ldr r3,[r3]
+ 1535 0dfc 03F00303 	 and r3,r3,#3
+ 1536 0e00 C7F8F431 	 str r3,[r7,#500]
+ 381:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 382:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****   while(blkCnt > 0u)
+ 1537              	 .loc 1 382 0
+ 1538 0e04 E9E0     	 b .L8
+ 1539              	.L11:
+ 383:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****   {
+ 384:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     /* f0(n) = x(n) */
+ 385:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     fcurnt1 = *pSrc++;
+ 1540              	 .loc 1 385 0
+ 1541 0e06 07F10803 	 add r3,r7,#8
+ 1542 0e0a 1B68     	 ldr r3,[r3]
+ 1543 0e0c 07F10802 	 add r2,r7,#8
+ 1544 0e10 991C     	 adds r1,r3,#2
+ 1545 0e12 1160     	 str r1,[r2]
+ 1546 0e14 1B88     	 ldrh r3,[r3]
+ 1547 0e16 1BB2     	 sxth r3,r3
+ 1548 0e18 C7F81432 	 str r3,[r7,#532]
+ 386:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 387:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     /* Initialize coeff pointer */
+ 388:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     pk = (pCoeffs);
+ 1549              	 .loc 1 388 0
+ 1550 0e1c D7F8EC31 	 ldr r3,[r7,#492]
+ 1551 0e20 C7F81832 	 str r3,[r7,#536]
+ 389:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 390:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     /* Initialize state pointer */
+ 391:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     px = pState;
+ 1552              	 .loc 1 391 0
+ 1553 0e24 D7F8E031 	 ldr r3,[r7,#480]
+ 1554 0e28 C7F81C32 	 str r3,[r7,#540]
+ 392:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 393:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     /* read g2(n) from state buffer */
+ 394:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     gcurnt1 = *px;
+ 1555              	 .loc 1 394 0
+ 1556 0e2c D7F81C32 	 ldr r3,[r7,#540]
+ 1557 0e30 1B88     	 ldrh r3,[r3]
+ 1558 0e32 1BB2     	 sxth r3,r3
+ 1559 0e34 C7F8E831 	 str r3,[r7,#488]
+ 395:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 396:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     /* for sample 1 processing */
+ 397:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     /* f1(n) = f0(n) +  K1 * g0(n-1) */
+ 398:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     fnext1 = (((q31_t) gcurnt1 * (*pk)) >> 15u) + fcurnt1;
+ 1560              	 .loc 1 398 0
+ 1561 0e38 D7F81832 	 ldr r3,[r7,#536]
+ 1562 0e3c 1B88     	 ldrh r3,[r3]
+ 1563 0e3e 1BB2     	 sxth r3,r3
+ 1564 0e40 D7F8E821 	 ldr r2,[r7,#488]
+ 1565 0e44 02FB03F3 	 mul r3,r2,r3
+ 1566 0e48 DA13     	 asrs r2,r3,#15
+ 1567 0e4a D7F81432 	 ldr r3,[r7,#532]
+ 1568 0e4e 1344     	 add r3,r3,r2
+ 1569 0e50 C7F8DC31 	 str r3,[r7,#476]
+ 1570              	.LBB52:
+ 399:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     fnext1 = __SSAT(fnext1, 16);
+ 1571              	 .loc 1 399 0
+ 1572 0e54 07F13403 	 add r3,r7,#52
+ 1573 0e58 D7F8DC21 	 ldr r2,[r7,#476]
+ 1574 0e5c 1A60     	 str r2,[r3]
+ 1575 0e5e 07F13403 	 add r3,r7,#52
+ 1576 0e62 1B68     	 ldr r3,[r3]
+ 1577              	
+ 1578 0e64 03F30F02 	 ssat r2,#16,r3
+ 1579              	
+ 1580              	 .thumb
+ 1581 0e68 07F13003 	 add r3,r7,#48
+ 1582 0e6c 1A60     	 str r2,[r3]
+ 1583 0e6e 07F13003 	 add r3,r7,#48
+ 1584 0e72 1B68     	 ldr r3,[r3]
+ 1585              	.LBE52:
+ 1586 0e74 C7F8DC31 	 str r3,[r7,#476]
+ 400:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 401:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 402:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     /* g1(n) = f0(n) * K1  +  g0(n-1) */
+ 403:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     gnext1 = (((q31_t) fcurnt1 * (*pk++)) >> 15u) + gcurnt1;
+ 1587              	 .loc 1 403 0
+ 1588 0e78 D7F81832 	 ldr r3,[r7,#536]
+ 1589 0e7c 9A1C     	 adds r2,r3,#2
+ 1590 0e7e C7F81822 	 str r2,[r7,#536]
+ 1591 0e82 1B88     	 ldrh r3,[r3]
+ 1592 0e84 1BB2     	 sxth r3,r3
+ 1593 0e86 D7F81422 	 ldr r2,[r7,#532]
+ 1594 0e8a 02FB03F3 	 mul r3,r2,r3
+ 1595 0e8e DA13     	 asrs r2,r3,#15
+ 1596 0e90 D7F8E831 	 ldr r3,[r7,#488]
+ 1597 0e94 1344     	 add r3,r3,r2
+ 1598 0e96 C7F81032 	 str r3,[r7,#528]
+ 1599              	.LBB53:
+ 404:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     gnext1 = __SSAT(gnext1, 16);
+ 1600              	 .loc 1 404 0
+ 1601 0e9a 07F12C03 	 add r3,r7,#44
+ 1602 0e9e D7F81022 	 ldr r2,[r7,#528]
+ 1603 0ea2 1A60     	 str r2,[r3]
+ 1604 0ea4 07F12C03 	 add r3,r7,#44
+ 1605 0ea8 1B68     	 ldr r3,[r3]
+ 1606              	
+ 1607 0eaa 03F30F02 	 ssat r2,#16,r3
+ 1608              	
+ 1609              	 .thumb
+ 1610 0eae 07F12803 	 add r3,r7,#40
+ 1611 0eb2 1A60     	 str r2,[r3]
+ 1612 0eb4 07F12803 	 add r3,r7,#40
+ 1613 0eb8 1B68     	 ldr r3,[r3]
+ 1614              	.LBE53:
+ 1615 0eba C7F81032 	 str r3,[r7,#528]
+ 405:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 406:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     /* save g1(n) in state buffer */
+ 407:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     *px++ = (q15_t) fcurnt1;
+ 1616              	 .loc 1 407 0
+ 1617 0ebe D7F81C32 	 ldr r3,[r7,#540]
+ 1618 0ec2 9A1C     	 adds r2,r3,#2
+ 1619 0ec4 C7F81C22 	 str r2,[r7,#540]
+ 1620 0ec8 D7F81422 	 ldr r2,[r7,#532]
+ 1621 0ecc 92B2     	 uxth r2,r2
+ 1622 0ece 1A80     	 strh r2,[r3]
+ 408:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 409:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     /* f1(n) is saved in fcurnt1    
+ 410:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****        for next stage processing */
+ 411:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     fcurnt1 = fnext1;
+ 1623              	 .loc 1 411 0
+ 1624 0ed0 D7F8DC31 	 ldr r3,[r7,#476]
+ 1625 0ed4 C7F81432 	 str r3,[r7,#532]
+ 412:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 413:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     stageCnt = (numStages - 1u);
+ 1626              	 .loc 1 413 0
+ 1627 0ed8 D7F8E431 	 ldr r3,[r7,#484]
+ 1628 0edc 013B     	 subs r3,r3,#1
+ 1629 0ede C7F8F031 	 str r3,[r7,#496]
+ 414:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 415:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     /* stage loop */
+ 416:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     while(stageCnt > 0u)
+ 1630              	 .loc 1 416 0
+ 1631 0ee2 5AE0     	 b .L9
+ 1632              	.L10:
+ 417:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     {
+ 418:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       /* read g2(n) from state buffer */
+ 419:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       gcurnt1 = *px;
+ 1633              	 .loc 1 419 0
+ 1634 0ee4 D7F81C32 	 ldr r3,[r7,#540]
+ 1635 0ee8 1B88     	 ldrh r3,[r3]
+ 1636 0eea 1BB2     	 sxth r3,r3
+ 1637 0eec C7F8E831 	 str r3,[r7,#488]
+ 420:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 421:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       /* save g1(n) in state buffer */
+ 422:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       *px++ = (q15_t) gnext1;
+ 1638              	 .loc 1 422 0
+ 1639 0ef0 D7F81C32 	 ldr r3,[r7,#540]
+ 1640 0ef4 9A1C     	 adds r2,r3,#2
+ 1641 0ef6 C7F81C22 	 str r2,[r7,#540]
+ 1642 0efa D7F81022 	 ldr r2,[r7,#528]
+ 1643 0efe 92B2     	 uxth r2,r2
+ 1644 0f00 1A80     	 strh r2,[r3]
+ 423:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 424:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       /* Sample processing for K2, K3.... */
+ 425:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       /* f2(n) = f1(n) +  K2 * g1(n-1) */
+ 426:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       fnext1 = (((q31_t) gcurnt1 * (*pk)) >> 15u) + fcurnt1;
+ 1645              	 .loc 1 426 0
+ 1646 0f02 D7F81832 	 ldr r3,[r7,#536]
+ 1647 0f06 1B88     	 ldrh r3,[r3]
+ 1648 0f08 1BB2     	 sxth r3,r3
+ 1649 0f0a D7F8E821 	 ldr r2,[r7,#488]
+ 1650 0f0e 02FB03F3 	 mul r3,r2,r3
+ 1651 0f12 DA13     	 asrs r2,r3,#15
+ 1652 0f14 D7F81432 	 ldr r3,[r7,#532]
+ 1653 0f18 1344     	 add r3,r3,r2
+ 1654 0f1a C7F8DC31 	 str r3,[r7,#476]
+ 1655              	.LBB54:
+ 427:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       fnext1 = __SSAT(fnext1, 16);
+ 1656              	 .loc 1 427 0
+ 1657 0f1e 07F12403 	 add r3,r7,#36
+ 1658 0f22 D7F8DC21 	 ldr r2,[r7,#476]
+ 1659 0f26 1A60     	 str r2,[r3]
+ 1660 0f28 07F12403 	 add r3,r7,#36
+ 1661 0f2c 1B68     	 ldr r3,[r3]
+ 1662              	
+ 1663 0f2e 03F30F02 	 ssat r2,#16,r3
+ 1664              	
+ 1665              	 .thumb
+ 1666 0f32 07F12003 	 add r3,r7,#32
+ 1667 0f36 1A60     	 str r2,[r3]
+ 1668 0f38 07F12003 	 add r3,r7,#32
+ 1669 0f3c 1B68     	 ldr r3,[r3]
+ 1670              	.LBE54:
+ 1671 0f3e C7F8DC31 	 str r3,[r7,#476]
+ 428:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 429:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       /* g2(n) = f1(n) * K2  +  g1(n-1) */
+ 430:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       gnext1 = (((q31_t) fcurnt1 * (*pk++)) >> 15u) + gcurnt1;
+ 1672              	 .loc 1 430 0
+ 1673 0f42 D7F81832 	 ldr r3,[r7,#536]
+ 1674 0f46 9A1C     	 adds r2,r3,#2
+ 1675 0f48 C7F81822 	 str r2,[r7,#536]
+ 1676 0f4c 1B88     	 ldrh r3,[r3]
+ 1677 0f4e 1BB2     	 sxth r3,r3
+ 1678 0f50 D7F81422 	 ldr r2,[r7,#532]
+ 1679 0f54 02FB03F3 	 mul r3,r2,r3
+ 1680 0f58 DA13     	 asrs r2,r3,#15
+ 1681 0f5a D7F8E831 	 ldr r3,[r7,#488]
+ 1682 0f5e 1344     	 add r3,r3,r2
+ 1683 0f60 C7F81032 	 str r3,[r7,#528]
+ 1684              	.LBB55:
+ 431:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       gnext1 = __SSAT(gnext1, 16);
+ 1685              	 .loc 1 431 0
+ 1686 0f64 07F11C03 	 add r3,r7,#28
+ 1687 0f68 D7F81022 	 ldr r2,[r7,#528]
+ 1688 0f6c 1A60     	 str r2,[r3]
+ 1689 0f6e 07F11C03 	 add r3,r7,#28
+ 1690 0f72 1B68     	 ldr r3,[r3]
+ 1691              	
+ 1692 0f74 03F30F02 	 ssat r2,#16,r3
+ 1693              	
+ 1694              	 .thumb
+ 1695 0f78 07F11803 	 add r3,r7,#24
+ 1696 0f7c 1A60     	 str r2,[r3]
+ 1697 0f7e 07F11803 	 add r3,r7,#24
+ 1698 0f82 1B68     	 ldr r3,[r3]
+ 1699              	.LBE55:
+ 1700 0f84 C7F81032 	 str r3,[r7,#528]
+ 432:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 433:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 434:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       /* f1(n) is saved in fcurnt1    
+ 435:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****          for next stage processing */
+ 436:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       fcurnt1 = fnext1;
+ 1701              	 .loc 1 436 0
+ 1702 0f88 D7F8DC31 	 ldr r3,[r7,#476]
+ 1703 0f8c C7F81432 	 str r3,[r7,#532]
+ 437:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 438:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       stageCnt--;
+ 1704              	 .loc 1 438 0
+ 1705 0f90 D7F8F031 	 ldr r3,[r7,#496]
+ 1706 0f94 013B     	 subs r3,r3,#1
+ 1707 0f96 C7F8F031 	 str r3,[r7,#496]
+ 1708              	.L9:
+ 416:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     {
+ 1709              	 .loc 1 416 0
+ 1710 0f9a D7F8F031 	 ldr r3,[r7,#496]
+ 1711 0f9e 002B     	 cmp r3,#0
+ 1712 0fa0 A0D1     	 bne .L10
+ 439:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 440:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     }
+ 441:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 442:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     /* y(n) = fN(n) */
+ 443:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     *pDst++ = __SSAT(fcurnt1, 16);
+ 1713              	 .loc 1 443 0
+ 1714 0fa2 3B1D     	 adds r3,r7,#4
+ 1715 0fa4 1B68     	 ldr r3,[r3]
+ 1716 0fa6 991C     	 adds r1,r3,#2
+ 1717 0fa8 3A1D     	 adds r2,r7,#4
+ 1718 0faa 1160     	 str r1,[r2]
+ 1719              	.LBB56:
+ 1720 0fac 07F11402 	 add r2,r7,#20
+ 1721 0fb0 D7F81412 	 ldr r1,[r7,#532]
+ 1722 0fb4 1160     	 str r1,[r2]
+ 1723 0fb6 07F11402 	 add r2,r7,#20
+ 1724 0fba 1268     	 ldr r2,[r2]
+ 1725              	
+ 1726 0fbc 02F30F01 	 ssat r1,#16,r2
+ 1727              	
+ 1728              	 .thumb
+ 1729 0fc0 07F11002 	 add r2,r7,#16
+ 1730 0fc4 1160     	 str r1,[r2]
+ 1731 0fc6 07F11002 	 add r2,r7,#16
+ 1732 0fca 1268     	 ldr r2,[r2]
+ 1733              	.LBE56:
+ 1734 0fcc 92B2     	 uxth r2,r2
+ 1735 0fce 1A80     	 strh r2,[r3]
+ 444:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 445:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 446:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     blkCnt--;
+ 1736              	 .loc 1 446 0
+ 1737 0fd0 D7F8F431 	 ldr r3,[r7,#500]
+ 1738 0fd4 013B     	 subs r3,r3,#1
+ 1739 0fd6 C7F8F431 	 str r3,[r7,#500]
+ 1740              	.L8:
+ 382:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****   {
+ 1741              	 .loc 1 382 0
+ 1742 0fda D7F8F431 	 ldr r3,[r7,#500]
+ 1743 0fde 002B     	 cmp r3,#0
+ 1744 0fe0 7FF411AF 	 bne .L11
+ 447:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 448:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****   }
+ 449:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 450:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** #else
+ 451:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 452:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****   /* Run the below code for Cortex-M0 */
+ 453:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 454:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****   q31_t fcurnt, fnext, gcurnt, gnext;            /* temporary variables */
+ 455:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****   uint32_t numStages = S->numStages;             /* Length of the filter */
+ 456:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****   uint32_t blkCnt, stageCnt;                     /* temporary variables for counts */
+ 457:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 458:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****   pState = &S->pState[0];
+ 459:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 460:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****   blkCnt = blockSize;
+ 461:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 462:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****   while(blkCnt > 0u)
+ 463:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****   {
+ 464:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     /* f0(n) = x(n) */
+ 465:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     fcurnt = *pSrc++;
+ 466:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 467:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     /* Initialize coeff pointer */
+ 468:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     pk = (pCoeffs);
+ 469:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 470:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     /* Initialize state pointer */
+ 471:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     px = pState;
+ 472:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 473:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     /* read g0(n-1) from state buffer */
+ 474:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     gcurnt = *px;
+ 475:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 476:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     /* for sample 1 processing */
+ 477:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     /* f1(n) = f0(n) +  K1 * g0(n-1) */
+ 478:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     fnext = ((gcurnt * (*pk)) >> 15u) + fcurnt;
+ 479:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     fnext = __SSAT(fnext, 16);
+ 480:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 481:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 482:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     /* g1(n) = f0(n) * K1  +  g0(n-1) */
+ 483:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     gnext = ((fcurnt * (*pk++)) >> 15u) + gcurnt;
+ 484:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     gnext = __SSAT(gnext, 16);
+ 485:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 486:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     /* save f0(n) in state buffer */
+ 487:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     *px++ = (q15_t) fcurnt;
+ 488:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 489:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     /* f1(n) is saved in fcurnt            
+ 490:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****        for next stage processing */
+ 491:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     fcurnt = fnext;
+ 492:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 493:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     stageCnt = (numStages - 1u);
+ 494:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 495:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     /* stage loop */
+ 496:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     while(stageCnt > 0u)
+ 497:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     {
+ 498:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       /* read g1(n-1) from state buffer */
+ 499:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       gcurnt = *px;
+ 500:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 501:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       /* save g0(n-1) in state buffer */
+ 502:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       *px++ = (q15_t) gnext;
+ 503:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 504:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       /* Sample processing for K2, K3.... */
+ 505:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       /* f2(n) = f1(n) +  K2 * g1(n-1) */
+ 506:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       fnext = ((gcurnt * (*pk)) >> 15u) + fcurnt;
+ 507:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       fnext = __SSAT(fnext, 16);
+ 508:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 509:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       /* g2(n) = f1(n) * K2  +  g1(n-1) */
+ 510:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       gnext = ((fcurnt * (*pk++)) >> 15u) + gcurnt;
+ 511:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       gnext = __SSAT(gnext, 16);
+ 512:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 513:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 514:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       /* f1(n) is saved in fcurnt            
+ 515:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****          for next stage processing */
+ 516:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       fcurnt = fnext;
+ 517:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 518:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****       stageCnt--;
+ 519:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 520:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     }
+ 521:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 522:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     /* y(n) = fN(n) */
+ 523:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     *pDst++ = __SSAT(fcurnt, 16);
+ 524:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 525:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 526:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****     blkCnt--;
+ 527:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 528:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c ****   }
+ 529:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 530:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** #endif /*   #ifndef ARM_MATH_CM0_FAMILY */
+ 531:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** 
+ 532:../Dave/Generated/CMSIS_DSP/FilteringFunctions/arm_fir_lattice_q15.c **** }
+ 1745              	 .loc 1 532 0
+ 1746 0fe4 07F50877 	 add r7,r7,#544
+ 1747              	.LCFI3:
+ 1748              	 .cfi_def_cfa_offset 8
+ 1749 0fe8 BD46     	 mov sp,r7
+ 1750              	.LCFI4:
+ 1751              	 .cfi_def_cfa_register 13
+ 1752              	 
+ 1753 0fea 90BC     	 pop {r4,r7}
+ 1754              	.LCFI5:
+ 1755              	 .cfi_restore 7
+ 1756              	 .cfi_restore 4
+ 1757              	 .cfi_def_cfa_offset 0
+ 1758 0fec 7047     	 bx lr
+ 1759              	 .cfi_endproc
+ 1760              	.LFE139:
+ 1762 0fee 00BF     	 .text
+ 1763              	.Letext0:
+ 1764              	 .file 2 "c:\\davev4-64bit\\dave-4.2.6\\eclipse\\arm-gcc-49\\arm-none-eabi\\include\\machine\\_default_types.h"
+ 1765              	 .file 3 "c:\\davev4-64bit\\dave-4.2.6\\eclipse\\arm-gcc-49\\arm-none-eabi\\include\\stdint.h"
+ 1766              	 .file 4 "C:\\Users\\Depes Crystalline\\Desktop\\school\\Active_Bike_Lighting_System\\Radar_Core\\Dave\\Generated/CMSIS_DSP/arm_math.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 arm_fir_lattice_q15.c
+    {standard input}:19     .text.arm_fir_lattice_q15:00000000 $t
+    {standard input}:24     .text.arm_fir_lattice_q15:00000000 arm_fir_lattice_q15
+                     .debug_frame:00000010 $d
+
+NO UNDEFINED SYMBOLS
