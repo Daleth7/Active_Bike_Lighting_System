@@ -45,22 +45,22 @@
 
 XMC_RADARSENSE2GO_TIMING_t radarsense2go_timing =
 {
-		.t_sample_us = 59,          /* 710us -> 1.408kHz */
-		.t_cycle_ms = 25,           /* 300 ms */
+		.t_sample_us = 59,          /* 59 us -> 16.949kHz // DEFAULT: 710us -> 1.408kHz */
+		.t_cycle_ms = 25,           /* 25, DEFAULT: 300 ms */
 		.N_exponent_samples = 8     /* 2^8samples * 710us = 182ms BGT24 on-time (settle-time ignored) */
 };
 
 XMC_RADARSENSE2GO_ALG_t radarsense2go_algorithm =
 {
 		.hold_on_cycles = 1,      /* hold-on cycles to trigger detection */
-		.trigger_det_level = 30,  /* trigger detection level */
+		.trigger_det_level = 20,  /* trigger detection level */
 		.rootcalc_enable = XMC_RADARSENSE2GO_ENABLED /* root calculation for magnitude disabled */
 };
 
 XMC_RADARSENSE2GO_POWERDOWN_t radarsense2go_powerdown =
 {
 		.sleep_deepsleep_enable   = XMC_RADARSENSE2GO_ENABLED, /* sleep / deepsleep enabled */
-		.mainexec_enable          = XMC_RADARSENSE2GO_ENABLED, /* main exec enabled */
+		.mainexec_enable          = XMC_RADARSENSE2GO_DISABLED, /* main exec enabled */
 		.vadc_clock_gating_enable = XMC_RADARSENSE2GO_ENABLED  /* vadc clock gating enabled */
 };
 
@@ -91,7 +91,7 @@ void radarsense2go_result( uint32_t *fft_magnitude_array,
 
 	if (motion == XMC_MOTION_DETECT_APPROACHING || motion == XMC_MOTION_DETECT_DEPARTING)
 	{
-		g_max_frq_index = max_frq_index * 5.5F; // 1408 Hz/ 2 / 256 (FFT SIZE) / 2
+		g_max_frq_index = max_frq_index * 66.2F; // 1408 Hz/ 2 / 256 (FFT SIZE) / 2
 	}
 	else
 	{
@@ -129,12 +129,13 @@ void radarsense2go_trigger(XMC_RADARSENSE2GO_MOTION_t detection_state)
 	if (detection_state == XMC_MOTION_DETECT_APPROACHING) // || detection_state == XMC_MOTION_DETECT_DEPARTING)
 	{
 		DIGITAL_IO_SetOutputLow(&Approaching);
-		DIGITAL_IO_SetOutputHigh(&Receding);
+
 	}
-	else if (detection_state == XMC_MOTION_DETECT_DEPARTING)
+	else if ((detection_state == XMC_MOTION_DETECT_DEPARTING) || (detection_state == XMC_NO_MOTION_DETECT))
 	{
-		DIGITAL_IO_SetOutputLow(&Receding);
+
 		DIGITAL_IO_SetOutputHigh(&Approaching);
+
 	}
 
 	/*
@@ -154,7 +155,6 @@ int main(void)
 
 	DAVE_Init(); /* Initialization of DAVE APPs  */
 	DIGITAL_IO_SetOutputHigh(&Approaching);
-	DIGITAL_IO_SetOutputHigh(&Receding);
 
 	DIGITAL_IO_SetOutputLow(&BGT24);
 
@@ -164,14 +164,21 @@ int main(void)
 			radarsense2go_powerdown,
 			&TIMER_0
 	);
-
+/*
 	radarsense2go_regcb_startacq ( radarsense2go_startacq );
 	radarsense2go_regcb_endacq ( radarsense2go_endacq );
 	radarsense2go_regcb_result ( radarsense2go_result );
 	radarsense2go_regcb_trigger ( radarsense2go_trigger );
-
+*/
 	while (1)
 	{
+
+		radarsense2go_regcb_startacq ( radarsense2go_startacq );
+		radarsense2go_regcb_endacq ( radarsense2go_endacq );
+		radarsense2go_regcb_result ( radarsense2go_result );
+		radarsense2go_regcb_trigger ( radarsense2go_trigger );
+
+
 		if (running == false)
 		{
 			if (start == true)
@@ -192,8 +199,8 @@ int main(void)
 
 			/* place your application code for main execution here */
 			/* e.g. communication on peripherals */
-			radarsense2go_exitmain(); /* only need to be called if
-                               mainexec_enable is enabled during init */
+			//radarsense2go_exitmain(); /* only need to be called if
+                               //mainexec_enable is enabled during init */
 		}
 
 	}

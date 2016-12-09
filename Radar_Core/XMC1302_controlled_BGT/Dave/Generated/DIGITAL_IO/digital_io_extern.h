@@ -64,7 +64,6 @@
 #define DIGITAL_IO_EXTERN_H
 
 extern const DIGITAL_IO_t Approaching;
-extern const DIGITAL_IO_t Receding;
 	
 extern const DIGITAL_IO_t BGT24; 
 	
