@@ -10,7 +10,7 @@
                     Timer Interrupt Service Routine start
 *************************************************************************/
 
-void default_timer8_handler_behaviour(Timer8& timer);
+static void default_timer8_handler_behaviour(Timer8& timer);
 
 void TC3_Handler(){
     default_timer8_handler_behaviour(TimerCount3::singleton());
