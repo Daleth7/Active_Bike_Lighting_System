@@ -43,6 +43,6 @@
 
 typedef TimerCount<(std::uint32_t)(TC3), 0x1B, 18> TimerCount3;   // TC3 timer
 typedef TimerCount<(std::uint32_t)(TC4), 0x1C, 19> TimerCount4;   // TC4 timer
-typedef TimerCount<(std::uint32_t)(TC5), 0x1C, 20> TimerCount4;   // TC5 timer
+typedef TimerCount<(std::uint32_t)(TC5), 0x1C, 20> TimerCount5;   // TC5 timer
 
 #endif

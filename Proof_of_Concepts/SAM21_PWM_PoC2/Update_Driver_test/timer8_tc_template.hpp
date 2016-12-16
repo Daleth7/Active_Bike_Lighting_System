@@ -115,15 +115,17 @@ class TimerCount : public Timer8 {
 /*************************************************************************
                             Modifiers start
 *************************************************************************/
-        void init(  std::uint32_t timer_prescaler,              // Desired prescaler of timer frequency (pg. 654 [30.8.1] SAMD21 E/G/J datasheet complete).
-                    std::uint8_t timer_period,                  // Desired counter period of timer (pg. 672 [30.8.12.1] SAMD21 E/G/J datasheet complete).
-                    bool interrupt_on_overflow,                 // Interrupt every period
-                    bool interrupt_on_match,                    // Interrupt upon matching specified value
-                    std::uint8_t match_value,                   // Value to interrupt on
-                    std::uint8_t generator = 0x0,               // Select which generic clock generator to use. By default, generator 0 is already set up to generate 48 MHz.
-                    float gen_clk_freq = 48e6,                  // Reference frequency to calculate current timer frequency
-                    callback_func_type isr_over_cb = dummy_cb,  // Callback function called by timer ISR upon counter overflow
-                    callback_func_type isr_match_cb = dummy_cb  // Callback function called by timer ISR upon counter match
+        void init(  std::uint32_t timer_prescaler,  // Desired prescaler of timer frequency (pg. 654 [30.8.1] SAMD21 E/G/J datasheet complete).
+                    std::uint8_t timer_period,      // Desired counter period of timer (pg. 672 [30.8.12.1] SAMD21 E/G/J datasheet complete).
+                    bool interrupt_on_overflow,     // Interrupt every period
+                    bool interrupt_on_match,        // Interrupt upon matching specified value
+                    std::uint8_t match_value,       // Value to interrupt on
+                    std::uint8_t generator = 0x0,   // Select which generic clock generator to use. By default, generator 0 is already set up to generate 48 MHz.
+                    float gen_clk_freq = 48e6,      // Reference frequency to calculate current timer frequency
+                    callback_func_type isr_over_cb  // Callback function called by timer ISR upon counter overflow
+                                                    = ___Timer8_dummy_cb,
+                    callback_func_type isr_match_cb // Callback function called by timer ISR upon counter match
+                                                    = ___Timer8_dummy_cb
                     );
 /*  Inherited from Timer8
         void configure_generic_clock();
@@ -173,20 +175,22 @@ class TimerCount : public Timer8 {
 *************************************************************************/
         TimerCount();
 /*  Inherited from Timer8
-        void dummy_cb();
+        void ___Timer8_dummy_cb();
 
         // Init function for child classes to load their own default settings
-        void child_init(    std::uint8_t generic_clk_id,                // Generic Clock to use for timer (pg. 132 [15.8.3] SAMD21 E/G/J datasheet complete).
-                            std::uint8_t gen_out_id,                    // Timer to recieve generic clock (pg. 132 [15.8.3] SAMD21 E/G/J datasheet complete).
-                            TcCount8* timer_peripheral,                 // Address of timer settings registers (pg. 650 [30.7] SAMD21 E/G/J datasheet complete).
-                            std::uint32_t timer_prescaler,              // Desired prescaler of timer frequency (pg. 654 [30.8.1] SAMD21 E/G/J datasheet complete).
-                            std::uint8_t timer_period,                  // Desired counter period of timer (pg. 672 [30.8.12.1] SAMD21 E/G/J datasheet complete).
-                            std::uint8_t timer_irq_id,                  // Interrupt Request ID of timer in NVIC (pg. 48 [11.2.2] SAMD21 E/G/J datasheet complete).
-                            bool interrupt_on_overflow,                 // Interrupt every period
-                            bool interrupt_on_match,                    // Interrupt upon matching specified value
-                            std::uint8_t match_value = 0,               // Value to interrupt on
-                            callback_func_type isr_over_cb = dummy_cb,  // Callback function called by timer ISR upon counter overflow
-                            callback_func_type isr_match_cb = dummy_cb  // Callback function called by timer ISR upon counter match
+        void child_init(    std::uint8_t generic_clk_id,    // Generic Clock to use for timer (pg. 132 [15.8.3] SAMD21 E/G/J datasheet complete).
+                            std::uint8_t gen_out_id,        // Timer to recieve generic clock (pg. 132 [15.8.3] SAMD21 E/G/J datasheet complete).
+                            TcCount8* timer_peripheral,     // Address of timer settings registers (pg. 650 [30.7] SAMD21 E/G/J datasheet complete).
+                            std::uint32_t timer_prescaler,  // Desired prescaler of timer frequency (pg. 654 [30.8.1] SAMD21 E/G/J datasheet complete).
+                            std::uint8_t timer_period,      // Desired counter period of timer (pg. 672 [30.8.12.1] SAMD21 E/G/J datasheet complete).
+                            std::uint8_t timer_irq_id,      // Interrupt Request ID of timer in NVIC (pg. 48 [11.2.2] SAMD21 E/G/J datasheet complete).
+                            bool interrupt_on_overflow,     // Interrupt every period
+                            bool interrupt_on_match,        // Interrupt upon matching specified value
+                            std::uint8_t match_value = 0,   // Value to interrupt on
+                            callback_func_type isr_over_cb  // Callback function called by timer ISR upon counter overflow
+                                                            = ___Timer8_dummy_cb,
+                            callback_func_type isr_match_cb // Callback function called by timer ISR upon counter match
+                                                            = ___Timer8_dummy_cb
                             );
 */
 /*************************************************************************
