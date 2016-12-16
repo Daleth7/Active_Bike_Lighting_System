@@ -1,6 +1,9 @@
 #include "timer8.hpp"
 
 
+void ___Timer8_dummy_cb(std::uint32_t){/* Default callback for timer ISR */}
+
+
 /*************************************************************************
                             Read-only start
 *************************************************************************/
@@ -60,7 +63,7 @@ void Timer8::disable(){
 }
 
 void Timer8::configure_settings(std::uint32_t timer_prescaler, std::uint8_t timer_period){
-    if(p_timer_settings == NULL) return;
+    if(p_timer_settings == 0) return;
 
     this->disable();
 
@@ -101,10 +104,10 @@ void Timer8::configure_interrupt(   bool interrupt_on_overflow,
                                     bool interrupt_on_match,
                                     std::uint8_t match_value
 ){
-    if(p_timer_settings == NULL) return;
+    if(p_timer_settings == 0) return;
 
     // Interrupts
-    p_timer_settings->INTENCLR.reg = ~((std::uint32_t)0);   // disable all interrupts
+    p_timer_settings->INTENCLR.reg |= std::uint32_t(0xFFFFFFFF);   // disable all timer interrupts
 
     if(interrupt_on_overflow)   p_timer_settings->INTENSET.bit.OVF = 1;
     else                        p_timer_settings->INTENCLR.bit.OVF = 1;
@@ -115,8 +118,8 @@ void Timer8::configure_interrupt(   bool interrupt_on_overflow,
     this->set_match_value(match_value);
 
     // Enable Interrupt Vector
-    //NVIC_EnableIRQ(m_timer_irq_id);
-    *NVIC->ISER |= 1 << m_timer_irq_id;
+    NVIC_EnableIRQ((IRQn)m_timer_irq_id);
+    //*NVIC->ISER |= 1 << m_timer_irq_id;
 }
 
 bool Timer8::overflowed()const{
@@ -140,7 +143,7 @@ void Timer8::enable_overflow_interrupt(){
 }
 
 void Timer8::disable_overflow_interrupt(){
-    p_timer_settings->INTENCLR.bit.OVF = 1;
+    p_timer_settings->INTENSET.bit.OVF = 0;
 }
 
 void Timer8::enable_match_interrupt(){
@@ -148,7 +151,7 @@ void Timer8::enable_match_interrupt(){
 }
 
 void Timer8::disable_match_interrupt(){
-    p_timer_settings->INTENCLR.bit.MC0 = 1;
+    p_timer_settings->INTENSET.bit.MC0 = 0;
 }
 
 void Timer8::set_match_value(std::uint8_t new_match_value){
