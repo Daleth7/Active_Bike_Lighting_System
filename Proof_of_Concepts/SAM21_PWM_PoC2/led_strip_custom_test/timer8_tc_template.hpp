@@ -120,10 +120,10 @@ class TimerCount : public Timer8 {
                     bool interrupt_on_overflow,                 // Interrupt every period
                     bool interrupt_on_match,                    // Interrupt upon matching specified value
                     std::uint8_t match_value,                   // Value to interrupt on
-                    callback_func_type isr_over_cb = dummy_cb,  // Callback function called by timer ISR upon counter overflow
-                    callback_func_type isr_match_cb = dummy_cb, // Callback function called by timer ISR upon counter match
                     std::uint8_t generator = 0x0,               // Select which generic clock generator to use. By default, generator 0 is already set up to generate 48 MHz.
-                    float gen_clk_freq = 48e6                   // Reference frequency to calculate current timer frequency
+                    float gen_clk_freq = 48e6,                  // Reference frequency to calculate current timer frequency
+                    callback_func_type isr_over_cb = dummy_cb,  // Callback function called by timer ISR upon counter overflow
+                    callback_func_type isr_match_cb = dummy_cb  // Callback function called by timer ISR upon counter match
                     );
 /*  Inherited from Timer8
         void configure_generic_clock();

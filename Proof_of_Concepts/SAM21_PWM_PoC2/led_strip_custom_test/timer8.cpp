@@ -140,7 +140,7 @@ void Timer8::enable_overflow_interrupt(){
 }
 
 void Timer8::disable_overflow_interrupt(){
-    p_timer_settings->INTENSET.bit.OVF = 0;
+    p_timer_settings->INTENCLR.bit.OVF = 1;
 }
 
 void Timer8::enable_match_interrupt(){
@@ -148,7 +148,7 @@ void Timer8::enable_match_interrupt(){
 }
 
 void Timer8::disable_match_interrupt(){
-    p_timer_settings->INTENSET.bit.MC0 = 0;
+    p_timer_settings->INTENCLR.bit.MC0 = 1;
 }
 
 void Timer8::set_match_value(std::uint8_t new_match_value){

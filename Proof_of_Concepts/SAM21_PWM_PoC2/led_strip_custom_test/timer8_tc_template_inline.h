@@ -60,8 +60,8 @@ void TIMER_COUNT_INST::init(
                         std::uint32_t timer_prescaler, std::uint8_t timer_period,
                         bool interrupt_on_overflow, bool interrupt_on_match,
                         std::uint8_t match_value,
-                        callback_func_type isr_over_cb, callback_func_type isr_match_cb,
-                        std::uint8_t generator, float gen_clk_freq
+                        std::uint8_t generator, float gen_clk_freq,
+                        callback_func_type isr_over_cb, callback_func_type isr_match_cb
 ){
     k_gen0_clk_freq = gen_clk_freq;
 	this->child_init(   generator, t_gclk_out_id,     // Tie clock to Timer TC3
