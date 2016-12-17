@@ -35,11 +35,13 @@
 #ifndef TIMER_DUTY_PATTERN_EXCCTTTENSS2222
 #define TIMER_DUTY_PATTERN_EXCCTTTENSS2222
 
+#include "timer_duty_pattern_observer.hpp"
+
 #include <cstdint>
 #include <cstddef> // For std::size_t
 
 template <typename Iterator, typename TimerType>
-class TimerDutyPattern {
+class TimerDutyPattern : protected ____TimerDutyPattern_Utils::Listener {
     public:
 
         // Read-only
@@ -67,12 +69,16 @@ class TimerDutyPattern {
         TimerDutyPattern& operator=(const TimerDutyPattern&)    = default;
         TimerDutyPattern(TimerDutyPattern&&)                    = default;
         TimerDutyPattern& operator=(TimerDutyPattern&&)         = default;
-        ~TimerDutyPattern()                                     = default;
+        ~TimerDutyPattern();
 
     protected:
         // Callback functions for the timer ISR
-        void overflow_cb();
-        void match_cb();
+        virtual void trigger_overflow_cb(std::uint32_t counter) override final;
+        virtual void trigger_match_cb(std::uint32_t counter) override final;
+
+        /* Inherited
+        listener_id_type m_id;
+        */
 
     private:
         Iterator        m_beg, m_curr, m_end;
