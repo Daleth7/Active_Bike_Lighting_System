@@ -22,12 +22,7 @@ float TIMEDUTY_INST::period()const{
 
 TIMEDUTY_TEMP
 void TIMEDUTY_INST::enable(){
-    ____TimerDutyPattern_Utils::Observer& observer
-        = ____TimerDutyPattern_Utils::Observer::singleton();
-    observer.add_listener(this);
-
-    p_timer->ISR_overflow_cb = observer_overflow_callback;
-    p_timer->ISR_match_cb = observer_match_callback;
+    p_timer->add_listener(this);
 
     pinMode(m_sig_out_pin, OUTPUT);
 
@@ -44,9 +39,7 @@ void TIMEDUTY_INST::disable(){
     this->pause();
     this->reset();
 
-    ____TimerDutyPattern_Utils::Observer& observer
-        = ____TimerDutyPattern_Utils::Observer::singleton();
-    observer.remove_listener(this);
+    p_timer->remove_listener(this);
 }
 
 // Modifiers
@@ -91,7 +84,7 @@ TIMEDUTY_INST::TimerDutyPattern(    Iterator begin, Iterator end,
                                     std::uint8_t arduino_pin,
                                     bool repeat_pattern
                                     )
-    : ____TimerDutyPattern_Utils::Listener()
+    : Timer_Listener()
     , m_beg(begin), m_curr(begin), m_end(end)
     , p_timer(timer_ptr)
     , m_sig_out_pin(arduino_pin)
@@ -104,9 +97,6 @@ TIMEDUTY_INST::~TimerDutyPattern(){
 }
 
 // Callback functions for the timer ISR
-
-bool overflow_triggered = false;
-float curr_time = 0.0f, freq_used = 0.0f, calc_duty = 0.0f;
 TIMEDUTY_TEMP
 void TIMEDUTY_INST::trigger_overflow_cb(std::uint32_t) {
     digitalWrite(m_sig_out_pin, HIGH);
@@ -123,11 +113,6 @@ void TIMEDUTY_INST::trigger_overflow_cb(std::uint32_t) {
     }
     // Set the next duty cycle in the pattern: t us * (1 s/1e6 us) * freq (1/s)
     p_timer->set_duty_cycle((*m_curr / 1.0e6) * p_timer->frequency());
-
-    overflow_triggered = true;
-    curr_time = *m_curr;
-    freq_used = p_timer->frequency();
-    calc_duty = (*m_curr / 1.0e6) * p_timer->frequency();
 
     ++m_curr;
 }

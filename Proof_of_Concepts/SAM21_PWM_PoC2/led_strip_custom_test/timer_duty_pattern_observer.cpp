@@ -12,6 +12,7 @@ namespace ____TimerDutyPattern_Utils {
             if(m_listeners[i] == new_listener) return false;
         }
 
+        // Find available slot
         for(std::uint8_t i = 0; i < k_max_listeners; ++i){
             if(m_listeners[i] == 0){
                 m_listeners[i] = new_listener;
@@ -53,7 +54,8 @@ void observer_overflow_callback(std::uint32_t counter){
          it != observer.list_end();
          ++it
     ){
-        if(*it != 0) (*it)->trigger_overflow_cb(counter);
+        if(*it != 0 && it->overflowed())
+            (*it)->trigger_overflow_cb(counter);
     }
 }
 
@@ -65,6 +67,7 @@ void observer_match_callback( std::uint32_t counter){
          it != observer.list_end();
          ++it
     ){
-        if(*it != 0) (*it)->trigger_match_cb(counter);
+        if(*it != 0 && it->matched())
+            (*it)->trigger_match_cb(counter);
     }
 }
