@@ -8,8 +8,8 @@
 
 TimerCount3& timer = TimerCount3::singleton();
 
-float time_seq[5] = { 0, 1e6, 2e6, 3e6, 3.999e6 };
-TimerDutyPattern<float*, TimerCount3> time_pattern( time_seq, time_seq+5,
+float time_seq[9] = { 0, 0.5e6, 1e6, 1.5e6, 2e6, 2.5e6, 3e6, 3.5e6, 3.999e6 };
+TimerDutyPattern<float*, TimerCount3> time_pattern( time_seq, time_seq+9,
                                                     &timer,
                                                     OUT_PIN,
                                                     true
@@ -27,21 +27,21 @@ bool print_debug_information = false;
 
 void setup(){
     pinMode(OUT_PIN, OUTPUT);
-        // Configure generator 2 to output a 16.384 kHz clock
-    config_gclk_gen(    0x2,        // Appy changes to generator 2
-                        1,          // Divide clock by 1 --> f = 32.768 kHz = 32.768 kHz
-                        false,      // Select simple division, i.e. divide by 32
+        // Configure generator 2 to output a 8.192 kHz clock
+    config_gclk_gen(    0x2,           // Appy changes to generator 2
+                        4,             // Divide clock by 4 --> f = 8.192 kHz
+                        false,         // Select simple division, i.e. divide by 2
                         osculp32k_clk  // Use Ultra low power OSC as the generator source (32.768 kHz)
                         );
 
-        // Sets a timer at 1 Hz
-    timer.init( 0x7,        // prescale by 1024 --> 32 Hz
-                128,        // 8-bit counter period -->  0.25 Hz
+        // Sets a timer at 0.5 Hz
+    timer.init( 0x5,        // prescale by 64 --> 128 Hz
+                255,        // 8-bit counter period -->  0.50196 Hz
                 true,       // Interrupt on overflow
                 true,       // Interrupt on match
                 50,         // Match value
                 0x2,        // Use generic clock generator 2
-                32.768e3    // Reference frequency
+                8.192e3     // Reference frequency
                 );
 
     timer.add_listener(&debug_listener);
