@@ -46,6 +46,8 @@ class TimerDutyPattern : protected ____TimerDutyPattern_Utils::Listener {
 
         // Read-only
         std::size_t pattern_position()const;
+        float frequency()const;
+        float period()const;
 
         // Enable/Disable
         void enable();   // Set up callbacks
@@ -53,8 +55,8 @@ class TimerDutyPattern : protected ____TimerDutyPattern_Utils::Listener {
         void disable();
 
         // Modifiers
-        std::size_t seek_position(std::size_t new_pos);
-        std::size_t seek_position(std::size_t ref_pos, std::size_t offset);
+        void seek_position(std::size_t new_pos);
+        void seek_position(std::size_t ref_pos, std::size_t offset);
         void reset(); // Set position back to the beginning
         void new_pattern(Iterator new_begin, Iterator new_end);
         void repeat(bool cycle_pattern);
@@ -89,11 +91,12 @@ class TimerDutyPattern : protected ____TimerDutyPattern_Utils::Listener {
 };
 
 template <typename Iterator, typename TimerType>
-TimerDutyPattern<Iterator> make_duty_pattern(   Iterator begin, Iterator end,
-                                                TimerType* timer_ptr,
-                                                std::uint8_t arduino_pin,
-                                                bool repeat_pattern = false
-                                                );
+TimerDutyPattern<Iterator, TimerType>
+    make_duty_pattern( Iterator begin, Iterator end,
+                       TimerType* timer_ptr,
+                       std::uint8_t arduino_pin,
+                       bool repeat_pattern = false
+                       );
 
 #include "timer_duty_pattern_inline.h"
 

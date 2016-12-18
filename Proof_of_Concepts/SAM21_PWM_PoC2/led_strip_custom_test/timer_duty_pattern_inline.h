@@ -8,13 +8,23 @@ std::size_t TIMEDUTY_INST::pattern_position()const{
     return m_curr - m_beg;
 }
 
+TIMEDUTY_TEMP
+float TIMEDUTY_INST::frequency()const{
+    return p_timer->frequency();
+}
+
+TIMEDUTY_TEMP
+float TIMEDUTY_INST::period()const{
+    return 1.0f/p_timer->frequency();
+}
+
 // Enable/Disable
 
 TIMEDUTY_TEMP
 void TIMEDUTY_INST::enable(){
     ____TimerDutyPattern_Utils::Observer& observer
         = ____TimerDutyPattern_Utils::Observer::singleton();
-    m_id = observer.add_listener(this);
+    observer.add_listener(this);
 
     p_timer->ISR_overflow_cb = observer_overflow_callback;
     p_timer->ISR_match_cb = observer_match_callback;
@@ -30,19 +40,19 @@ void TIMEDUTY_INST::pause(){
 }
 
 TIMEDUTY_TEMP
-void TIMEDUTY_INST::disable()
+void TIMEDUTY_INST::disable(){
     this->pause();
     this->reset();
 
     ____TimerDutyPattern_Utils::Observer& observer
         = ____TimerDutyPattern_Utils::Observer::singleton();
-    observer.remove_listener(m_id);
+    observer.remove_listener(this);
 }
 
 // Modifiers
 
 TIMEDUTY_TEMP
-std::size_t TIMEDUTY_INST::seek_position(std::size_t new_pos){
+void TIMEDUTY_INST::seek_position(std::size_t new_pos){
     m_curr = m_beg + new_pos;
     if(m_curr >= m_end){
         m_curr = m_end;
@@ -50,8 +60,8 @@ std::size_t TIMEDUTY_INST::seek_position(std::size_t new_pos){
 }
 
 TIMEDUTY_TEMP
-std::size_t TIMEDUTY_INST::seek_position(std::size_t ref_pos, std::size_t offset){
-    m_curr = m_beg + ref_pos + new_pos;
+void TIMEDUTY_INST::seek_position(std::size_t ref_pos, std::size_t offset){
+    m_curr = m_beg + ref_pos + offset;
     if(m_curr >= m_end){
         m_curr = m_end;
     }
@@ -95,8 +105,10 @@ TIMEDUTY_INST::~TimerDutyPattern(){
 
 // Callback functions for the timer ISR
 
+bool overflow_triggered = false;
+float curr_time = 0.0f, freq_used = 0.0f, calc_duty = 0.0f;
 TIMEDUTY_TEMP
-void TIMEDUTY_INST::trigger_overflow_cb() override final{
+void TIMEDUTY_INST::trigger_overflow_cb(std::uint32_t) {
     digitalWrite(m_sig_out_pin, HIGH);
 
     if(!m_transmit) return;
@@ -109,12 +121,19 @@ void TIMEDUTY_INST::trigger_overflow_cb() override final{
     }
     // Set the next duty cycle in the pattern: t us * (1 s/1e6 us) * freq (1/s)
     p_timer->set_duty_cycle((*m_curr / 1.0e6) * p_timer->frequency());
+
+    overflow_triggered = true;
+    curr_time = *m_curr;
+    freq_used = p_timer->frequency();
+    calc_duty = (*m_curr / 1.0e6) * p_timer->frequency();
+
+    ++m_curr;
 }
 
 
 
 TIMEDUTY_TEMP
-void TIMEDUTY_INST::trigger_match_cb() override final{
+void TIMEDUTY_INST::trigger_match_cb(std::uint32_t) {
     if(!m_transmit) return;
     digitalWrite(m_sig_out_pin, LOW);
 }
