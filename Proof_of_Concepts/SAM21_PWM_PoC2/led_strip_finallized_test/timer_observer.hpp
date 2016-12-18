@@ -50,9 +50,9 @@ class Timer_Observer {
 
     protected:
         // Enforce singleton pattern
-        Observer();
-        Observer(const Observer&) = default;
-        Observer& operator=(const Observer&) = default;
+        Timer_Observer();
+        Timer_Observer(const Timer_Observer&) = default;
+        Timer_Observer& operator=(const Timer_Observer&) = default;
 
     private:
         listener_list_type m_listeners;

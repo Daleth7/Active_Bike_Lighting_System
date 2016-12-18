@@ -35,7 +35,7 @@
 #ifndef TIMER_DUTY_PATTERN_EXCCTTTENSS2222
 #define TIMER_DUTY_PATTERN_EXCCTTTENSS2222
 
-#include "timer_duty_pattern_observer.hpp"
+#include "timer_observer.hpp"
 
 #include <cstdint>
 #include <cstddef> // For std::size_t

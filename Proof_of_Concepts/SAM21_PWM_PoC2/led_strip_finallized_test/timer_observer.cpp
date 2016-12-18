@@ -3,10 +3,10 @@
 C_Listener make_timer_listener( C_Listener::callback_func_type overflow_func,
                                 C_Listener::callback_func_type match_func
 ){
-    return C_Listener   {
-                            .overflow_cb(overflow_func),
-                            .match_cb(match_func)
-                        }
+    C_Listener toreturn;
+        toreturn.overflow_cb = overflow_func;
+        toreturn.match_cb = match_func;
+    return toreturn;
 }
 
 std::uint8_t Timer_Observer::count_listeners()const{

@@ -137,8 +137,8 @@ class Timer8 : public Timer_Observer {
 *************************************************************************/
 
     protected:
-        Timer8(const Timer8&){} // Force the class to be non-copyable
-        Timer8& operator=(const Timer8&){return *this;}
+        Timer8(const Timer8&) = default; // Force the class to be non-copyable
+        Timer8& operator=(const Timer8&) = default;
 
         // Init function for child classes to load their own default settings
         void child_init(    std::uint8_t generic_clk_id,    // Generic Clock to use for timer (pg. 132 [15.8.3] SAMD21 E/G/J datasheet complete).

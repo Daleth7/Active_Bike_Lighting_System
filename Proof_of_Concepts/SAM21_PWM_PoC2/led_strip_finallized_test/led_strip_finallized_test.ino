@@ -8,7 +8,7 @@
 
 TimerCount3& timer = TimerCount3::singleton();
 
-float time_seq[9] = { 0, 0.5e6, 1e6, 1.5e6, 2e6, 2.5e6, 3e6, 3.5e6, 3.999e6 };
+float time_seq[9] = { 0, 0.25e6, 0.5e6, 0.75e6, 1e6, 1.25e6, 1.5e6, 1.75e6, 1.999e6 };
 TimerDutyPattern<float*, TimerCount3> time_pattern( time_seq, time_seq+9,
                                                     &timer,
                                                     OUT_PIN,
@@ -21,6 +21,7 @@ void debug_match_callback(std::uint32_t counter);
 C_Listener debug_listener = make_timer_listener( debug_overflow_callback,
                                                  debug_match_callback
                                                  );
+std::uint32_t debug_counter_copy = 0;
 float debug_recorded_time_passed = -1.0f;
 float debug_recorded_ontime = -1.0f;
 bool print_debug_information = false;
@@ -53,6 +54,9 @@ void setup(){
 void loop(){
     if(print_debug_information){
         print_debug_information = false;
+        SerialUSB.print("Counter: ");
+            SerialUSB.print(debug_counter_copy);
+        SerialUSB.print(" | ");
         SerialUSB.print("Time passed: ");
             SerialUSB.print(debug_recorded_time_passed);
             SerialUSB.print(" s");
@@ -65,6 +69,7 @@ void loop(){
 }
 
 void debug_overflow_callback(std::uint32_t counter){
+    debug_counter_copy = counter;
     debug_recorded_time_passed = counter / timer.frequency();
     print_debug_information = true;
 }
