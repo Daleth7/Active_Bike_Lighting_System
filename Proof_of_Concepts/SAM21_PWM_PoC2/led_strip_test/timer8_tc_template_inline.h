@@ -39,7 +39,7 @@ void TIMER_COUNT_INST::init(
                       timer_prescaler, timer_period,
                       t_NVIC_id,                    // TC3 IRQ ID# in the NVIC
                       interrupt_on_overflow, interrupt_on_match,
-                      match_value
+                      match_value, gen_clk_freq
                       );
 }
 

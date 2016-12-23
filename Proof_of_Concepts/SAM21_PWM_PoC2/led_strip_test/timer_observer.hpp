@@ -8,6 +8,8 @@ struct Timer_Listener {
     virtual void trigger_match_cb(std::uint32_t counter) = 0;
 };
 
+void ____default_listener_callback_function(std::uint32_t);
+
 struct C_Listener : public Timer_Listener {
     typedef void (*callback_func_type)(std::uint32_t counter);
 
@@ -24,7 +26,8 @@ struct C_Listener : public Timer_Listener {
 };
 
 C_Listener make_timer_listener( C_Listener::callback_func_type overflow_func,
-                                C_Listener::callback_func_type match_func
+                                C_Listener::callback_func_type match_func = 
+                                    ____default_listener_callback_function
                                 );
 
 class Timer_Observer {

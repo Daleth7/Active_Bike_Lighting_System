@@ -37,10 +37,12 @@
 
 #include "timer_observer.hpp"
 
+#include "timer8.hpp"
+
 #include <cstdint>
 #include <cstddef> // For std::size_t
 
-template <typename Iterator, typename TimerType>
+template <typename Iterator>
 class TimerDutyPattern : protected Timer_Listener {
     public:
         // Read-only
@@ -62,7 +64,7 @@ class TimerDutyPattern : protected Timer_Listener {
 
         // Constructors and destructor
         TimerDutyPattern(   Iterator begin, Iterator end,
-                            TimerType* timer_ptr,
+                            Timer8* timer_ptr,
                             std::uint8_t arduino_pin,
                             bool repeat_pattern = false
                             );
@@ -77,18 +79,19 @@ class TimerDutyPattern : protected Timer_Listener {
         virtual void trigger_overflow_cb(std::uint32_t counter) override final;
         virtual void trigger_match_cb(std::uint32_t counter) override final;
 
+        Timer8*      p_timer;
+        std::uint8_t m_sig_out_pin;
+
     private:
-        Iterator        m_beg, m_curr, m_end;
-        TimerType*      p_timer;
-        std::uint8_t    m_sig_out_pin;
-        bool            m_cycle;
-        bool            m_transmit;
+        Iterator     m_beg, m_curr, m_end;
+        bool         m_cycle;
+        bool         m_transmit;
 };
 
-template <typename Iterator, typename TimerType>
-TimerDutyPattern<Iterator, TimerType>
+template <typename Iterator>
+TimerDutyPattern<Iterator>
     make_duty_pattern( Iterator begin, Iterator end,
-                       TimerType* timer_ptr,
+                       Timer8* timer_ptr,
                        std::uint8_t arduino_pin,
                        bool repeat_pattern = false
                        );

@@ -104,12 +104,12 @@ class TimerCount : public Timer8 {
         std::uint8_t counter_match_value()const;
 
         std::uint8_t count_listeners()const;
-*/
 
         float reference_frequency()const;   // Hz
         float frequency()const;             // Hz
         float period()const;                // ms
         float duty_cycle()const;            // %
+*/
 /*************************************************************************
                             Read-only end
 *************************************************************************/
@@ -124,7 +124,7 @@ class TimerCount : public Timer8 {
                     std::uint8_t match_value,       // Value to interrupt on
                     std::uint8_t generator = 0x0,   // Select which generic clock generator to use. By default, generator 0 is already set up to generate 48 MHz.
                     float gen_clk_freq = 48e6       // Reference frequency to calculate current timer frequency
-                    );
+                    ) override final;
 /*  Inherited from Timer8
         void configure_generic_clock();
         void enable();
@@ -133,8 +133,8 @@ class TimerCount : public Timer8 {
         void configure_settings(std::uint32_t timer_prescaler, std::uint8_t timer_period);
         void set_prescale(std::uint32_t new_prescale);
         void set_counter_period(std::uint8_t new_period);
-*/
         void set_duty_cycle(float new_duty_cycle);  // Must be between 0 and 1
+*/
 /*************************************************************************
                             Modifiers end
 *************************************************************************/
@@ -190,7 +190,8 @@ class TimerCount : public Timer8 {
                             std::uint8_t timer_irq_id,      // Interrupt Request ID of timer in NVIC (pg. 48 [11.2.2] SAMD21 E/G/J datasheet complete).
                             bool interrupt_on_overflow,     // Interrupt every period
                             bool interrupt_on_match,        // Interrupt upon matching specified value
-                            std::uint8_t match_value = 0    // Value to interrupt on
+                            std::uint8_t match_value = 0,   // Value to interrupt on
+                            float new_ref_freq = 48e6       // Reference frequency to calculate current timer frequency
                             );
 */
 /*************************************************************************
@@ -198,7 +199,9 @@ class TimerCount : public Timer8 {
 *************************************************************************/
 
     private:
+/*  Inherited from Timer8
         float k_gen0_clk_freq;
+*/
 };
 
 #include "timer8_tc_template_inline.h"

@@ -64,6 +64,11 @@ class Timer8 : public Timer_Observer {
         std::uint8_t counter_period()const;
         std::uint8_t counter_match_value()const;
 
+        float reference_frequency()const;   // Hz
+        float frequency()const;             // Hz
+        float period()const;                // ms
+        float duty_cycle()const;            // %
+
         /* Inherited from Timer_Observer
         std::uint8_t count_listeners()const;
         */
@@ -74,6 +79,15 @@ class Timer8 : public Timer_Observer {
 /*************************************************************************
                     Timer configuration functions start
 *************************************************************************/
+        virtual void init( std::uint32_t timer_prescaler,  // Desired prescaler of timer frequency (pg. 654 [30.8.1] SAMD21 E/G/J datasheet complete).
+                           std::uint8_t timer_period,      // Desired counter period of timer (pg. 672 [30.8.12.1] SAMD21 E/G/J datasheet complete).
+                           bool interrupt_on_overflow,     // Interrupt every period
+                           bool interrupt_on_match,        // Interrupt upon matching specified value
+                           std::uint8_t match_value,       // Value to interrupt on
+                           std::uint8_t generator = 0x0,   // Select which generic clock generator to use. By default, generator 0 is already set up to generate 48 MHz.
+                           float gen_clk_freq = 48e6       // Reference frequency to calculate current timer frequency
+                           ) = 0;
+
         void configure_generic_clock();
         void enable();
         void disable();
@@ -81,6 +95,7 @@ class Timer8 : public Timer_Observer {
         void configure_settings(std::uint32_t timer_prescaler, std::uint8_t timer_period);
         void set_prescale(std::uint32_t new_prescale);
         void set_counter_period(std::uint8_t new_period);
+        void set_duty_cycle(float new_duty_cycle);  // Must be between 0 and 1
 /*************************************************************************
                     Timer configuration functions end
 *************************************************************************/
@@ -126,11 +141,7 @@ class Timer8 : public Timer_Observer {
             //  1) generic clock
             //  2) timer settings
             //  3) interrupt settings
-        Timer8( std::uint8_t generic_clk_id = 0,    // Generic Clock to use for timer (pg. 132 [15.8.3] SAMD21 E/G/J datasheet complete).
-                std::uint8_t gen_out_id = 0,        // Timer to recieve generic clock (pg. 132 [15.8.3] SAMD21 E/G/J datasheet complete).
-                TcCount8* timer_peripheral = 0,     // Address of timer settings registers (pg. 650 [30.7] SAMD21 E/G/J datasheet complete).
-                std::uint8_t timer_irq_id = 15      // Interrupt Request ID of timer in NVIC (pg. 48 [11.2.2] SAMD21 E/G/J datasheet complete).
-                );
+        Timer8();
         ~Timer8(){}
 /*************************************************************************
                 Timer Constructors and destructors end
@@ -149,7 +160,8 @@ class Timer8 : public Timer_Observer {
                             std::uint8_t timer_irq_id,      // Interrupt Request ID of timer in NVIC (pg. 48 [11.2.2] SAMD21 E/G/J datasheet complete).
                             bool interrupt_on_overflow,     // Interrupt every period
                             bool interrupt_on_match,        // Interrupt upon matching specified value
-                            std::uint8_t match_value = 0    // Value to interrupt on
+                            std::uint8_t match_value = 0,   // Value to interrupt on
+                            float new_ref_freq = 48e6       // Reference frequency to calculate current timer frequency
                             );
 
     private:
@@ -157,6 +169,7 @@ class Timer8 : public Timer_Observer {
         std::uint8_t    m_gen_clk_id;
         std::uint8_t    m_gen_out_id;
         std::uint8_t    m_timer_irq_id;
+        float k_gen0_clk_freq;
 };
 
 #endif

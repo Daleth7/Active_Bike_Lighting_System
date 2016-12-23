@@ -9,11 +9,11 @@
 TimerCount3& timer = TimerCount3::singleton();
 
 float time_seq[9] = { 0, 0.25e6, 0.5e6, 0.75e6, 1e6, 1.25e6, 1.5e6, 1.75e6, 1.999e6 };
-TimerDutyPattern<float*, TimerCount3> time_pattern( time_seq, time_seq+9,
-                                                    &timer,
-                                                    OUT_PIN,
-                                                    true
-                                                    );
+TimerDutyPattern<float*> time_pattern( time_seq, time_seq+9,
+                                       &timer,
+                                       OUT_PIN,
+                                       true
+                                       );
 
 void debug_overflow_callback(std::uint32_t counter);
 void debug_match_callback(std::uint32_t counter);

@@ -1,5 +1,5 @@
-#define TIMEDUTY_TEMP template <typename Iterator, typename TimerType>
-#define TIMEDUTY_INST TimerDutyPattern<Iterator, TimerType>
+#define TIMEDUTY_TEMP template <typename Iterator>
+#define TIMEDUTY_INST TimerDutyPattern<Iterator>
 
 // Read-only
 
@@ -79,15 +79,15 @@ void TIMEDUTY_INST::repeat(bool cycle_pattern){
 // Constructors and destructor
 
 TIMEDUTY_TEMP
-TIMEDUTY_INST::TimerDutyPattern(    Iterator begin, Iterator end,
-                                    TimerType* timer_ptr,
-                                    std::uint8_t arduino_pin,
-                                    bool repeat_pattern
-                                    )
+TIMEDUTY_INST::TimerDutyPattern( Iterator begin, Iterator end,
+                                 Timer8* timer_ptr,
+                                 std::uint8_t arduino_pin,
+                                 bool repeat_pattern
+                                 )
     : Timer_Listener()
-    , m_beg(begin), m_curr(begin), m_end(end)
     , p_timer(timer_ptr)
     , m_sig_out_pin(arduino_pin)
+    , m_beg(begin), m_curr(begin), m_end(end)
     , m_cycle(repeat_pattern), m_transmit(false)
 {}
 
@@ -126,10 +126,10 @@ void TIMEDUTY_INST::trigger_match_cb(std::uint32_t) {
 }
 
 TIMEDUTY_TEMP
-TIMEDUTY_INST make_duty_pattern(    Iterator begin, Iterator end,
-                                    TimerType* timer_ptr,
-                                    std::uint8_t arduino_pin,
-                                    bool repeat_pattern
+TIMEDUTY_INST make_duty_pattern( Iterator begin, Iterator end,
+                                 Timer8* timer_ptr,
+                                 std::uint8_t arduino_pin,
+                                 bool repeat_pattern
 ){
     return TIMEDUTY_INST(   begin, end,
                             timer_ptr, arduino_pin,

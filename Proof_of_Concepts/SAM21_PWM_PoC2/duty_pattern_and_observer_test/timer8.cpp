@@ -27,6 +27,22 @@ std::uint8_t Timer8::counter_match_value()const{
     return p_timer_settings->CC[0].reg;
 }
 
+float Timer8::reference_frequency()const{
+    return k_gen0_clk_freq;
+}
+
+float Timer8::frequency()const{
+    return k_gen0_clk_freq / this->prescaler() / this->counter_period();
+}
+
+float Timer8::period()const{
+    return 1.0f/this->frequency();
+}
+
+float Timer8::duty_cycle()const{
+    return static_cast<float>(this->counter_match_value()) / this->counter_period();
+}
+
 /*************************************************************************
                             Read-only end
 *************************************************************************/
@@ -84,6 +100,11 @@ void Timer8::set_counter_period(std::uint8_t new_period){
     p_timer_settings->PER.reg = new_period;
         // Wait until write operation to register has been completed
     while (p_timer_settings->STATUS.bit.SYNCBUSY == 1);
+}
+
+void Timer8::set_duty_cycle(float new_duty_cycle){
+    if(new_duty_cycle < 0.0f || new_duty_cycle >= 1.0f) return;
+	this->set_match_value(this->counter_period()*new_duty_cycle);
 }
 
 /*************************************************************************
@@ -162,14 +183,11 @@ void Timer8::set_match_value(std::uint8_t new_match_value){
 /*************************************************************************
                 Timer Constructors and destructors start
 *************************************************************************/
-Timer8::Timer8( std::uint8_t generic_clk_id,    // Generic Clock to use for timer (pg. 132 [15.8.3] SAMD21 E/G/J datasheet complete).
-                std::uint8_t gen_out_id,        // Timer to recieve generic clock (pg. 132 [15.8.3] SAMD21 E/G/J datasheet complete).
-                TcCount8* timer_peripheral,     // Address of timer settings registers (pg. 650 [30.7] SAMD21 E/G/J datasheet complete).
-                std::uint8_t timer_irq_id       // Interrupt Request ID of timer in NVIC (pg. 48 [11.2.2] SAMD21 E/G/J datasheet complete).
-)
-    : p_timer_settings(timer_peripheral)
-    , m_gen_clk_id(generic_clk_id), m_gen_out_id(gen_out_id)
-    , m_timer_irq_id(timer_irq_id)
+Timer8::Timer8()
+    : p_timer_settings(0)
+    , m_gen_clk_id(0), m_gen_out_id(0)
+    , m_timer_irq_id(15)
+    , k_gen0_clk_freq(48e6)
 {}
 /*************************************************************************
                 Timer Constructors and destructors start
@@ -183,12 +201,14 @@ void Timer8::child_init(    std::uint8_t generic_clk_id,    // Generic Clock to 
                             std::uint8_t timer_irq_id,      // Interrupt Request ID of timer in NVIC (pg. 48 [11.2.2] SAMD21 E/G/J datasheet complete).
                             bool interrupt_on_overflow,     // Interrupt every period
                             bool interrupt_on_match,        // Interrupt upon matching specified value
-                            std::uint8_t match_value        // Value to interrupt on
+                            std::uint8_t match_value,       // Value to interrupt on
+                            float new_ref_freq              // Reference frequency to calculate current timer frequency
 ){
     p_timer_settings = timer_peripheral;
     m_gen_clk_id = generic_clk_id;
     m_gen_out_id = gen_out_id;
     m_timer_irq_id = timer_irq_id;
+    k_gen0_clk_freq = new_ref_freq;
     this->configure_generic_clock();
     this->configure_settings(timer_prescaler, timer_period);
     this->configure_interrupt(interrupt_on_overflow, interrupt_on_match, match_value);

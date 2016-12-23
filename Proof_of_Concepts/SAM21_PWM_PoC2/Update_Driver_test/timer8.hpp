@@ -49,29 +49,29 @@
 #ifndef WATCH_TIMER_FOR_KEPPING_32888888_CLOCK_SDOUCUNT____HHHHHHHHH
 #define WATCH_TIMER_FOR_KEPPING_32888888_CLOCK_SDOUCUNT____HHHHHHHHH
 
+#include "timer_observer.hpp"
+
 #include <cstdint>      // Contains known bit length types
 #include "sam.h"    // Contains register memory mapping for SAMD21
                     // Should include samd21g18a.h
 
-
-void ___Timer8_dummy_cb(std::uint32_t); /* Default callback for timer ISR */
-
-class Timer8 {
+class Timer8 : public Timer_Observer {
     public:
-/*************************************************************************
-                            Type-aliases start
-*************************************************************************/
-        typedef void (*callback_func_type)(std::uint32_t counter);
-/*************************************************************************
-                            Type-aliases end
-*************************************************************************/
-
 /*************************************************************************
                             Read-only start
 *************************************************************************/
         std::uint32_t prescaler()const;
         std::uint8_t counter_period()const;
         std::uint8_t counter_match_value()const;
+
+        float reference_frequency()const;   // Hz
+        float frequency()const;             // Hz
+        float period()const;                // ms
+        float duty_cycle()const;            // %
+
+        /* Inherited from Timer_Observer
+        std::uint8_t count_listeners()const;
+        */
 /*************************************************************************
                             Read-only end
 *************************************************************************/
@@ -79,6 +79,15 @@ class Timer8 {
 /*************************************************************************
                     Timer configuration functions start
 *************************************************************************/
+        virtual void init( std::uint32_t timer_prescaler,  // Desired prescaler of timer frequency (pg. 654 [30.8.1] SAMD21 E/G/J datasheet complete).
+                           std::uint8_t timer_period,      // Desired counter period of timer (pg. 672 [30.8.12.1] SAMD21 E/G/J datasheet complete).
+                           bool interrupt_on_overflow,     // Interrupt every period
+                           bool interrupt_on_match,        // Interrupt upon matching specified value
+                           std::uint8_t match_value,       // Value to interrupt on
+                           std::uint8_t generator = 0x0,   // Select which generic clock generator to use. By default, generator 0 is already set up to generate 48 MHz.
+                           float gen_clk_freq = 48e6       // Reference frequency to calculate current timer frequency
+                           ) = 0;
+
         void configure_generic_clock();
         void enable();
         void disable();
@@ -86,6 +95,7 @@ class Timer8 {
         void configure_settings(std::uint32_t timer_prescaler, std::uint8_t timer_period);
         void set_prescale(std::uint32_t new_prescale);
         void set_counter_period(std::uint8_t new_period);
+        void set_duty_cycle(float new_duty_cycle);  // Must be between 0 and 1
 /*************************************************************************
                     Timer configuration functions end
 *************************************************************************/
@@ -108,8 +118,18 @@ class Timer8 {
         void disable_match_interrupt();
         void set_match_value(std::uint8_t new_match_value);
 
-        callback_func_type  ISR_overflow_cb;
-        callback_func_type  ISR_match_cb;
+        /* Inherited from Timer_Observer
+        bool add_listener(listener_type* new_listener);
+
+        void remove_listener(listener_type* id);
+        void remove_all_listeners();
+
+        listener_iterator list_begin();
+        listener_iterator list_end();
+
+        void ISR_overflow_cb(std::uint32_t counter);
+        void ISR_match_cb(std::uint32_t counter);
+        */
 /*************************************************************************
                     Timer interrupt functions end
 *************************************************************************/
@@ -121,23 +141,15 @@ class Timer8 {
             //  1) generic clock
             //  2) timer settings
             //  3) interrupt settings
-        Timer8( std::uint8_t generic_clk_id = 0,    // Generic Clock to use for timer (pg. 132 [15.8.3] SAMD21 E/G/J datasheet complete).
-                std::uint8_t gen_out_id = 0,        // Timer to recieve generic clock (pg. 132 [15.8.3] SAMD21 E/G/J datasheet complete).
-                TcCount8* timer_peripheral = 0,     // Address of timer settings registers (pg. 650 [30.7] SAMD21 E/G/J datasheet complete).
-                std::uint8_t timer_irq_id = 15,     // Interrupt Request ID of timer in NVIC (pg. 48 [11.2.2] SAMD21 E/G/J datasheet complete).
-                callback_func_type isr_over_cb      // Callback function called by timer ISR upon counter overflow
-                                                = ___Timer8_dummy_cb,
-                callback_func_type isr_match_cb     // Callback function called by timer ISR upon counter match
-                                                = ___Timer8_dummy_cb
-                );
+        Timer8();
         ~Timer8(){}
 /*************************************************************************
                 Timer Constructors and destructors end
 *************************************************************************/
 
     protected:
-        Timer8(const Timer8&){} // Force the class to be non-copyable
-        Timer8& operator=(const Timer8&){return *this;}
+        Timer8(const Timer8&) = default; // Force the class to be non-copyable
+        Timer8& operator=(const Timer8&) = default;
 
         // Init function for child classes to load their own default settings
         void child_init(    std::uint8_t generic_clk_id,    // Generic Clock to use for timer (pg. 132 [15.8.3] SAMD21 E/G/J datasheet complete).
@@ -149,10 +161,7 @@ class Timer8 {
                             bool interrupt_on_overflow,     // Interrupt every period
                             bool interrupt_on_match,        // Interrupt upon matching specified value
                             std::uint8_t match_value = 0,   // Value to interrupt on
-                            callback_func_type isr_over_cb  // Callback function called by timer ISR upon counter overflow
-                                                            = ___Timer8_dummy_cb,
-                            callback_func_type isr_match_cb // Callback function called by timer ISR upon counter match
-                                                            = ___Timer8_dummy_cb
+                            float new_ref_freq = 48e6       // Reference frequency to calculate current timer frequency
                             );
 
     private:
@@ -160,6 +169,7 @@ class Timer8 {
         std::uint8_t    m_gen_clk_id;
         std::uint8_t    m_gen_out_id;
         std::uint8_t    m_timer_irq_id;
+        float k_gen0_clk_freq;
 };
 
 #endif

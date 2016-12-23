@@ -1,5 +1,7 @@
 #include "timer_observer.hpp"
 
+void ____default_listener_callback_function(std::uint32_t){/* Do nothing */}
+
 C_Listener make_timer_listener( C_Listener::callback_func_type overflow_func,
                                 C_Listener::callback_func_type match_func
 ){
