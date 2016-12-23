@@ -4,11 +4,16 @@
 #include <cstring>
 
 STRIP_TEMP
-constexpr std::size_t STRIP_INST::pattern_size;
+constexpr std::size_t STRIP_INST::colour_count,
+                      STRIP_INST::bits_per_byte,
+                      STRIP_INST::bits_per_led,
+                      STRIP_INST::pattern_size
+                      ;
 
 STRIP_TEMP
 void STRIP_INST::init(){
     pinMode(m_sig_out_pin, OUTPUT);
+    digitalWrite(m_sig_out_pin, LOW);
         // Configure generator to output a 48 MHz clock
     config_gclk_gen( m_clk_gen,   // Appy changes to generator m_clk_gen
                      1,           // Divide clock by 1 --> f = 48 MHz
@@ -17,9 +22,9 @@ void STRIP_INST::init(){
                      );
 
     // Sets a timer at 800 kHz
-    p_timer->init( 0x0,       // prescale by 1 --> 48 Mhz
-                   60,        // 8-bit counter period -->  800 kHz (1.667% precision)
-                              // --> 1.25 us period with 0.0208 us (20.8 ns) precision
+    p_timer->init( 0x0,       // prescale by 1 --> 48 Mhz (20.8 ns precision)
+                   60,        // 8-bit counter period -->  800 kHz
+                              // --> 1.25 us period with 0.0208 us steps
                    true,      // Interrupt on overflow
                    true,      // Interrupt on match
                    0,         // Match value
@@ -34,19 +39,20 @@ STRIP_TEMP
 void STRIP_INST::set_pixel( std::size_t  pos,
                             std::uint8_t red,
                             std::uint8_t green,
-                            std::uint8_t blue,
-                            std::uint8_t white
+                            std::uint8_t blue
 ){
-    auto set_colour = [this](std::size_t p, std::uint8_t colour){
-        for(unsigned i = 0; i < 8; ++i){
-            m_colour_commands[p+i] = STRIP_INST::bit_to_ontime((colour >> i) & 0x1);
+    auto set_colour_byte = [this](std::size_t p, std::uint8_t colour){
+        for(unsigned i = 0; i < bits_per_byte; ++i){
+            m_colour_commands[p*bits_per_led+i]
+                = bit_to_ontime((colour >> (bits_per_byte-1-i)) & 0x1);
         }
         };
 
-    set_colour(pos+0,  green);
-    set_colour(pos+8,  red);
-    set_colour(pos+16, blue);
-    set_colour(pos+24, white);
+    if(pos >= LED_count) return;
+
+    set_colour_byte(pos,    green);
+    set_colour_byte(pos+1u, red);
+    set_colour_byte(pos+2u, blue);
 }
 
 STRIP_TEMP

@@ -76,8 +76,8 @@ class TimerDutyPattern : protected Timer_Listener {
 
     protected:
         // Callback functions for the timer ISR
-        virtual void trigger_overflow_cb(std::uint32_t counter) override final;
-        virtual void trigger_match_cb(std::uint32_t counter) override final;
+        virtual void trigger_overflow_cb(std::uint32_t counter) override;
+        virtual void trigger_match_cb(std::uint32_t counter) override;
 
         Timer8*      p_timer;
         std::uint8_t m_sig_out_pin;

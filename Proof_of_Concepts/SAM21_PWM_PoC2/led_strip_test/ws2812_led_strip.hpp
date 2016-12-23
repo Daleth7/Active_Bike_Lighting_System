@@ -11,7 +11,11 @@ template <std::size_t LED_Count>
 class ws2812_led_strip : public TimerDutyPattern<float*> {
     public:
         using pattern_type = TimerDutyPattern<float*>;
-        static constexpr std::size_t pattern_size = LED_Count*4u*8u;
+        static constexpr std::size_t colour_count = 3u,
+                                     bits_per_byte = 8u,
+                                     bits_per_led = colour_count*bits_per_byte,
+                                     pattern_size = LED_Count*bits_per_led
+                                     ;
 
 /* Inherited from TimerDutyPattern<Iterator>
         // Read-only
@@ -35,8 +39,7 @@ class ws2812_led_strip : public TimerDutyPattern<float*> {
         void set_pixel( std::size_t  pos,
                         std::uint8_t red,
                         std::uint8_t green,
-                        std::uint8_t blue,
-                        std::uint8_t white
+                        std::uint8_t blue
                         );
 
         ws2812_led_strip( std::uint8_t generator, Timer8& timer,
